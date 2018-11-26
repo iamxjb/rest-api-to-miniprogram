@@ -41,6 +41,9 @@ function weixinapp_settings_page() {
 <div class="wrap">
 
 <h2>微信小程序设置</h2>
+
+
+<p>Rest API to miniprogram by <a href="https://www.watch-life.net" target="_blank">守望轩</a>.
 <?php
 
 if (!empty($_REQUEST['settings-updated']))
@@ -68,23 +71,23 @@ if (version_compare(PHP_VERSION, '5.5.0', '<=') )
         <table class="form-table">
             <tr valign="top">
             <th scope="row">AppID</th>
-            <td><input type="text" name="wf_appid" style="width:400px" value="<?php echo esc_attr( get_option('wf_appid') ); ?>" /></td>
+            <td><input type="text" name="wf_appid" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_appid') ); ?>" />* </td>
             </tr>
              
             <tr valign="top">
             <th scope="row">AppSecret</th>
-            <td><input type="text" name="wf_secret" style="width:400px" value="<?php echo esc_attr( get_option('wf_secret') ); ?>" /></td>
+            <td><input type="text" name="wf_secret" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_secret') ); ?>" />* </td>
             </tr>
 
             <tr valign="top">
                             <th scope="row">商户号MCHID</th>
-                            <td><input type="text" name="wf_mchid" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_mchid') ); ?>" /> <p style="color: #959595; display:inline">* 微信支付商户后台获取</p></td>
+                            <td><input type="text" name="wf_mchid" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_mchid') ); ?>" /> <p style="color: #959595; display:inline">微信支付商户后台获取</p></td>
                         </tr>
 
 
                         <tr valign="top">
                             <th scope="row">商户支付密钥key</th>
-                            <td><input type="text" name="wf_paykey" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_paykey') ); ?>" /> <p style="color: #959595; display:inline">* 微信支付商户后台获取</p></td>
+                            <td><input type="text" name="wf_paykey" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_paykey') ); ?>" /> <p style="color: #959595; display:inline">微信支付商户后台获取</p></td>
                         </tr>
 
                         <tr valign="top">
@@ -95,7 +98,7 @@ if (version_compare(PHP_VERSION, '5.5.0', '<=') )
 
             <tr valign="top">
             <th scope="row">小程序首页滑动文章ID</th>
-            <td><input type="text" name="wf_swipe" style="width:400px" value="<?php echo esc_attr( get_option('wf_swipe') ); ?>" />(请用英文半角逗号分隔)</td>
+            <td><input type="text" name="wf_swipe" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_swipe') ); ?>" /><p style="color: #959595; display:inline">* 请用英文半角逗号分隔</p></td>
             </tr>
 
             <tr valign="top">
@@ -115,7 +118,7 @@ if (version_compare(PHP_VERSION, '5.5.0', '<=') )
 
             <tr valign="top">
             <th scope="row">海报图片默认地址</th>
-            <td><input type="text" name="wf_poster_imageurl" style="width:600px" value="<?php echo esc_attr( get_option('wf_poster_imageurl') ); ?>" /><br/>(请输完整的图片地址,例如:<span style="color: blue">https://www.watch-life.net/images/2017/06/winxinapp-wordpress-watch-life-new-700.jpg</span>)</td>
+            <td><input type="text" name="wf_poster_imageurl" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_poster_imageurl') ); ?>" /><br/><p style="color: #959595; display:inline">* 请输完整的图片地址，例如：https://www.watch-life.net/images/poster.jpg</p></td>
             </tr>
                    
         </table>
@@ -123,6 +126,17 @@ if (version_compare(PHP_VERSION, '5.5.0', '<=') )
 
     <h2>微慕版（专业版）</h2>
     <div class="section">
+        <div style="display: flex; flex-direction: row; margin-bottom: 10px">
+            <a href="http://www.minapper.com" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fc6e6e; border-radius: 4px; color: #fff;display: flex;justify-content: center; align-items: center;margin-right: 16px">微慕官网</div></a>
+           <a href="http://mall.minapper.com"  style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fff; border: 1px solid #fc6e6e; border-radius: 4px; box-sizing: border-box; color: #fc6e6e;display: flex;justify-content: center; align-items: center">微慕商城</div></a>
+        </div>
+                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕版wordpress小程序和插件，在“守望轩”开源小程序的基础上，架构完全重构，在性能上大幅度优化，增加了<span style="font-weight:bold">动态圈子、积分系统、文章投稿、发布动态、付费阅读、会员权限、多种图文列表样式、预约表单、模板消息</span>等功能，并且免费提供标准版、旅游版、图片版、企业版4套前端模板，可使用微信扫描下方小程序码直接体验：</p>
+        <div>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118195979.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110915511992.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118200015.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110822512777.jpg" alt="Smiley face" width="120px" height="270px"></img>
+        </div>
     </div>
  </div>
 

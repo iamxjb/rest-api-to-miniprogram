@@ -108,7 +108,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
 
-        register_rest_route( $this->namespace, '/' . $this->resource_name.'/hotpost', array(
+        register_rest_route( $this->namespace, '/' . $this->resource_name.'/likethisyear', array(
             array(
                 'methods'   => 'GET',
                 'callback'  => array( $this, 'getTopLikePostsThisYear' ),
@@ -381,6 +381,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     function getTopLikePostsThisYear($request)
     {
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
+        $limit=10;
         date_default_timezone_set('Asia/Shanghai');
         $today = date("Y-m-d H:i:s"); //获取今天日期时间   
        // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
@@ -477,6 +478,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
         date_default_timezone_set('Asia/Shanghai');
+        $limit = 10;
         $today = date("Y-m-d H:i:s"); //获取今天日期时间   
        // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
         $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  

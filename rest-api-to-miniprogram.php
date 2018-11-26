@@ -2,7 +2,7 @@
 /*
 Plugin Name: REST API TO MiniProgram
 Plugin URI: http://www.watch-life.net
-Description: 为小程序提供 rest api 支持
+Description: 为小程序提供 rest api  支持
 Version: 0.5
 Author: jianbo
 Author URI: http://www.minapper.com
@@ -39,6 +39,8 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
                 return $endpoints;
             });
 
+            // add_action( 'admin_init', 'register_restAPIWechatsettings' );
+            // add_action('admin_menu', 'restAPIWechat_config_menu');
 
             //定制化内容输出，对pc端和api都生效
             add_filter( 'the_content', 'custocm_content_filter' );
@@ -48,6 +50,13 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             add_filter( 'rest_prepare_comment', 'custom_comment_fields', 10, 3 );
             add_filter( 'rest_prepare_category', 'custom_fields_rest_prepare_category', 10, 3 ); //获取分类的封面图片
 
+
+
+            //更新浏览次数（pc）
+            add_action('wp_head', 'addPostPageviews');
+
+            //获取浏览次数（pc）
+            add_filter('raw_post_views', 'post_views');
 
             
             // 管理配置 

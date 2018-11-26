@@ -35,7 +35,7 @@
 .responsive-tabs__panel { background:#fff; margin-top:-1px; padding:20px; border-left: 1px solid #ddd; border-right: 1px solid #ddd; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;}
 @media (min-width: 768px) {
 	.responsive-tabs__list, .responsive-tabs__panel {
-		width:75%;
+		width:95%;
 	}
 }
 @media (max-width: 767px) {
