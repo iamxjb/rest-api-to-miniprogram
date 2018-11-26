@@ -23,4 +23,4 @@ https://www.watch-life.net/wordpress-weixin-app
 
 插件安装启用后，通过wordpress后台菜单“微信小程序设置”，进入设置页面，配置运行wordpress小程序需要的配置项。
 
-
+![rest-api-to-miniprogram](https://raw.githubusercontent.com/iamxjb/rest-api-to-miniprogram/master/includes/images/rest-api-to-miniprogram.png) 
