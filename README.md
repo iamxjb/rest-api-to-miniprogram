@@ -21,10 +21,6 @@ https://www.watch-life.net/wordpress-weixin-app
 
 # 使用说明：
 
-插件安装启用后，需要设置文章分类目录：微信小程序封面，设置方法是进入wordpress管理后台，进入菜单：文章->分类目录，在微信小程序封面输入图片的链接地址即可，如下图所示：
+插件安装启用后，通过wordpress后台菜单“微信小程序设置”，进入设置页面，配置运行wordpress小程序需要的配置项。
 
-![wp-rest-api-for-app1](https://www.watch-life.net/images/2017/07/cover.png) 
 
-wordpress后台管理的设置菜单里面，找到“微信小程序设置”菜单，点击进入后，如下图所示：
-
-![wp-rest-api-for-app2](https://www.watch-life.net/images/2017/09/option-openid-new.png) 
