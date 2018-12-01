@@ -56,7 +56,11 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                     ),
                     'flag' => array(
                         'required' => true
+                    ),
+                    'fromUser' => array(
+                        'required' => true
                     )
+                    
                 )
                  
             ),            
@@ -211,12 +215,14 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
       $form_id=$request['form_id'];
       $total_fee=$request['total_fee'];
       $flag=$request['flag'];
-      $fromUser='';
+      $fromUser =$request['fromUser'];
       $parent=0;
+      if (isset($request['parent'])) {
+          $parent =(int)$request['parent'];
+      }
 
         $appid = get_option('wf_appid');
         $appsecret = get_option('wf_secret');
-
         $page='';
         if($flag =='1'  || $flag=='2' )
         {
@@ -518,18 +524,12 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
       $form_id=$request['form_id'];
       $total_fee=$request['total_fee'];
       $flag=$request['flag'];
-      $fromUser='';
-      $parent=0;
+      $fromUser =$request['fromUser'];
+      //$parent=(int)$request['parent'];
 
-      if (isset($request['fromUser'])) {
-          $fromUser =$request['fromUser'];
-      }
+      
 
-      if (isset($request['parent'])) {
-          $parent =(int)$request['parent'];
-      }
-
-      if(empty($openid)  || empty($template_id) || empty($postid) || empty($form_id) || empty($total_fee) || empty($flag))
+      if(empty($openid)  || empty($template_id) || empty($postid) || empty($form_id) || empty($total_fee) || empty($flag) || empty($fromUser))
       {
           return new WP_Error( 'error', '参数错误', array( 'status' => 500 ) );
       }

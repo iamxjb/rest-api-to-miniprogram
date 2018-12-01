@@ -56,7 +56,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             add_action('wp_head', 'addPostPageviews');
 
             //获取浏览次数（pc）
-            add_filter('raw_post_views', 'post_views');
+            //add_filter('raw_post_views', 'post_views');
 
             
             // 管理配置 
