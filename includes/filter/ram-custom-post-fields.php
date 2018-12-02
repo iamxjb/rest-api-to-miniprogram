@@ -120,7 +120,7 @@ function custom_post_fields( $data, $post, $request) {
 
 
 //获取文章浏览次数
-  function post_views($before = '(点击 ', $after = ' 次)', $echo = 1)  
+  function ram_post_views($before = '(点击 ', $after = ' 次)', $echo = 1)  
   {  
     global $post;  
     $post_id = $post->ID;  
