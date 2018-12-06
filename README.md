@@ -16,6 +16,14 @@
 
 https://www.watch-life.net/wordpress-weixin-app
 
+# 插件在Wordpress 官方更新地址：
+
+https://wordpress.org/plugins/rest-api-to-miniprogram/
+
+# 插件镜像更新地址：
+
+https://gitee.com/iamxjb/rest-api-to-miniprogram
+
 
 
 
