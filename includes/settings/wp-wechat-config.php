@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function weixinapp_create_menu() {
     // 创建新的顶级菜单
-    add_menu_page('微信小程序设置', '微信小程序设置', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', '');
+    add_menu_page('微信小程序设置', '微信小程序设置', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', plugins_url('rest-api-to-miniprogram/includes/images/icon16.png'),null);
     // 调用注册设置函数
     add_action( 'admin_init', 'register_weixinappsettings' );
 }
@@ -52,11 +52,11 @@ if (!empty($_REQUEST['settings-updated']))
 
 } 
 
-if (version_compare(PHP_VERSION, '5.5.0', '<=') )
+if (version_compare(PHP_VERSION, '5.6.0', '<=') )
 {
     
     echo '<div class="notice notice-error is-dismissible">
-    <p><font color="red">提示：php版本小于5.5.0, 插件程序讲无法正常使用,当前系统的php版本是:'.PHP_VERSION.'</font></p>
+    <p><font color="red">提示：php版本小于5.6.0, 插件程序将无法正常使用,当前系统的php版本是:'.PHP_VERSION.'</font></p>
     </div>';
 
 }
