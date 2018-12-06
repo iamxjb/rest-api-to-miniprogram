@@ -2,8 +2,8 @@
 /*
 Plugin Name: REST API TO MiniProgram
 Plugin URI: http://www.watch-life.net
-Description: 为小程序提供 rest api  支持
-Version: 0.5
+Description: 为微信小程序、app提供定制WordPress REST API 输出.支持微信支付、微信小程序模板消息.
+Version: 0.8
 Author: jianbo
 Author URI: http://www.minapper.com
 License: GPL v3
@@ -64,6 +64,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
                 
                 //new WP_Category_Config();
                 add_action('admin_menu', 'weixinapp_create_menu');
+                add_filter( 'plugin_action_links', 'ram_plugin_action_links', 10, 2 );
                  
             }
 
@@ -75,7 +76,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
         
 
-}
+    }
 
 
     // 实例化并加入全局变量
@@ -88,6 +89,27 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
         }
         
         return $GLOBALS['RestAPIMiniProgram'];
+    }
+
+    function ram_plugin_action_links( $links, $file ) {
+        if ( plugin_basename( __FILE__ ) !== $file ) {
+            return $links;
+        }
+
+        $settings_link = '<a href="https://www.minapper.com/" target="_blank"> <span style="color:#d54e21; font-weight:bold;">' . esc_html__( '升级专业版', 'REST API TO MiniProgram' ) . '</span></a>';
+
+        array_unshift( $links, $settings_link );
+
+
+        $settings_link = '<a href="https://www.watch-life.net/" target="_blank"> <span style="color:green; font-weight:bold;">' . esc_html__( '技术支持', 'REST API TO MiniProgram' ) . '</span></a>';
+
+        array_unshift( $links, $settings_link );
+
+        $settings_link = '<a href="admin.php?page=weixinapp_slug">' . esc_html__( '设置', 'REST API TO MiniProgram' ) . '</a>';
+
+        array_unshift( $links, $settings_link );
+
+        return $links;
     }
 
 }
