@@ -29,9 +29,14 @@ function custom_post_fields( $data, $post, $request) {
     $comments_count = wp_count_comments($post_id);    
     $_data['total_comments']=$comments_count->total_comments;
     $category =get_the_category($post_id);
-    $_data['category_name'] =$category[0]->cat_name; 
+    if(!empty($category))
+    {
+      $_data['category_name'] =$category[0]->cat_name; 
+    }
+    
     $post_date =$post->post_date;
-    $_data['date'] =time_tran($post_date);
+    //$_data['date'] =time_tran($post_date);
+    $_data['post_date'] =time_tran($post_date);
     $sql =$wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
     $like_count = $wpdb->get_var($sql);
     $_data['like_count']= $like_count; 
@@ -92,28 +97,18 @@ function custom_post_fields( $data, $post, $request) {
     }
     $pageviews =$post_views ;   
     $_data['pageviews'] = $pageviews;
-    $category_id=$category[0]->term_id;
-    $next_post = get_next_post($category_id, '', 'category');
-    $previous_post = get_previous_post($category_id, '', 'category');
-    $_data['next_post_id'] = !empty($next_post->ID)?$next_post->ID:null;
-    $_data['next_post_title'] = !empty($next_post->post_title)?$next_post->post_title:null;
-    $_data['previous_post_id'] = !empty($previous_post->ID)?$previous_post->ID:null;
-    $_data['previous_post_title'] = !empty($previous_post->post_title)?$previous_post->post_title:null;
-    unset($_data['format']);
-    unset($_data['ping_status']);
-    unset($_data['template']);
-    unset($_data['type']);
-    //unset($_data['slug']);
-    unset($_data['modified_gmt']);
-    unset($_data['date_gmt']);
-    unset($_data['meta']);
-    unset($_data['guid']);
-    unset($_data['curies']);
-    unset($_data['modified']);
-    unset($_data['status']);
-    unset($_data['comment_status']);
-    unset($_data['sticky']);
-    unset($_data['author']);       
+    if(!empty($category))
+    {
+
+      $category_id=$category[0]->term_id;
+      $next_post = get_next_post($category_id, '', 'category');
+      $previous_post = get_previous_post($category_id, '', 'category');
+      $_data['next_post_id'] = !empty($next_post->ID)?$next_post->ID:null;
+      $_data['next_post_title'] = !empty($next_post->post_title)?$next_post->post_title:null;
+      $_data['previous_post_id'] = !empty($previous_post->ID)?$previous_post->ID:null;
+      $_data['previous_post_title'] = !empty($previous_post->post_title)?$previous_post->post_title:null;
+
+    }   
     $data->data = $_data;     
     return $data; 
 }
