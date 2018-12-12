@@ -137,10 +137,12 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                             
                             $userdata = array(
                                 'user_login'  =>  $openid,
+                                'first_name'    => $nickname,
                                 'nickname'=> $nickname,
                                 'user_nicename'=> $nickname,
                                 'display_name' => $avatarUrl,
-                                'user_pass'   =>  $openid 
+                                'user_pass'   =>  $openid,
+                                'user_email'    => $openid.'@weixin.com' 
                             );
 
                                 $user_id = wp_insert_user( $userdata ) ;
@@ -155,7 +157,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                                     $result["code"]="success";
                                     $result["message"]= "获取openid成功";
                                     $result["status"]="200";
-                                    //$result["openid"]=$openid;
+                                    $result["openid"]=$openid;
                                     //return $result;
                                 }
                         
