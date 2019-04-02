@@ -421,8 +421,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 
         $qrcodeName = 'qrcode-'.$postid.'.png';//文章小程序二维码文件名     
         $qrcodeurl = REST_API_TO_MINIPROGRAM_PLUGIN_DIR.'qrcode/'.$qrcodeName;//文章小程序二维码路径
-        
-        
+        $qrcodeimgUrl = plugins_url().'/'.REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/qrcode/'.$qrcodeName;
         //自定义参数区域，可自行设置      
         $appid = get_option('wf_appid');
         $appsecret = get_option('wf_secret');
@@ -501,7 +500,8 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         if($flag)
         {
           $result["code"]="success";
-            $result["message"]= "小程序码创建成功"; 
+            $result["message"]= "小程序码创建成功";
+            $result["qrcodeimgUrl"]=$qrcodeimgUrl; 
             $result["status"]="200"; 
             
 
