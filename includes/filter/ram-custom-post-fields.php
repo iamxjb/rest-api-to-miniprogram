@@ -27,7 +27,7 @@ function custom_post_fields( $data, $post, $request) {
     $_data['post_all_images']=$images['post_all_images'];
 
     $comments_count = wp_count_comments($post_id);    
-    $_data['total_comments']=$comments_count->total_comments;
+    $_data['total_comments']=$comments_count->approved;
     $category =get_the_category($post_id);
     if(!empty($category))
     {
