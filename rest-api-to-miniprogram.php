@@ -13,6 +13,7 @@ WordPress requires at least: 4.7.0
 
 define('REST_API_TO_MINIPROGRAM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('REST_API_TO_MINIPROGRAM_PLUGIN_FILE',__FILE__);
+const REST_API_TO_MINIPROGRAM_PLUGIN_NAME='rest-api-to-miniprogram';
 
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-util.php' );
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-api.php' );
