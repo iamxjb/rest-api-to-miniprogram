@@ -138,16 +138,23 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $userid=isset($request['userid'])?(int)$request['userid']:0; //被回复者
         $formId =isset($request['formId'])?$request['formId']:"";
 
+        $authorIp =get_client_ip();
+	    $authorIp= empty($authorIp)?'':$authorIp;
+
+        $wf_enable_comment_check= get_option('wf_enable_comment_check');
+        $comment_approved="1";
+        if(!empty($wf_enable_comment_check))
+        {
+             $comment_approved="0";
+
+        }
+
         global $wpdb;
         $user_id =0;
         $useropenid="";
         $sql ="SELECT ID FROM ".$wpdb->users ." WHERE user_login='".$openid."'";
         $user_id= (int)$wpdb->get_var($sql); //评论者id
-        // $users = $wpdb->get_results($sql);
-        // foreach ($users as $user) {
-        //     $user_id = (int) $user->ID;
-            
-        // }
+       
         $commentdata = array(
         'comment_post_ID' => $post, // to which post the comment will show up
         'comment_author' => $author_name, //fixed value - can be dynamic 
@@ -157,12 +164,18 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         'comment_type' => '', //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
         'comment_parent' => $parent, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
         'user_id' => $user_id, //passing current user ID or any predefined as per the demand
-        'comment_author_IP'=>get_client_ip()
-    );
+        'comment_author_IP'=>$authorIp,
+        'comment_approved' =>$comment_approved
+        );
 
         $comment_id = wp_insert_comment( wp_filter_comment($commentdata));
 
-        if($comment_id)
+        if(empty($comment_id))
+        {
+            return new WP_Error( 'error', '添加评论失败', array( 'status' => 500 ) );
+        
+        }
+        else        
         {
             $useropenid="";
             if(!empty($userid))
@@ -178,28 +191,29 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
 
             }
             $result["code"]="success";
+            $message='留言成功';
+
+            if(!empty($wf_enable_comment_check))
+            {
+                $message='留言已提交,需管理员审核方可显示。';
+            }
+
             if($addcommentmetaflag)
             {
-              $result["message"]= "添加评论和formId成功";  
+              $result["formId"]= "添加评论和formId成功";  
             }
             else
              {
-                $result["message"]= "添加评论成功,添加formId失败";
+                $result["formId"]= "添加评论成功,添加formId失败";
              } 
             $result["status"]="200"; 
-            $result["useropenid"]=$useropenid;  
-            
+            $result["message"]=$message;
+            $result["useropenid"]=$useropenid;
+            $response = rest_ensure_response( $result);
+            return $response;
+        }
         
-        }
-        else
-        {
-            $result["code"]="success";
-            $result["message"]= "添加评论失败";
-            $result["status"]="500";                   
-            
-        }
-        $response = rest_ensure_response( $result);
-        return $response;
+        
     }
 
     function get_comments($request)
