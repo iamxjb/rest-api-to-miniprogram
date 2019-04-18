@@ -81,8 +81,8 @@ class RAW_REST_Payment_Controller  extends WP_REST_Controller{
         $input->SetBody($body);
         $orderId =RAM_WxPayConfig::get_mchid().date("YmdHis");
         $input->SetOut_trade_no($orderId);
-        //$input->SetTotal_fee(strval($totalFee*100));
-        $input->SetTotal_fee(strval($totalFee));
+        $input->SetTotal_fee(strval($totalFee*100));
+        //$input->SetTotal_fee(strval($totalFee));
         $input->SetTime_start(date("YmdHis"));
         $input->SetTime_expire(date("YmdHis", time() + 600));
         $input->SetNotify_url(get_rest_url( null, $this->namespace . '/' . $this->resource_name . '/notify' ) );
