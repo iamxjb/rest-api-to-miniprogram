@@ -94,119 +94,194 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             ),            
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
+
+        register_rest_route( $this->namespace, '/' . $this->resource_name.'/getuserinfo', array(
+            // Here we register the readable endpoint for collections.
+            array(
+                'methods'   => 'GET',
+                'callback'  => array( $this, 'getUserInfo' ),
+                'permission_callback' => array( $this, 'get_userInfo_permissions_check' ),
+                'args'               => array(              
+                    'openid' => array(
+                        'required' => true
+                    )
+                )
+                 
+            ),            
+            'schema' => array( $this, 'get_public_item_schema' ),
+        ) );
+
+        register_rest_route( $this->namespace, '/' . $this->resource_name.'/updateuserinfo', array(
+            // Here we register the readable endpoint for collections.
+            array(
+                'methods'   => 'POST',
+                'callback'  => array( $this, 'updateUserInfo' ),
+                'permission_callback' => array( $this, 'update_userInfo_permissions_check' ),
+                'args'               => array(              
+                    'openid' => array(
+                        'required' => true
+                    ),
+                    'avatarUrl' => array(
+                        'required' => true
+                    ),
+                    'nickname' => array(
+                        'required' => true
+                    )
+                )
+                 
+            ),            
+            'schema' => array( $this, 'get_public_item_schema' ),
+        ) );
+
     }
 
-    function getOpenid($request)
+    function updateUserInfo($request)
     {
-      $js_code= $request['js_code'];
-      $encryptedData=$request['encryptedData'];
-      $iv=$request['iv'];
-      $avatarUrl=$request['avatarUrl'];
-      $nickname=empty($request['nickname'])?'':$request['nickname'];
-      $appid = get_option('wf_appid');
-      $appsecret = get_option('wf_secret');
-
-
-      if(empty($appid) || empty($appsecret) )
+        $openId =$request['openid'];
+        $nickname=empty($request['nickname'])?'':$request['nickname'];
+        $nickname=filterEmoji($nickname);
+        $avatarUrl=empty($request['avatarUrl'])?'':$request['avatarUrl']; 
+        $user = get_user_by( 'login', $openId);
+        if(empty($user))
         {
-                $result["code"]="success";
-                $result["message"]= "appid  or  appsecret is  empty";
-                $result["status"]="500"; 
-        }
-        else
-        {
-        
-            $access_url = "https://api.weixin.qq.com/sns/jscode2session?appid=".$appid."&secret=".$appsecret."&js_code=".$js_code."&grant_type=authorization_code";
-            $access_result = https_request($access_url);
-            if($access_result !="ERROR")
-            {
-                $access_array = json_decode($access_result,true);
-                if(empty($access_array['errcode']))
-                {
-                    $openid = $access_array['openid']; 
-                    $sessionKey = $access_array['session_key'];                    
-                    // $pc = new WXBizDataCrypt($appid, $sessionKey);
-                    // $errCode = $pc->decryptData($encryptedData, $iv, $data );
-                    $errCode =decrypt_data($appid, $sessionKey,$encryptedData, $iv, $data);                   
-                    if ($errCode == 0) {
-                    
-                        if(!username_exists($openid))
-                        {
-                            $data =json_decode($data,true);
-                            //$unionId = $data['unionId'];
-                            
-                            $userdata = array(
-                                'user_login'  =>  $openid,
-                                'first_name'    => $nickname,
-                                'nickname'=> $nickname,
-                                'user_nicename'=> $nickname,
-                                'display_name' => $avatarUrl,
-                                'user_pass'   =>  $openid,
-                                'user_email'    => $openid.'@weixin.com' 
-                            );
+            return new WP_Error( 'error', '此用户不存在' , array( 'status' => 500 ) );
+        }     
+        $userdata =array(
+            'ID'            => $user->ID,
+            'first_name'	=> $nickname,
+            'nickname'      => $nickname,
+            'user_nicename' => base64_encode($nickname),
+            'display_name'  => $nickname,
+            'user_email'    => $openId.'@weixin.com'
+        );
+        $userId =wp_update_user($userdata);
+        if(is_wp_error($userId)){
+            return new WP_Error( 'error', '更新wp用户错误：' , array( 'status' => 500 ) );
+        } 
+                
+        update_user_meta($userId,'avatar',$avatarUrl);
 
-                                $user_id = wp_insert_user( $userdata ) ;
-                                if (is_wp_error( $user_id ) ) {
-                                
-                                    $result["code"]="success";
-                                    $result["message"]= "生成用户失败";
-                                    $result["status"]="500";
-                                }
-                                else
-                                {
-                                    $result["code"]="success";
-                                    $result["message"]= "获取openid成功";
-                                    $result["status"]="200";
-                                    $result["openid"]=$openid;
-                                    //return $result;
-                                }
-                        
-                        }
-                        else
-                        {
-                            $result["code"]="success";
-                            $result["message"]= "获取openid成功";
-                            $result["status"]="200";
-                            $result["openid"]=$openid;
-                            //return $result;
-                        }
-                        
-                    }
-                    else {
-                    
-                        $result["code"]="success";
-                        $result["message"]=$errCode;
-                        $result["status"]="500";                   
-                       
-                        
-                    } 
-                    
-                }               
-                else
-                {
-                
-                    $result["code"]=$access_array['errcode'];
-                    $result["message"]= $access_array['errmsg'];
-                    $result["status"]="500";                   
-                    //return $result;
-                
-                }
-                
-            }
-            else
-            {
-                    $result["code"]="success";
-                    $result["message"]= "https请求失败";
-                    $result["status"]="500";                   
-                    return $result;
-            }
-            
-            
-        }
-
-        $response = rest_ensure_response( $result);
+        $userLevel= getUserLevel($userId);
+        $result["code"]="success";
+        $result["message"]= "更新成功";
+        $result["status"]="200";
+        $result["openid"]=$openId;
+        $result["userLevel"]=$userLevel;            
+        $response = rest_ensure_response($result);
         return $response;
 
+    }
+
+    function getUserInfo($request)
+    {
+      
+        $openId =$request['openid'];
+        $_user = get_user_by( 'login', $openId);  
+        if(empty($_user ))
+        {
+            return new WP_Error( 'error', '无此用户信息', array( 'status' => 500 ) );
+       
+        }
+        else{
+
+            $user['nickname']=$_user->display_name;
+            $avatar= get_user_meta($_user->ID, 'avatar', true );
+            if(empty($avatar))
+            {
+                $avatar = plugins_url()."/".REST_API_TO_MINIPROGRAM_PLUGIN_NAME."/includes/images/gravatar.png";
+            }
+
+            $userLevel=getUserLevel($_user->ID);
+            $user['userLevel']=$userLevel;            
+            $user['avatar']=$avatar;            
+            $result["code"]="success";
+            $result["message"]= "获取用户信息成功";
+            $result["status"]="200";
+            $result["user"]=$user;
+            $response = rest_ensure_response($result);
+            return $response;
+
+        }
+    }
+    function getOpenid($request)
+    {
+        $js_code= $request['js_code'];
+        $encryptedData=$request['encryptedData'];
+        $iv=$request['iv'];
+        $avatarUrl=$request['avatarUrl'];
+        $nickname=empty($request['nickname'])?'':$request['nickname'];
+        $appid = get_option('wf_appid');
+        $appsecret = get_option('wf_secret');
+        if(empty($appid) || empty($appsecret) ){
+            return new WP_Error( 'error', 'appid或appsecret为空', array( 'status' => 500 ) );
+        }
+        else
+        {        
+            $access_url = "https://api.weixin.qq.com/sns/jscode2session?appid=".$appid."&secret=".$appsecret."&js_code=".$js_code."&grant_type=authorization_code";
+            $access_result = https_request($access_url);
+            if($access_result=='ERROR') {
+                return new WP_Error( 'error', 'API错误：' . json_encode($access_result), array( 'status' => 501 ) );
+            } 
+            $api_result  = json_decode($access_result,true);            
+            if( empty( $api_result['openid'] ) || empty( $api_result['session_key'] ) || ! empty( $api_result['error'] ) ) {
+                return new WP_Error( $api_result['error'], 'API错误：' . json_encode( $api_result ), array( 'status' => 502 ) );
+            }            
+            $openId = $api_result['openid']; 
+            $sessionKey = $api_result['session_key'];                    
+            $access_result =decrypt_data($appid, $sessionKey,$encryptedData, $iv, $data);                   
+            if($access_result !=0) {
+                return new WP_Error( 'error', '解密错误：' . $access_result, array( 'status' => 503 ) );
+            }
+            $userId=0;           
+            $data = json_decode( $data, true );
+            $nickname=filterEmoji($data['nickName']);
+            $avatarUrl= $data['avatarUrl']; 
+            if(!username_exists($openId) ) {                
+                $new_user_data = apply_filters( 'new_user_data', array(
+                    'user_login'    => $openId,
+                    'first_name'	=> $nickname ,
+                    'nickname'      => $nickname,
+                    //'user_nicename' => $data['nickName'],
+                    'user_nicename' => base64_encode($nickname),
+                    'display_name'  => $nickname,
+                    'user_pass'     => $openId,
+                    'user_email'    => $openId.'@weixin.com'
+                ) );                
+                $userId = wp_insert_user( $new_user_data );			
+                if ( is_wp_error( $userId ) || empty($userId) ||  $userId==0 ) {
+                    return new WP_Error( 'error', '插入wordpress用户错误：', array( 'status' => 500 ) );				
+                }
+
+                update_user_meta( $userId,'avatar',$avatarUrl);
+
+            }            
+            else{
+                $user = get_user_by( 'login', $openId);     
+                $userdata =array(
+                    'ID'            => $user->ID,
+                    'first_name'	=> $nickname,
+                    'nickname'      => $nickname,
+                    'user_nicename' => base64_encode($nickname),
+                    'display_name'  => $nickname,
+                    'user_email'    => $openId.'@weixin.com'
+                );
+                $userId =wp_update_user($userdata);
+                if(is_wp_error($userId)){
+                    return new WP_Error( 'error', '更新wp用户错误：' , array( 'status' => 500 ) );
+                } 
+                
+                update_user_meta( $userId,'avatar',$avatarUrl);
+                  
+            }
+            $userLevel= getUserLevel($userId);
+            $result["code"]="success";
+            $result["message"]= "获取用户信息成功";
+            $result["status"]="200";
+            $result["openid"]=$openId;
+            $result["userLevel"]=$userLevel;            
+            $response = rest_ensure_response($result);
+            return $response; 
+        }  
     }
 
     function sendmessage($request)
@@ -546,8 +621,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
     function get_qrcodeimg_permissions_check($request)
     {
         $postid= $request['postid'];      
-        $path=$request['path'];
-         
+        $path=$request['path'];        
 
         if(empty($postid)  || empty($path))
         {
@@ -557,7 +631,14 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         {
              return new WP_Error( 'error', 'postId参数错误', array( 'status' => 500 ) );
         }
-
+        return true;
+    }
+    function  get_userInfo_permissions_check($request)
+    {
+        return true;
+    }
+    function  update_userInfo_permissions_check($request)
+    {
         return true;
     }
 
