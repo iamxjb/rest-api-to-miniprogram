@@ -12,7 +12,7 @@ require_once( REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/wxpay/WxPay.Excepti
  * @author widyhu
  *
  */
-class WxPayDataBase
+class RAM_WxPayDataBase
 {
 	protected $values = array();
 	
@@ -47,14 +47,14 @@ class WxPayDataBase
 
 	/**
 	 * 输出xml字符
-	 * @throws WxPayException
+	 * @throws RAM_WxPayException
 	**/
 	public function ToXml()
 	{
 		if(!is_array($this->values) 
 			|| count($this->values) <= 0)
 		{
-    		throw new WxPayException("数组数据异常！");
+    		throw new RAM_WxPayException("数组数据异常！");
     	}
     	
     	$xml = "<xml>";
@@ -73,12 +73,12 @@ class WxPayDataBase
     /**
      * 将xml转为array
      * @param string $xml
-     * @throws WxPayException
+     * @throws RAM_WxPayException
      */
 	public function FromXml($xml)
 	{	
 		if(!$xml){
-			throw new WxPayException("xml数据异常！");
+			throw new RAM_WxPayException("xml数据异常！");
 		}
         //将XML转为array
         //禁止引用外部xml实体
@@ -114,7 +114,7 @@ class WxPayDataBase
 		ksort($this->values);
 		$string = $this->ToUrlParams();
 		//签名步骤二：在string后加入KEY
-		$string = $string . "&key=".WxPayConfig::get_key();
+		$string = $string . "&key=".RAM_WxPayConfig::get_key();
 		//签名步骤三：MD5加密
 		$string = md5($string);
 		//签名步骤四：所有字符转为大写
@@ -137,7 +137,7 @@ class WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayResults extends WxPayDataBase
+class RAM_WxPayResults extends RAM_WxPayDataBase
 {
 	/**
 	 * 
@@ -147,14 +147,14 @@ class WxPayResults extends WxPayDataBase
 	{
 		//fix异常
 		if(!$this->IsSignSet()){
-			throw new WxPayException("签名错误！");
+			throw new RAM_WxPayException("签名错误！");
 		}
 		
 		$sign = $this->MakeSign();
 		if($this->GetSign() == $sign){
 			return true;
 		}
-		throw new WxPayException("签名错误！");
+		throw new RAM_WxPayException("签名错误！");
 	}
 	
 	/**
@@ -197,7 +197,7 @@ class WxPayResults extends WxPayDataBase
     /**
      * 将xml转为array
      * @param string $xml
-     * @throws WxPayException
+     * @throws RAM_WxPayException
      */
 	public static function Init($xml)
 	{	
@@ -218,7 +218,7 @@ class WxPayResults extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayNotifyReply extends  WxPayDataBase
+class RAM_WxPayNotifyReply extends  RAM_WxPayDataBase
 {
 	/**
 	 * 
@@ -278,7 +278,7 @@ class WxPayNotifyReply extends  WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayUnifiedOrder extends WxPayDataBase
+class RAM_WxPayUnifiedOrder extends RAM_WxPayDataBase
 {	
 	/**
 	* 设置微信分配的公众账号ID
@@ -753,7 +753,7 @@ class WxPayUnifiedOrder extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayOrderQuery extends WxPayDataBase
+class RAM_WxPayOrderQuery extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -891,7 +891,7 @@ class WxPayOrderQuery extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayCloseOrder extends WxPayDataBase
+class RAM_WxPayCloseOrder extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -1003,7 +1003,7 @@ class WxPayCloseOrder extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayRefund extends WxPayDataBase
+class RAM_WxPayRefund extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -1296,7 +1296,7 @@ class WxPayRefund extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayRefundQuery extends WxPayDataBase
+class RAM_WxPayRefundQuery extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -1511,7 +1511,7 @@ class WxPayRefundQuery extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayDownloadBill extends WxPayDataBase
+class RAM_WxPayDownloadBill extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -1674,7 +1674,7 @@ class WxPayDownloadBill extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayReport extends WxPayDataBase
+class RAM_WxPayReport extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -2046,7 +2046,7 @@ class WxPayReport extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayShortUrl extends WxPayDataBase
+class RAM_WxPayShortUrl extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -2158,7 +2158,7 @@ class WxPayShortUrl extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayMicroPay extends WxPayDataBase
+class RAM_WxPayMicroPay extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -2555,7 +2555,7 @@ class WxPayMicroPay extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayReverse extends WxPayDataBase
+class RAM_WxPayReverse extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -2693,7 +2693,7 @@ class WxPayReverse extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayJsApiPay extends WxPayDataBase
+class RAM_WxPayJsApiPay extends RAM_WxPayDataBase
 {
 	/**
 	* 设置微信分配的公众账号ID
@@ -2854,7 +2854,7 @@ class WxPayJsApiPay extends WxPayDataBase
  * @author widyhu
  *
  */
-class WxPayBizPayUrl extends WxPayDataBase
+class RAM_WxPayBizPayUrl extends RAM_WxPayDataBase
 {
 		/**
 	* 设置微信分配的公众账号ID

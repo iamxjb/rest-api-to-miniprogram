@@ -5,7 +5,7 @@
  * @author widyhu
  *
  */
-class WxPayNotify extends WxPayNotifyReply
+class RAM_WxPayNotify extends RAM_WxPayNotifyReply
 {
 	/**
 	 * 

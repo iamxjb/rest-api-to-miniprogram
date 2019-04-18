@@ -5,7 +5,7 @@
  * @author widyhu
  *
  */
-class WxPayException extends Exception {
+class RAM_WxPayException extends Exception {
 	public function errorMessage()
 	{
 		return $this->getMessage();
