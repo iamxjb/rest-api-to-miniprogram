@@ -31,6 +31,8 @@ function register_weixinappsettings() {
 
     register_setting( 'weixinapp-group', 'wf_poster_imageurl' );
     register_setting( 'weixinapp-group', 'wf_enable_comment_option' );
+    register_setting( 'weixinapp-group', 'wf_enable_comment_check' );
+    
        
     
     
@@ -113,7 +115,15 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                 
 
                            ?>
-            </td>
+                           &emsp;&emsp;&emsp;&emsp;开启评论审核
+
+                <?php
+                $wf_enable_comment_check =get_option('wf_enable_comment_check');            
+                $checkbox1=empty($wf_enable_comment_check)?'':'checked';
+                echo '<input name="wf_enable_comment_check"  type="checkbox"  value="1" '.$checkbox1. ' />';
+
+                ?>
+                            </td>
             </tr>     
 
             <tr valign="top">
