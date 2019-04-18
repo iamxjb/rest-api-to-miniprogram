@@ -478,3 +478,71 @@ function filterEmoji($str)
 
   return $str;
 }
+
+function  getUserLevel($userId)
+{
+    global $wpdb;
+    $sql =$wpdb->prepare("SELECT  t.meta_value
+            FROM
+                ".$wpdb->usermeta." t
+            WHERE
+                t.meta_key = '". $wpdb->prefix."user_level' 
+            AND t.user_id =%d",$userId);
+
+    $level =$wpdb->get_var($sql); 
+    $levelName ="订阅者";
+    switch($level)
+    {
+        case "10":
+        $levelName="管理者";
+        break;
+
+        case "7":
+        $levelName="编辑";
+        break;
+
+        case "2":
+        $levelName="作者";
+        break;
+
+        case "1":
+        $levelName="贡献者";
+        break;
+
+        case "0":
+        $levelName="订阅者";
+        break;
+
+    }
+    $userLevel["level"]=$level;
+    $userLevel["levelName"]=$levelName;
+    return $userLevel;
+
+}
+
+function get_post_qq_video($content)
+{
+    $vcontent ='';
+    preg_match('/https\:\/\/v.qq.com\/x\/(\S*)\/(\S*)\.html/',$content,$matches);
+    if($matches)
+    {
+    	$vids=$matches[2];
+	    //$url='http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=1&defn=fhd&charge=0';
+	    //  defaultfmt： 1080P-fhd，超清-shd，高清-hd，标清-sd
+	    $url='http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=11001&defn=fhd&charge=0';
+	    //$res = file_get_contents($url);
+        $res = https_request($url);
+	    if($res)
+	    {
+	    	$str = substr($res,13,-1);
+		    $newStr =json_decode($str,true);	    
+		    //$videoUrl= $newStr['vl']['vi'][0]['ul']['ui'][2]['url'].$newStr['vl']['vi'][0]['fn'].'?vkey='.$newStr['vl']['vi'][0]['fvkey']; 
+		    $videoUrl= $newStr['vl']['vi'][0]['ul']['ui'][0]['url'].$newStr['vl']['vi'][0]['fn'].'?vkey='.$newStr['vl']['vi'][0]['fvkey']; 
+		    $vcontent = preg_replace('~<video (.*?)></video>~s','<video src="'.$videoUrl.'" controls="controls" width="100%"></video>',$content);
+        
+        }	    
+	    
+    }
+
+    return $vcontent;
+}
