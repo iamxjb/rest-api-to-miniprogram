@@ -23,6 +23,7 @@ include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-comment
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-content.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-post-fields.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-category.php');
+include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-users-columns.php');
 
 if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
@@ -37,6 +38,9 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             add_filter( 'rest_prepare_comment', 'custom_comment_fields', 10, 3 );
             add_filter( 'rest_prepare_category', 'custom_fields_rest_prepare_category', 10, 3 ); //获取分类的封面图片
 
+            add_filter( 'manage_users_columns', 'users_columns' );
+			add_action( 'manage_users_custom_column', 'output_users_columns', 10, 3 );
+			
 
 
             //更新浏览次数（pc）
