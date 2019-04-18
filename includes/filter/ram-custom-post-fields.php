@@ -7,7 +7,8 @@ function custom_post_fields( $data, $post, $request) {
     $_data = $data->data; 
     $post_id =$post->ID;
 
-    $content =get_the_content();
+    //$content =get_the_content();
+    $content=$_data['content']['rendered'];
      
      $siteurl = get_option('siteurl');
      $upload_dir = wp_upload_dir();
@@ -43,6 +44,15 @@ function custom_post_fields( $data, $post, $request) {
     $post_views = (int)get_post_meta($post_id, 'wl_pageviews', true);     
     $params = $request->get_params();
      if ( isset( $params['id'] ) ) {
+
+      $vcontent =get_post_qq_video($content);
+        if(!empty($vcontent))
+        {
+           $content=$vcontent;
+        }
+
+        $_content['rendered'] =$content;
+        $_data['content']= $_content;
 
         $sql=$wpdb->prepare("SELECT meta_key , (SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as avatarurl FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
         $likes = $wpdb->get_results($sql);
