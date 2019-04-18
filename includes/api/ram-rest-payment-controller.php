@@ -64,32 +64,32 @@ class RAW_REST_Payment_Controller  extends WP_REST_Controller{
         }
         
         
-        $appId=WxPayConfig::get_appid();
-        $mchId=WxPayConfig::get_mchid();
-        $key=WxPayConfig::get_key();
-        $body=WxPayConfig::get_body();
+        $appId=RAM_WxPayConfig::get_appid();
+        $mchId=RAM_WxPayConfig::get_mchid();
+        $key=RAM_WxPayConfig::get_key();
+        $body=RAM_WxPayConfig::get_body();
 
         if(empty($appId) || empty($mchId) || empty($key) || empty($body)) {
             
             return new WP_Error( 'error', "请填写AppID、商户号、商户支付密钥和支付描述", array( 'status' => 400 ) );
         }
 
-        $tools = new JsApiPay();
+        $tools = new RAM_JsApiPay();
 
         //②、统一下单
-        $input = new WxPayUnifiedOrder();
+        $input = new RAM_WxPayUnifiedOrder();
         $input->SetBody($body);
-        $orderId =WxPayConfig::get_mchid().date("YmdHis");
+        $orderId =RAM_WxPayConfig::get_mchid().date("YmdHis");
         $input->SetOut_trade_no($orderId);
-        $input->SetTotal_fee(strval($totalFee*100));
-        //$input->SetTotal_fee(strval($totalFee));
+        //$input->SetTotal_fee(strval($totalFee*100));
+        $input->SetTotal_fee(strval($totalFee));
         $input->SetTime_start(date("YmdHis"));
         $input->SetTime_expire(date("YmdHis", time() + 600));
         $input->SetNotify_url(get_rest_url( null, $this->namespace . '/' . $this->resource_name . '/notify' ) );
         $input->SetTrade_type( 'JSAPI' );
         $input->SetOpenid($openId);
 
-         $order = WxPayApi::unifiedOrder($input);
+         $order = RAM_WxPayApi::unifiedOrder($input);
 
         $jsApiParameters = $tools->GetJsApiParameters($order);
 
@@ -131,7 +131,7 @@ class RAW_REST_Payment_Controller  extends WP_REST_Controller{
 
 }  
 
-class RAW_PayNotifyCallBack extends WxPayNotify {
+class RAW_PayNotifyCallBack extends RAM_WxPayNotify {
     
     // 重写回调处理函数
     public function NotifyProcess( $data, &$msg ) {
