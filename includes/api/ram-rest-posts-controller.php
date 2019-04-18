@@ -133,7 +133,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
         register_rest_route( $this->namespace, '/' . $this->resource_name.'/praisethisyear', array(
             array(
                 'methods'   => 'GET',
-                'callback'  => array( $this, 'getTopPageviewsPostsThisYear' ),
+                'callback'  => array( $this, 'getTopPraisePostsThisYear' ),
                 'permission_callback' => array( $this, 'get_item_permissions_check' )
                  
             ),
@@ -197,17 +197,14 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         global $wpdb;    
 
-        $sql="SELECT ".$wpdb->users.".display_name as avatarurl  from(SELECT substring(substring_index(".$wpdb->postmeta.".meta_key,'@',1),2) as openid,".$wpdb->postmeta.".meta_id from ".$wpdb->postmeta." where ".$wpdb->postmeta.".meta_value like '%praise' )t1  LEFT JOIN ".$wpdb->users." ON ".$wpdb->users.".user_login = t1.openid  ORDER by t1.meta_id desc";
+        $sql="SELECT ".$wpdb->users.".display_name as avatarurl  from (SELECT substring(substring_index(".$wpdb->postmeta.".meta_key,'@',1),2) as openid,".$wpdb->postmeta.".meta_id from ".$wpdb->postmeta." where ".$wpdb->postmeta.".meta_value like '%praise' )t1  LEFT JOIN ".$wpdb->users." ON ".$wpdb->users.".user_login = t1.openid  ORDER by t1.meta_id desc";
               
             $avatarurls = $wpdb->get_results($sql);
-            
-           
-
             if(!empty($avatarurls))
             {
                 $result["code"]="success";
                 $result["message"]= "获取赞赏成功";
-                $result["status"]="200";
+                $result["status"]="200";                
                 $result["avatarurls"]=$avatarurls;   
             }
             else
@@ -338,7 +335,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
             $today = date("Y-m-d H:i:s"); //获取今天日期时间   
            // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
             $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
-            $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, CONVERT(".$wpdb->postmeta.".meta_value,SIGNED) AS 'pageviews_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_key ='wl_pageviews' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_password = '' ORDER  BY pageviews_total DESC LIMIT ". $limit;
+            $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, CONVERT(".$wpdb->postmeta.".meta_value,SIGNED) AS 'pageviews_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_key ='wl_pageviews' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' ORDER  BY pageviews_total DESC LIMIT ". $limit;
             $mostlikes = $wpdb->get_results($sql);
             $posts =array();
             foreach ($mostlikes as $post) {
@@ -386,7 +383,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
         $today = date("Y-m-d H:i:s"); //获取今天日期时间   
        // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
         $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
-        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->postmeta.".post_id) AS 'like_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_value ='like' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_password = '' GROUP BY ".$wpdb->postmeta.".post_id ORDER  BY like_total DESC LIMIT ". $limit;
+        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->postmeta.".post_id) AS 'like_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_value ='like' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' GROUP BY ".$wpdb->postmeta.".post_id ORDER  BY like_total DESC LIMIT ". $limit;
         $mostlikes = $wpdb->get_results($sql);
         $posts =array();
         foreach ($mostlikes as $post) {
@@ -433,7 +430,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
         $limit=10;
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
         date_default_timezone_set('Asia/Shanghai');
-        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name, post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date < '".date("Y-m-d H:i:s", (time() + ($time_difference * 3600)))."' AND post_status = 'publish' AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT ". $limit;
+        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name, post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date < '".date("Y-m-d H:i:s", (time() + ($time_difference * 3600)))."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT ". $limit;
         $mostcommenteds = $wpdb->get_results($sql);
         $posts =array();  
         foreach ($mostcommenteds as $post) {
@@ -482,7 +479,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
         $today = date("Y-m-d H:i:s"); //获取今天日期时间   
        // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
         $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
-        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT ". $limit;
+        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post' AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT ". $limit;
         $mostcommenteds = $wpdb->get_results($sql);
         $posts =array();
         foreach ($mostcommenteds as $post) {
