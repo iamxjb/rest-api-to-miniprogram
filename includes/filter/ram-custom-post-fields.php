@@ -54,11 +54,26 @@ function custom_post_fields( $data, $post, $request) {
         $_content['rendered'] =$content;
         $_data['content']= $_content;
 
-        $sql=$wpdb->prepare("SELECT meta_key , (SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as avatarurl FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
+        $sql=$wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
         $likes = $wpdb->get_results($sql);
+        $_data['sql']=$sql;
         $avatarurls =array();
         foreach ($likes as $like) {
-            $_avatarurl['avatarurl']  =$like->avatarurl;   
+            $userId = $like->id;
+            $display_name=$like->display_name;
+            $pos=stripos($display_name,'wx.qlogo.cn');
+            if($pos)
+            {
+
+              $avatar =$display_name;
+
+            }
+            else
+            {
+              $avatar= get_user_meta( $userId, 'avatar', true );
+            }
+            
+            $_avatarurl['avatarurl']  =$avatar;
             $avatarurls[] = $_avatarurl;        
         }
       $post_views =$post_views+1;  

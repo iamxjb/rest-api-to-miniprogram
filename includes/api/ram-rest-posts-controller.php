@@ -197,22 +197,30 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         global $wpdb;    
 
-        $sql="SELECT ".$wpdb->users.".display_name as avatarurl  from (SELECT substring(substring_index(".$wpdb->postmeta.".meta_key,'@',1),2) as openid,".$wpdb->postmeta.".meta_id from ".$wpdb->postmeta." where ".$wpdb->postmeta.".meta_value like '%praise' )t1  LEFT JOIN ".$wpdb->users." ON ".$wpdb->users.".user_login = t1.openid  ORDER by t1.meta_id desc";
+        $sql="SELECT ".$wpdb->users.".display_name as avatarurl ,".$wpdb->users.".id as id from (SELECT substring(substring_index(".$wpdb->postmeta.".meta_key,'@',1),2) as openid,".$wpdb->postmeta.".meta_id from ".$wpdb->postmeta." where ".$wpdb->postmeta.".meta_value like '%praise' )t1  LEFT JOIN ".$wpdb->users." ON ".$wpdb->users.".user_login = t1.openid  ORDER by t1.meta_id desc";
               
-            $avatarurls = $wpdb->get_results($sql);
-            if(!empty($avatarurls))
-            {
-                $result["code"]="success";
-                $result["message"]= "获取赞赏成功";
-                $result["status"]="200";                
-                $result["avatarurls"]=$avatarurls;   
+            $_vatarurls = $wpdb->get_results($sql);
+            $avatarurls =array();
+            foreach ($_vatarurls as $_avatarurl) {
+                $avatarurl=$_avatarurl->avatarurl;
+                $pos=stripos($avatarurl,'wx.qlogo.cn');
+                $userId = $_avatarurl->id;
+                if($pos)
+                {
+                    $avatar =$avatarurl;
+                }
+                else{
+                    $avatar= get_user_meta( $userId, 'avatar', true );
+                }
+
+                $_avatar['avatarurl']  =$avatar;
+                $avatarurls[] = $_avatar;  
+
             }
-            else
-            {
-                $result["code"]="success";
-                $result["message"]= "获取赞赏失败";
-                $result["status"]="500";
-            }                
+            $result["code"]="success";
+            $result["message"]= "获取赞赏成功";
+            $result["status"]="200";                
+            $result["avatarurls"]=$avatarurls;                           
             $response = rest_ensure_response($result);
             return $response; 
     }
