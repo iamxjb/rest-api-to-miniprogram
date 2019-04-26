@@ -12,12 +12,11 @@ function weixinapp_create_menu() {
 }
 
 function get_jquery_source() {
-        $url = plugins_url('',__FILE__);
-        echo '<script type="text/javascript" src="'.plugins_url().'/rest-api-to-miniprogram/includes/js/tab/jquery.min.js?ver=1.10.1"></script>';
+        $url = plugins_url('',__FILE__);        
+        wp_enqueue_script("jquery");
         wp_enqueue_style("tabs", plugins_url()."/rest-api-to-miniprogram/includes/js/tab/tabs.css", false, "1.0", "all");
-
         wp_enqueue_script("tabs", plugins_url()."/rest-api-to-miniprogram/includes/js/tab/tabs.min.js", false, "1.0");
-        }
+}
 
 function register_weixinappsettings() {
     // 注册设置
