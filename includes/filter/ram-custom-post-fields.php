@@ -9,6 +9,10 @@ function custom_post_fields( $data, $post, $request) {
 
     //$content =get_the_content();
     $content=$_data['content']['rendered'];
+    $content_protected=$_data['content']['protected'];
+    $raw=empty($_data['content']['raw'])?'':$_data['content']['raw'];
+
+   
      
      $siteurl = get_option('siteurl');
      $upload_dir = wp_upload_dir();
@@ -45,18 +49,20 @@ function custom_post_fields( $data, $post, $request) {
     $params = $request->get_params();
      if ( isset( $params['id'] ) ) {
 
-      $vcontent =get_post_qq_video($content);
+        $vcontent =get_post_qq_video($content);//解析腾讯视频
         if(!empty($vcontent))
         {
            $content=$vcontent;
         }
-
         $_content['rendered'] =$content;
+        $_content['raw'] =$raw;//古腾堡编辑器需要该属性，否则报错
+        $_content['protected'] =$content_protected;  
         $_data['content']= $_content;
+
 
         $sql=$wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
         $likes = $wpdb->get_results($sql);
-        $_data['sql']=$sql;
+        //$_data['sql']=$sql;
         $avatarurls =array();
         foreach ($likes as $like) {
             $userId = $like->id;

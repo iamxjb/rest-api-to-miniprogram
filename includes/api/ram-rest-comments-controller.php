@@ -376,40 +376,31 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
 
         if(get_post($post)==null || $post== 0 || !is_int($post))
         {
-             return new WP_Error( 'error', 'postId 参数错误', array( 'status' => 500 ) );
+             return new WP_Error( 'error', 'postId参数错误', array( 'status' => 500 ) );
         }
         else
         {
             if(!comments_open($post))
             {
-                return new WP_Error( 'error', '文章留言关闭', array( 'status' => 400 ) );
+                return new WP_Error( 'error', '文章留言关闭', array( 'status' => 500 ) );
 
             }
             global $wpdb; 
             $status = $wpdb->get_row($wpdb->prepare("SELECT post_status, comment_status FROM $wpdb->posts WHERE ID = %d", $post));
 
             if ( in_array($status->post_status, array('draft', 'pending') ) ) {
-                return new WP_Error( 'error', '文章尚未发布', array( 'status' => 400 ) );
+                return new WP_Error( 'error', '文章尚未发布', array( 'status' => 500 ) );
     
             }
         }
-
-
-        if(!empty($formId) && strlen($formId>50))
-        {
-            return new WP_Error( 'error', 'fromId参数错误', array( 'status' => 400 ) );
-        }
-        
         if(!username_exists($openid))
-            {
-                return new WP_Error( 'error', '不允许提交', array('status' => 500 ));
-            }
-            else if(is_wp_error(get_post($post)))
-            {
-                 return new WP_Error( 'error', 'postId 参数错误', array( 'status' => 500 ) );
-            }
-            
-        
+        {
+            return new WP_Error( 'error', '不允许提交', array('status' => 500 ));
+        }
+        else if(is_wp_error(get_post($post)))
+        {
+                return new WP_Error( 'error', 'postId 参数错误', array( 'status' => 500 ) );
+        } 
 
         return  true;
     }
