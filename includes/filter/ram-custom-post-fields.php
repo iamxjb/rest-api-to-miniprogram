@@ -60,6 +60,11 @@ function custom_post_fields( $data, $post, $request) {
         $_data['content']= $_content;
 
 
+        $postImageUrl=get_option("wf_poster_imageurl");
+        $_data['postImageUrl']= $postImageUrl;
+
+
+
         $sql=$wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
         $likes = $wpdb->get_results($sql);
         //$_data['sql']=$sql;
