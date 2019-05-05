@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 Plugin Name: REST API TO MiniProgram
 Plugin URI: http://www.watch-life.net
