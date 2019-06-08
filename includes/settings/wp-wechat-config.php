@@ -155,9 +155,9 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             <script>
                jQuery(document).ready(function($) {
                 RESPONSIVEUI.responsiveTabs();
-                if($("input[name=post_meta]").attr('checked')) {
-                    $("#section_meta_list").addClass("hide");
-                }
+                // if($("input[name=post_meta]").attr('checked')) {
+                //     $("#section_meta_list").addClass("hide");
+                // }
             });
             </script>
 </div>

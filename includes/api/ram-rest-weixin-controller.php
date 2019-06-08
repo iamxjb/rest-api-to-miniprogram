@@ -223,8 +223,8 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                 return new WP_Error( 'error', 'API错误：' . json_encode($access_result), array( 'status' => 501 ) );
             } 
             $api_result  = json_decode($access_result,true);            
-            if( empty( $api_result['openid'] ) || empty( $api_result['session_key'] ) || ! empty( $api_result['error'] ) ) {
-                return new WP_Error( $api_result['error'], 'API错误：' . json_encode( $api_result ), array( 'status' => 502 ) );
+            if( empty( $api_result['openid'] ) || empty( $api_result['session_key'] )) {
+                return new WP_Error('error', 'API错误：' . json_encode( $api_result ), array( 'status' => 502 ) );
             }            
             $openId = $api_result['openid']; 
             $sessionKey = $api_result['session_key'];                    
