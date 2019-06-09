@@ -140,6 +140,8 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         $openId =$request['openid'];
         $nickname=empty($request['nickname'])?'':$request['nickname'];
         $nickname=filterEmoji($nickname);
+        $_nickname=base64_encode($nickname);          
+		$_nickname=strlen($_nickname)>49?substr($_nickname,49):$_nickname;
         $avatarUrl=empty($request['avatarUrl'])?'':$request['avatarUrl']; 
         $user = get_user_by( 'login', $openId);
         if(empty($user))
@@ -150,7 +152,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             'ID'            => $user->ID,
             'first_name'	=> $nickname,
             'nickname'      => $nickname,
-            'user_nicename' => base64_encode($nickname),
+            'user_nicename' => $_nickname,
             'display_name'  => $nickname,
             'user_email'    => $openId.'@weixin.com'
         );
@@ -160,6 +162,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         } 
                 
         update_user_meta($userId,'avatar',$avatarUrl);
+        update_user_meta($userId,'usertype',"weixin","weixin");
 
         $userLevel= getUserLevel($userId);
         $result["code"]="success";
@@ -228,21 +231,22 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             }            
             $openId = $api_result['openid']; 
             $sessionKey = $api_result['session_key'];                    
-            $access_result =decrypt_data($appid, $sessionKey,$encryptedData, $iv, $data);                   
-            if($access_result !=0) {
-                return new WP_Error( 'error', '解密错误：' . $access_result, array( 'status' => 503 ) );
-            }
+            // $access_result =decrypt_data($appid, $sessionKey,$encryptedData, $iv, $data);                   
+            // if($access_result !=0) {
+            //     return new WP_Error( 'error', '解密错误：' . $access_result, array( 'status' => 503 ) );
+            // }
             $userId=0;           
-            $data = json_decode( $data, true );
-            $nickname=filterEmoji($data['nickName']);
-            $avatarUrl= $data['avatarUrl']; 
+            // $data = json_decode( $data, true );  
+            $nickname=filterEmoji($nickname);         
+            $_nickname=base64_encode($nickname);          
+		    $_nickname=strlen($_nickname)>49?substr($_nickname,49):$_nickname;
+            // $avatarUrl= $data['avatarUrl'];             
             if(!username_exists($openId) ) {                
                 $new_user_data = apply_filters( 'new_user_data', array(
                     'user_login'    => $openId,
                     'first_name'	=> $nickname ,
-                    'nickname'      => $nickname,
-                    //'user_nicename' => $data['nickName'],
-                    'user_nicename' => base64_encode($nickname),
+                    'nickname'      => $nickname,                    
+                    'user_nicename' => $_nickname,
                     'display_name'  => $nickname,
                     'user_pass'     => $openId,
                     'user_email'    => $openId.'@weixin.com'
@@ -253,6 +257,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                 }
 
                 update_user_meta( $userId,'avatar',$avatarUrl);
+                update_user_meta($userId,'usertype',"weixin");
 
             }            
             else{
@@ -261,20 +266,22 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                     'ID'            => $user->ID,
                     'first_name'	=> $nickname,
                     'nickname'      => $nickname,
-                    'user_nicename' => base64_encode($nickname),
+                    'user_nicename' => $_nickname,
                     'display_name'  => $nickname,
                     'user_email'    => $openId.'@weixin.com'
                 );
                 $userId =wp_update_user($userdata);
                 if(is_wp_error($userId)){
                     return new WP_Error( 'error', '更新wp用户错误：' , array( 'status' => 500 ) );
-                } 
+                }             
+                update_user_meta($userId,'avatar',$avatarUrl);
+                update_user_meta($userId,'usertype',"weixin","weixin");
                 
-                update_user_meta( $userId,'avatar',$avatarUrl);
                   
             }
             $userLevel= getUserLevel($userId);
             $result["code"]="success";
+            
             $result["message"]= "获取用户信息成功";
             $result["status"]="200";
             $result["openid"]=$openId;
