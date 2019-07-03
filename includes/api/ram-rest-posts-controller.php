@@ -535,7 +535,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
         $posts =array();                  
         if(!empty($postSwipeIDs))
         {
-            $sql="SELECT *  from ".$wpdb->posts." where id in(".$postSwipeIDs.")";
+            $sql="SELECT *  from ".$wpdb->posts." where id in(".$postSwipeIDs.") ORDER BY find_in_set(id,'".$postSwipeIDs."')";
             $_posts = $wpdb->get_results($sql);
             
             foreach ($_posts as $post) {    
