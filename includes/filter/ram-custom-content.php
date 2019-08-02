@@ -3,7 +3,7 @@
 function custocm_content_filter($content) {
 
     $_content=$content;
-    if(is_single() || is_home()|| is_feed())
+    if(is_single())
     {
         $vcontent =get_post_qq_video($content);
         if(!empty($vcontent))
