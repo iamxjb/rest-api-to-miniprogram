@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function weixinapp_create_menu() {
     // 创建新的顶级菜单
-    add_menu_page('微信小程序设置', '微信小程序设置', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', plugins_url('rest-api-to-miniprogram/includes/images/icon16.png'),null);
+    add_menu_page('微慕小程序设置', '微慕小程序设置', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', plugins_url('rest-api-to-miniprogram/includes/images/icon16.png'),null);
     // 调用注册设置函数
     add_action( 'admin_init', 'register_weixinappsettings' );
 }
@@ -40,7 +40,7 @@ function weixinapp_settings_page() {
 ?>
 <div class="wrap">
 
-<h2>微信小程序设置</h2>
+<h2>微慕小程序设置</h2>
 
 
 <p>Rest API to miniprogram by <a href="https://www.watch-life.net" target="_blank">守望轩</a>.
@@ -132,7 +132,7 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
         </table>
     </div>
 
-    <h2>微慕版（专业版）</h2>
+    <h2>微慕增强版</h2>
     <div class="section">
         <div style="display: flex; flex-direction: row; margin-bottom: 10px">
             <a href="https://www.minapper.com" target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fc6e6e; border-radius: 4px; color: #fff;display: flex;justify-content: center; align-items: center;margin-right: 16px">微慕官网</div></a>
@@ -146,6 +146,26 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110822512777.jpg" alt="Smiley face" width="120px" height="270px"></img>
         </div>
     </div>
+
+    <h2>微慕版专业版</h2>
+    <div class="section">
+        <div style="display: flex; flex-direction: row; margin-bottom: 10px">
+            <a href="https://www.minapper.com" target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fc6e6e; border-radius: 4px; color: #fff;display: flex;justify-content: center; align-items: center;margin-right: 16px">微慕官网</div></a>
+           <a href="https://mall.minapper.com"  target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fff; border: 1px solid #fc6e6e; border-radius: 4px; box-sizing: border-box; color: #fc6e6e;display: flex;justify-content: center; align-items: center">微慕商城</div></a>
+        </div>
+                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕版wordpress小程序和插件，在“守望轩”开源小程序的基础上，架构完全重构，在性能上大幅度优化，增加了<span style="font-weight:bold">动态圈子、积分系统、文章投稿、发布动态、付费阅读、会员权限、多种图文列表样式、预约表单、模板消息</span>等功能，并且免费提供标准版、旅游版、图片版、企业版4套前端模板，可使用微信扫描下方小程序码直接体验：</p>
+        <div>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118195979.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110915511992.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118200015.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110822512777.jpg" alt="Smiley face" width="120px" height="270px"></img>
+        </div>
+    </div>
+
+    
+
+
+
  </div>
 
     
