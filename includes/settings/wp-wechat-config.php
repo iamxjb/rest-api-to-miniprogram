@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function weixinapp_create_menu() {
     // 创建新的顶级菜单
-    add_menu_page('微慕小程序设置', '微慕小程序设置', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', plugins_url('rest-api-to-miniprogram/includes/images/icon16.png'),null);
+    add_menu_page('微慕小程序', '微慕小程序', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', plugins_url('rest-api-to-miniprogram/includes/images/icon16.png'),null);
     // 调用注册设置函数
     add_action( 'admin_init', 'register_weixinappsettings' );
 }
@@ -30,6 +30,28 @@ function register_weixinappsettings() {
     register_setting( 'weixinapp-group', 'wf_poster_imageurl' );
     register_setting( 'weixinapp-group', 'wf_enable_comment_option' );
     register_setting( 'weixinapp-group', 'wf_enable_comment_check' );
+
+    register_setting( 'weixinapp-group', 'wf_praise_word' );
+    register_setting( 'weixinapp-group', 'wf_enterprise_minapp' );
+
+    register_setting( 'weixinapp-group', 'wf_list_ad' );
+    register_setting( 'weixinapp-group', 'wf_list_ad_id' );
+
+    register_setting( 'weixinapp-group', 'wf_list_ad_every' );
+
+    register_setting( 'weixinapp-group', 'wf_detail_ad' );
+    register_setting( 'weixinapp-group', 'wf_detail_ad_id' );
+   
+
+
+    
+
+
+
+
+    
+
+    
     
        
     
@@ -128,22 +150,66 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             <th scope="row">海报图片默认地址</th>
             <td><input type="text" name="wf_poster_imageurl" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_poster_imageurl') ); ?>" /><br/><p style="color: #959595; display:inline">* 请输完整的图片地址，例如：https://www.watch-life.net/images/poster.jpg</p></td>
             </tr>
+
+            <tr valign="top">
+                            <th scope="row">"赞赏"文字调整为</th>
+                            <td><input type="text" name="wf_praise_word" placeholder="喜欢" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_praise_word') ); ?>" /><br /><p style="color: #959595; display:inline">* 例如：<code>鼓励</code>,<code>喜欢</code>，<code>稀罕</code>，不要超过两个汉字</p></td>
+                        </tr>
+
+            <tr valign="top">
+            <th scope="row">小程序是否是企业主体</th>
+            <td>
+                <?php
+                $wf_enterprise_minapp =get_option('wf_enterprise_minapp');            
+                $checkbox=empty($wf_enterprise_minapp)?'':'checked';
+                echo '<input name="wf_enterprise_minapp"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?><p style="color: #959595; display:inline">* 如果是企业主体的小程序，请勾选</p>
+            </td>
+        </tr> 
                    
         </table>
+    </div>
+    <h2>广告设置</h2>
+    <div class="section">
+    <table class="form-table">
+    <tr valign="top">
+        <th scope="row">开启文章列表广告</th>
+            <td>
+                <?php
+                $wf_list_ad =get_option('wf_list_ad');            
+                $checkbox=empty($wf_list_ad)?'':'checked';
+                echo '<input name="wf_list_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+                &emsp;&emsp;&emsp;广告id:&emsp;<input type="text" name="wf_list_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_list_ad_id') ); ?>" />
+                <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;每<input type="number" name="wf_list_ad_every" style="width:40px; height:40px" value="<?php echo esc_attr( get_option('wf_list_ad_every') ); ?>" />条列表展示一条广告<br/><p style="color: #959595; display:inline">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;请输入整数,否则无法正常展示广告</p>
+            </td>
+            </td>
+        </tr>
+
+        <tr valign="top">
+        <th scope="row">开启内容详情页广告</th>
+            <td>
+
+                <?php
+                $wf_detail_ad =get_option('wf_detail_ad');            
+                $checkbox=empty($wf_detail_ad)?'':'checked';
+                echo '<input name="wf_detail_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+                &emsp;&emsp;&emsp;广告id:&emsp;<input type="text" name="wf_detail_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_detail_ad_id') ); ?>" />
+            </td>
+        </tr>
+</table>
     </div>
 
     <h2>微慕增强版</h2>
     <div class="section">
         <div style="display: flex; flex-direction: row; margin-bottom: 10px">
-            <a href="https://www.minapper.com" target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fc6e6e; border-radius: 4px; color: #fff;display: flex;justify-content: center; align-items: center;margin-right: 16px">微慕官网</div></a>
-           <a href="https://mall.minapper.com"  target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fff; border: 1px solid #fc6e6e; border-radius: 4px; box-sizing: border-box; color: #fc6e6e;display: flex;justify-content: center; align-items: center">微慕商城</div></a>
+            <a href="https://www.minapper.com" target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #ff8f3b; border-radius: 4px; color: #fff;display: flex;justify-content: center; align-items: center;margin-right: 16px">微慕官网</div></a>
+           <a href="https://mall.minapper.com"  target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fff; border: 1px solid #ff8f3b; border-radius: 4px; box-sizing: border-box; color: #ff8f3b;display: flex;justify-content: center; align-items: center">微慕商城</div></a>
         </div>
-                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕版wordpress小程序和插件，在“守望轩”开源小程序的基础上，架构完全重构，在性能上大幅度优化，增加了<span style="font-weight:bold">动态圈子、积分系统、文章投稿、发布动态、付费阅读、会员权限、多种图文列表样式、预约表单、模板消息</span>等功能，并且免费提供标准版、旅游版、图片版、企业版4套前端模板，可使用微信扫描下方小程序码直接体验：</p>
+                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕Plus小程序是一款，在原守望轩开源小程序（现微慕开源小程序）基础上重新架构、设计、优化过的wordpress多端小程序，性能和用户体验更佳，界面设计更加简洁清新，同时打通<span style="font-weight:bold">微信小程序、QQ小程序、百度小程序、支付宝小程序、头条小程序...真正实现一站多端</span>，可使用微信扫描下方小程序码直接体验：</p>
         <div>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118195979.jpg" alt="Smiley face" width="120px" height="270px"></img>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110915511992.jpg" alt="Smiley face" width="120px" height="270px"></img>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118200015.jpg" alt="Smiley face" width="120px" height="270px"></img>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110822512777.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://plusimg.minapper.com/wp-content/uploads/2019/08/1565183497-%E5%BE%AE%E6%85%95%E6%B5%B7%E6%8A%A5-2019%E5%B9%B47%E6%9C%88.jpg" alt="微慕增强版" width="100%"></img>
         </div>
     </div>
 
@@ -155,10 +221,8 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
         </div>
                 <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕版wordpress小程序和插件，在“守望轩”开源小程序的基础上，架构完全重构，在性能上大幅度优化，增加了<span style="font-weight:bold">动态圈子、积分系统、文章投稿、发布动态、付费阅读、会员权限、多种图文列表样式、预约表单、模板消息</span>等功能，并且免费提供标准版、旅游版、图片版、企业版4套前端模板，可使用微信扫描下方小程序码直接体验：</p>
         <div>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118195979.jpg" alt="Smiley face" width="120px" height="270px"></img>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110915511992.jpg" alt="Smiley face" width="120px" height="270px"></img>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/09/2018091118200015.jpg" alt="Smiley face" width="120px" height="270px"></img>
-            <img src="https://www.minapper.com/wp-content/uploads/2018/11/2018110822512777.jpg" alt="Smiley face" width="120px" height="270px"></img>
+            <img src="https://www.watch-life.net/images/2019/10/minapper-professional-2-624x351.jpg" alt="微慕专业版" width="100%"></img>
+
         </div>
     </div>
 

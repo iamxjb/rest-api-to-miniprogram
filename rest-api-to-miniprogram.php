@@ -3,7 +3,7 @@
 Plugin Name: REST API TO MiniProgram
 Plugin URI: http://www.watch-life.net
 Description: 为微信小程序、app提供定制WordPress REST API 输出.支持微信支付、微信小程序模板消息.
-Version: 1.5.7
+Version: 1.5.8
 Author: jianbo
 Author URI: http://www.minapper.com
 License: GPL v3
@@ -33,7 +33,9 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             //定制化内容输出，对pc端和api都生效
             add_filter( 'the_content', 'custocm_content_filter' );
             //对文章的自定义输出
-            add_filter( 'rest_prepare_post', 'custom_post_fields', 10, 3 );            
+            add_filter( 'rest_prepare_post', 'custom_post_fields', 10, 3 ); 
+            //对页面的自定义输出
+			add_filter( 'rest_prepare_page', 'custom_post_fields', 10, 3 );           
             //对评论的自定义输出
             add_filter( 'rest_prepare_comment', 'custom_comment_fields', 10, 3 );
             add_filter( 'rest_prepare_category', 'custom_fields_rest_prepare_category', 10, 3 ); //获取分类的封面图片

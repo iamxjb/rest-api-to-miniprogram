@@ -31,6 +31,17 @@ function custom_post_fields( $data, $post, $request) {
     $_data['post_full_image']=$images['post_full_image'];
     $_data['post_all_images']=$images['post_all_images'];
 
+     //获取广告参数
+
+  $listAdId=empty(get_option('wf_list_ad_id'))?'':get_option('wf_list_ad_id');
+  $listAd=empty(get_option('wf_list_ad'))?'0':"1"; 
+  $listAdEvery=empty(get_option('wf_list_ad_every'))?5:(int)get_option('wf_list_ad_every');
+
+
+  $_data['listAd']=$listAd;
+  $_data['listAdId']=$listAdId;
+  $_data['listAdEvery']=$listAdEvery;
+
     $comments_count = wp_count_comments($post_id);    
     $_data['total_comments']=$comments_count->approved;
     $category =get_the_category($post_id);
@@ -49,10 +60,37 @@ function custom_post_fields( $data, $post, $request) {
     $params = $request->get_params();
      if ( isset( $params['id'] ) ) {
 
+      $praiseWord=get_option('wf_praise_word'); 
+      $praiseWord=empty($praiseWord)?'鼓励':$praiseWord;
+      $_data['praiseWord']=$praiseWord;
+
+      //获取广告参数
+      $detailAdId=empty(get_option('wf_detail_ad_id'))?'':get_option('wf_detail_ad_id');
+      $detailAd=empty(get_option('wf_detail_ad'))?'0':"1";
+      
+      $_data['detailAdId']=$detailAdId;
+      $_data['detailAd']=$detailAd;
+      
+      $enterpriseMinapp=get_option('wf_enterprise_minapp'); 
+      $praiseWord=empty($enterpriseMinapp)?'0':$enterpriseMinapp;
+      
+      
+      $_data['enterpriseMinapp']=$enterpriseMinapp;
         $vcontent =get_post_qq_video($content);//解析腾讯视频
         if(!empty($vcontent))
         {
            $content=$vcontent;
+        }
+
+        //解析音频
+      $audios=  get_post_content_audio($post->post_content);
+      $_data['audios']=$audios;
+
+        $sql="select post_content from ".$wpdb->posts." where id=".$post_id;
+        $postContent = $wpdb->get_var($sql);
+        if(has_shortcode($postContent, 'gallery' ))//处理内容里的相册显示
+        {
+          $content= get_content_gallery($postContent,true);
         }
         $_content['rendered'] =$content;
         $_content['raw'] =$raw;//古腾堡编辑器需要该属性，否则报错

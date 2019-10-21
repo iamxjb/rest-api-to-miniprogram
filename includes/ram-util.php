@@ -546,3 +546,61 @@ function get_post_qq_video($content)
 
     return $vcontent;
 }
+
+function get_post_content_audio($post_content){
+    if(!$post_content){
+        $the_post       = get_post();
+        $post_content   = $the_post->post_content;
+    }
+    $list = array(); 
+    $c1 = preg_match_all('/<audio\s.*?>/', do_shortcode($post_content), $m1);  //先取出所有img标签文本  
+    for($i=0; $i<$c1; $i++) {    //对所有的img标签进行取属性  
+        $c2 = preg_match_all('/(\w+)\s*=\s*(?:(?:(["\'])(.*?)(?=\2))|([^\/\s]*))/', $m1[0][$i], $m2);   //匹配出所有的属性  
+        for($j=0; $j<$c2; $j++) {    //将匹配完的结果进行结构重组  
+            $list[$i][$m2[1][$j]] = !empty($m2[4][$j]) ? $m2[4][$j] : $m2[3][$j];  
+        }  
+    } 
+    
+
+    return $list;
+        
+}
+
+function get_content_gallery($content,$flag){    
+    $list = array();
+    //$content=self::nl2p($content,true,false);//把换行转换成p标签
+    if($flag)
+    {
+        $content=nl2br($content);
+    }    
+    $vcontent=$content;
+
+    $c1 = preg_match_all('|\[gallery.*?ids=[\'"](.*?)[\'"].*?\]|i',$content, $m1);  //先取出所有gallery短代码
+    for($i=0; $i<$c1; $i++) {    //对所有的img标签进行取属性  
+        $c2 = preg_match_all('/(\w+)\s*=\s*(?:(?:(["\'])(.*?)(?=\2))|([^\/\s]*))/', $m1[0][$i], $m2);   //匹配出所有的属性  
+        for($j=0; $j<$c2; $j++) {    //将匹配完的结果进行结构重组  
+            $list[$i][$m2[1][$j]] = !empty($m2[4][$j]) ? $m2[4][$j] : $m2[3][$j];  
+        }  
+    } 
+    
+    $ids =$list[0]['ids'];
+    if(!empty($ids))
+    {
+        $ids =explode(',',$ids);
+        $img='';
+        foreach($ids as $id)
+        {
+            $image=wp_get_attachment_image_src((int)$id,'full');
+
+            $img .='<img width="'.$image[1].'" height="'.$image[2].'" src="'.$image[0].'" />';
+           
+
+        }
+        $vcontent = preg_replace('~\[gallery (.*?)\]~s',$img,$content);
+        
+
+    }
+
+    return $vcontent;
+        
+}
