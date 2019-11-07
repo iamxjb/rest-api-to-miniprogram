@@ -39,8 +39,17 @@ function register_weixinappsettings() {
 
     register_setting( 'weixinapp-group', 'wf_list_ad_every' );
 
+
+    register_setting( 'weixinapp-group', 'wf_excitation_ad_id' );
+
+    
+
     register_setting( 'weixinapp-group', 'wf_detail_ad' );
     register_setting( 'weixinapp-group', 'wf_detail_ad_id' );
+    register_setting( 'weixinapp-group', 'wf_about' );
+    register_setting( 'weixinapp-group', 'wf_display_categories' );
+    
+    
    
 
 
@@ -124,6 +133,31 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             </tr>
 
             <tr valign="top">
+                <th scope="row">在小程序里显示的文章分类id</th>
+                <td><input type="text" name="wf_display_categories" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_display_categories') ); ?>" />
+                <br /><p style="color: #959595 ; display:inline">* 文章分类id,只支持一级分类,请用英文半角逗号分隔，留空则显示所有分类</p>
+                    </td>
+            </tr>
+
+            <tr valign="top">
+            <th scope="row">选择"关于"页面</th>
+            <td>
+            <select id="wf_about" name="wf_about" >
+            <?php
+
+                $mypages = get_pages( array( 'child_of' =>0, 'sort_column' => 'post_date', 'sort_order' => 'desc' ) );
+                foreach( $mypages as $page ) {      
+                    $title = $page->post_title;
+                    $pageId=$page->ID;
+                    ?>
+                     
+               <option  value="<?php echo $pageId;  ?>" <?php echo get_option('wf_about')==$pageId?'selected':''; ?>><?php echo $title ?></option>"
+                   <?php }  ?>
+            </select>
+            </td>
+            </tr>
+
+            <tr valign="top">
             <th scope="row">开启小程序的评论</th>
             <td>
 
@@ -198,6 +232,13 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                 &emsp;&emsp;&emsp;广告id:&emsp;<input type="text" name="wf_detail_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_detail_ad_id') ); ?>" />
             </td>
         </tr>
+
+        <tr valign="top">
+                        <th scope="row">激励视频广告id</th>
+                            <td>                                
+                               <input type="text" name="wf_excitation_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_excitation_ad_id') ); ?>" />
+                            </td>
+                        </tr>
 </table>
     </div>
 
@@ -207,7 +248,7 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             <a href="https://www.minapper.com" target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #ff8f3b; border-radius: 4px; color: #fff;display: flex;justify-content: center; align-items: center;margin-right: 16px">微慕官网</div></a>
            <a href="https://mall.minapper.com"  target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fff; border: 1px solid #ff8f3b; border-radius: 4px; box-sizing: border-box; color: #ff8f3b;display: flex;justify-content: center; align-items: center">微慕商城</div></a>
         </div>
-                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕Plus小程序是一款，在原守望轩开源小程序（现微慕开源小程序）基础上重新架构、设计、优化过的wordpress多端小程序，性能和用户体验更佳，界面设计更加简洁清新，同时打通<span style="font-weight:bold">微信小程序、QQ小程序、百度小程序、支付宝小程序、头条小程序...真正实现一站多端</span>，可使用微信扫描下方小程序码直接体验：</p>
+                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕增强版WordPress小程序是一款，在原守望轩开源小程序（现微慕开源小程序）基础上重新架构、设计、优化过的wordpress多端小程序，性能和用户体验更佳，界面设计更加简洁清新，同时打通<span style="font-weight:bold">微信小程序、QQ小程序、百度小程序、支付宝小程序、头条小程序...真正实现一站多端</span>，可使用微信扫描下方小程序码直接体验：</p>
         <div>
             <img src="https://plusimg.minapper.com/wp-content/uploads/2019/08/1565183497-%E5%BE%AE%E6%85%95%E6%B5%B7%E6%8A%A5-2019%E5%B9%B47%E6%9C%88.jpg" alt="微慕增强版" width="100%"></img>
         </div>
@@ -219,9 +260,9 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             <a href="https://www.minapper.com" target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fc6e6e; border-radius: 4px; color: #fff;display: flex;justify-content: center; align-items: center;margin-right: 16px">微慕官网</div></a>
            <a href="https://mall.minapper.com"  target="_blank" style="text-decoration: none"><div style="width:120px; height:32px; background-color: #fff; border: 1px solid #fc6e6e; border-radius: 4px; box-sizing: border-box; color: #fc6e6e;display: flex;justify-content: center; align-items: center">微慕商城</div></a>
         </div>
-                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕版wordpress小程序和插件，在“守望轩”开源小程序的基础上，架构完全重构，在性能上大幅度优化，增加了<span style="font-weight:bold">动态圈子、积分系统、文章投稿、发布动态、付费阅读、会员权限、多种图文列表样式、预约表单、模板消息</span>等功能，并且免费提供标准版、旅游版、图片版、企业版4套前端模板，可使用微信扫描下方小程序码直接体验：</p>
+                <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕版专业版WordPress小程序和插件，在“守望轩”开源小程序的基础上，架构完全重构，在性能上大幅度优化，增加了<span style="font-weight:bold">动态圈子、积分系统、文章投稿、发布动态、付费阅读、会员权限、多种图文列表样式、预约表单、模板消息</span>等功能，并且免费提供标准版、旅游版、图片版、企业版4套前端模板，可使用微信扫描下方小程序码直接体验：</p>
         <div>
-            <img src="https://www.watch-life.net/images/2019/10/minapper-professional-2-624x351.jpg" alt="微慕专业版" width="100%"></img>
+            <img src="https://www.watch-life.net/images/minapper-pro.jpg" alt="微慕专业版" width="100%"></img>
 
         </div>
     </div>

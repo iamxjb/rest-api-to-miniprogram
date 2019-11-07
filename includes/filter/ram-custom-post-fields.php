@@ -67,12 +67,18 @@ function custom_post_fields( $data, $post, $request) {
       //获取广告参数
       $detailAdId=empty(get_option('wf_detail_ad_id'))?'':get_option('wf_detail_ad_id');
       $detailAd=empty(get_option('wf_detail_ad'))?'0':"1";
-      
+
+      $rewardedVideoAdId=empty(get_option('wf_excitation_ad_id'))?'':get_option('wf_excitation_ad_id');
+      $excitationAd = empty(get_post_meta($post_id, '_excitation', true))?"0":get_post_meta($post_id, '_excitation', true);
+
+      $_data['excitationAd']=$excitationAd;
+      $_data['rewardedVideoAdId']=$rewardedVideoAdId;
+
       $_data['detailAdId']=$detailAdId;
       $_data['detailAd']=$detailAd;
       
       $enterpriseMinapp=get_option('wf_enterprise_minapp'); 
-      $praiseWord=empty($enterpriseMinapp)?'0':$enterpriseMinapp;
+      $enterpriseMinapp=empty($enterpriseMinapp)?'0':$enterpriseMinapp;
       
       
       $_data['enterpriseMinapp']=$enterpriseMinapp;
@@ -122,8 +128,18 @@ function custom_post_fields( $data, $post, $request) {
               $avatar= get_user_meta( $userId, 'avatar', true );
             }
             
-            $_avatarurl['avatarurl']  =$avatar;
-            $avatarurls[] = $_avatarurl;        
+            if(!empty($avatar))
+            {
+              $_avatarurl['avatarurl']  =$avatar;
+             
+
+            }
+            else{
+              $avatar = plugins_url()."/".REST_API_TO_MINIPROGRAM_PLUGIN_NAME."/includes/images/gravatar.png";
+              $_avatarurl['avatarurl']  =$avatar;
+            }
+            $avatarurls[] = $_avatarurl; 
+                   
         }
       $post_views =$post_views+1;  
       if(!update_post_meta($post_id, 'wl_pageviews', $post_views))   
