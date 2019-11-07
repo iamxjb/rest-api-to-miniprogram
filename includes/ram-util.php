@@ -604,3 +604,58 @@ function get_content_gallery($content,$flag){
     return $vcontent;
         
 }
+
+function  getPosts($ids)
+    {
+        global $wpdb;
+        $sql="SELECT *  from ".$wpdb->posts." where id in(".$ids.") ORDER BY find_in_set(id,'".$ids."')";
+        $_posts = $wpdb->get_results($sql);
+        $posts =array(); 
+        if(!empty($_posts))  
+        {
+            foreach ($_posts as $post) {    
+                $post_id = (int) $post->ID;
+                $post_title = stripslashes($post->post_title);
+                $post_content=  nl2br($post->post_content);              
+                $post_date =$post->post_date;
+                $post_permalink = get_permalink($post->ID);            
+                $_data["id"]  =$post_id;
+                $_data["post_title"] =$post_title;
+                $_data["post_content"] =$post_content;                
+                $_data["post_date"] =$post_date; 
+                $_data["post_permalink"] =$post_permalink;
+                $_data['type']="detailpage";  
+           
+                $enterpriseMinapp=get_option('wf_enterprise_minapp'); 
+                $enterpriseMinapp=empty($enterpriseMinapp)?'0':$enterpriseMinapp;
+                $_data['enterpriseMinapp']=$enterpriseMinapp;
+
+                $praiseWord=get_option('wf_praise_word'); 
+                $praiseWord=empty($praiseWord)?'鼓励':$praiseWord;
+                $_data['praiseWord']=$praiseWord;
+                
+                $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
+                $_data['pageviews'] = $pageviews;
+    
+                $comment_total = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID=".$post_id);
+                $_data['comment_total']= $comment_total;
+    
+                $images =getPostImages($post->post_content,$post_id);         
+                
+                $_data['post_thumbnail_image']=$images['post_thumbnail_image'];
+                $_data['content_first_image']=$images['content_first_image'];
+                $_data['post_medium_image_300']=$images['post_medium_image_300'];
+                $_data['post_thumbnail_image_624']=$images['post_thumbnail_image_624'];
+    
+                $_data['post_frist_image']=$images['post_frist_image'];
+                $_data['post_medium_image']=$images['post_medium_image'];
+                $_data['post_large_image']=$images['post_large_image'];
+                $_data['post_full_image']=$images['post_full_image'];
+                $_data['post_all_images']=$images['post_all_images'];
+                $posts[] = $_data;
+            }  
+
+        }
+        return $posts;        
+
+    }

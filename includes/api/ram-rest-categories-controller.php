@@ -50,7 +50,22 @@ class RAM_REST_Categories_Controller  extends WP_REST_Controller{
             // Register our schema callback.
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
+
+        register_rest_route( $this->namespace, '/' . $this->resource_name.'/ids', array(
+            // Here we register the readable endpoint for collections.
+            array(
+                'methods'   => 'GET',
+                'callback'  => array( $this, 'get_categories_ids' ),
+                //'permission_callback' => array( $this, 'get_item_permissions_check' )
+                 
+            ),
+            // Register our schema callback.
+            'schema' => array( $this, 'get_public_item_schema' ),
+        ) );
+
     }
+
+    
 
     public function postSubscription($request)
     {
@@ -183,6 +198,17 @@ class RAM_REST_Categories_Controller  extends WP_REST_Controller{
 
 
 
+    }
+
+    public  function  get_categories_ids()
+    {
+        $categoriesId =get_option('wf_display_categories');
+       
+
+        $result['Ids'] =$categoriesId;
+        
+        $response = rest_ensure_response($result); 
+        return $response;
     }
 
     public function post_item_permissions_check($request)

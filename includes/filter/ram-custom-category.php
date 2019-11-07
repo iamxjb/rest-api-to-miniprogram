@@ -3,6 +3,30 @@
 function custom_fields_rest_prepare_category( $data, $item, $request ) {      
     $category_thumbnail_image='';
     $temp='';
+    $openid= $request["openid"];
+    $subscription =getSubscription($openid);
+    $id =(string)$item->term_id;
+    if(empty($subscription))
+    {
+        $data->data['subimg'] ="subscription.png"; 
+        $data->data['subflag'] ="0"; 
+    }
+    else
+    {
+        if(array_search($id,$subscription ))
+        {        
+            $data->data['subimg'] ="subscription-on.png"; 
+            $data->data['subflag'] ="1"; 
+        }
+        else
+        {
+            $data->data['subimg'] ="subscription.png"; 
+            $data->data['subflag'] ="0"; 
+
+        }
+    }
+    
+
     if($temp=get_term_meta($item->term_id,'catcover',true))
     {
         $category_thumbnail_image=$temp;
@@ -16,6 +40,32 @@ function custom_fields_rest_prepare_category( $data, $item, $request ) {
     $data->data['category_thumbnail_image'] =$category_thumbnail_image;    
     return $data;
 }
+
+function getSubscription($openid)
+    {
+        global $wpdb;        
+        $user_id =0;        
+        $user = get_user_by('login', $openid);
+        $subscription= array();
+        if($user)
+        {
+            $user_id = $user->ID;
+            $usermeta = get_user_meta($user_id);
+            if (!empty($usermeta))
+            {                        
+                if(!empty($usermeta['wl_sub']))
+                {
+                    $subscription=$usermeta['wl_sub'];
+                } 
+            }
+            
+        } 
+        return $subscription;
+
+    }
+
+
+ 
 
 
 /*********   给分类添加微信小程序封面 *********/

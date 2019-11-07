@@ -190,7 +190,48 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
             ),
             // Register our schema callback.
             'schema' => array( $this, 'get_public_item_schema' ),
-        ) );                  
+        ) ); 
+        
+        register_rest_route( $this->namespace, '/' . $this->resource_name.'/about', array(
+            // Here we register the readable endpoint for collections.
+            array(
+                'methods'   => 'GET',
+                'callback'  => array( $this, 'getPostAbout' ),
+                'permission_callback' => array( $this, 'get_item_permissions_check' )
+                 
+            ),
+            // Register our schema callback.
+            'schema' => array( $this, 'get_public_item_schema' ),
+        ) );
+    }
+
+    function getPostAbout($request)
+    {
+
+        $aboutId= get_option("wf_about");
+        if(empty($aboutId))
+        {
+            return new WP_Error( 'error', '未设置关于页面' , array( 'status' => "404" ) );
+        }
+        else{
+
+            $posts =getPosts($aboutId);
+            if(count($posts)>0)
+            {
+                $post=$posts[0];
+                $response = rest_ensure_response($post);
+                return $response;   
+
+            }
+            else{
+
+                return new WP_Error( 'error', '关于页面设置有错误' , array( 'status' => "404" ) );
+
+            }
+            
+        }
+        
+        
     }
 
     function getallpraise ($request)
@@ -421,9 +462,9 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $_data['post_thumbnail_image_624']=$images['post_thumbnail_image_624'];
                 $_data['post_frist_image']=$images['post_frist_image'];
                 $_data['post_medium_image']=$images['post_medium_image'];
-                  $_data['post_large_image']=$images['post_large_image'];
-                  $_data['post_full_image']=$images['post_full_image'];
-                  $_data['post_all_images']=$images['post_all_images'];
+                $_data['post_large_image']=$images['post_large_image'];
+                $_data['post_full_image']=$images['post_full_image'];
+                $_data['post_all_images']=$images['post_all_images'];
                 $posts[] = $_data;
                 
                 
@@ -528,6 +569,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
         return $response;  
 
     }
+    
     function getPostSwipe($request) {    
     
         global $wpdb;
@@ -535,41 +577,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
         $posts =array();                  
         if(!empty($postSwipeIDs))
         {
-            $sql="SELECT *  from ".$wpdb->posts." where id in(".$postSwipeIDs.") ORDER BY find_in_set(id,'".$postSwipeIDs."')";
-            $_posts = $wpdb->get_results($sql);
-            
-            foreach ($_posts as $post) {    
-                $post_id = (int) $post->ID;
-                $post_title = stripslashes($post->post_title);                
-                $post_date =$post->post_date;
-                $post_permalink = get_permalink($post->ID);            
-                $_data["id"]  =$post_id;
-                $_data["post_title"] =$post_title;
-                $_data["post_date"] =$post_date; 
-                $_data["post_permalink"] =$post_permalink;
-                $_data['type']="detailpage";  
-                
-                $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
-                $_data['pageviews'] = $pageviews;
-
-                $comment_total = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID=".$post_id);
-                $_data['comment_total']= $comment_total;
-
-                $images =getPostImages($post->post_content,$post_id);         
-                
-                $_data['post_thumbnail_image']=$images['post_thumbnail_image'];
-                $_data['content_first_image']=$images['content_first_image'];
-                $_data['post_medium_image_300']=$images['post_medium_image_300'];
-                $_data['post_thumbnail_image_624']=$images['post_thumbnail_image_624'];
-
-                $_data['post_frist_image']=$images['post_frist_image'];
-                $_data['post_medium_image']=$images['post_medium_image'];
-                $_data['post_large_image']=$images['post_large_image'];
-                $_data['post_full_image']=$images['post_full_image'];
-                $_data['post_all_images']=$images['post_all_images'];
-                $posts[] = $_data;               
-            }
-
+            $posts=getPosts($postSwipeIDs);
             $result["code"]="success";
             $result["message"]= "获取轮播图成功";
             $result["status"]="200";
