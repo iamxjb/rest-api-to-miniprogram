@@ -150,14 +150,14 @@ function custom_post_fields( $data, $post, $request) {
 
 
       date_default_timezone_set('Asia/Shanghai');
-      $fristday= date("Y-m-d H:i:s", strtotime("-5 year"));
+      $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));
       $today = date("Y-m-d H:i:s"); //获取今天日期时间
       $tags= $_data["tags"];
         if(count($tags)>0)
         {
           $tags=implode(",",$tags);
           $sql="
-          SELECT DISTINCT ID, post_title
+          SELECT ID, post_title
           FROM ".$wpdb->posts." , ".$wpdb->term_relationships.", ".$wpdb->term_taxonomy."
           WHERE ".$wpdb->term_taxonomy.".term_taxonomy_id =  ".$wpdb->term_relationships.".term_taxonomy_id
           AND ID = object_id
