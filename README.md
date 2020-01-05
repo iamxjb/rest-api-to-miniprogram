@@ -23,6 +23,7 @@ https://wordpress.org/plugins/rest-api-to-miniprogram/
 # 插件镜像更新地址：
 
 https://gitee.com/iamxjb/rest-api-to-miniprogram
+https://coding.net/u/xjb/p/rest-api-to-miniprogram/git
 
 
 
