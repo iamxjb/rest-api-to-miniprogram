@@ -440,7 +440,7 @@ function decrypt_data( $appid, $sessionKey, $encryptedData, $iv, &$data ) {
     return $errors['OK'];
 }
 
-function get_client_ip()
+function ram_get_client_ip()
 {
     foreach (array(
                 'HTTP_CLIENT_IP',
