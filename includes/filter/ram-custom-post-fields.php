@@ -33,10 +33,14 @@ function custom_post_fields( $data, $post, $request) {
 
      //获取广告参数
 
+  $videoAdId=empty(get_option('wf_video_ad_id'))?'':get_option('wf_video_ad_id');
+  $_data['videoAdId']=$videoAdId;
+  
   $listAdId=empty(get_option('wf_list_ad_id'))?'':get_option('wf_list_ad_id');
   $listAd=empty(get_option('wf_list_ad'))?'0':"1"; 
   $listAdEvery=empty(get_option('wf_list_ad_every'))?5:(int)get_option('wf_list_ad_every');
 
+  
 
   $_data['listAd']=$listAd;
   $_data['listAdId']=$listAdId;
@@ -147,13 +151,11 @@ function custom_post_fields( $data, $post, $request) {
         add_post_meta($post_id, 'wl_pageviews', 1, true);  
       } 
       $_data['avatarurls']= $avatarurls;
-
-
       date_default_timezone_set('Asia/Shanghai');
       $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));
       $today = date("Y-m-d H:i:s"); //获取今天日期时间
       $tags= $_data["tags"];
-        if(count($tags)>0)
+        if(!empty($tags))
         {
           $tags=implode(",",$tags);
           $sql="

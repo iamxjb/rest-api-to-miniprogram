@@ -41,6 +41,10 @@ function register_weixinappsettings() {
 
 
     register_setting( 'weixinapp-group', 'wf_excitation_ad_id' );
+    register_setting( 'weixinapp-group', 'wf_video_ad_id' );
+    register_setting( 'weixinapp-group', 'wf_interstitial_ad_id' );
+    
+    
 
     
 
@@ -237,6 +241,17 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                         <th scope="row">激励视频广告id</th>
                             <td>                                
                                <input type="text" name="wf_excitation_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_excitation_ad_id') ); ?>" />
+                            </td>
+          </tr>
+          <tr valign="top">
+                        <th scope="row">视频广告id</th>
+                            <td>                                
+                               <input type="text" name="wf_video_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_video_ad_id') ); ?>" />
+                            </td>
+          </tr>
+          <th scope="row">插屏广告id</th>
+                            <td>                                
+                               <input type="text" name="wf_interstitial_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_interstitial_ad_id') ); ?>" />
                             </td>
                         </tr>
 </table>
