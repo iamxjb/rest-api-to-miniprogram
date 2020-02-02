@@ -159,7 +159,7 @@ function custom_post_fields( $data, $post, $request) {
         {
           $tags=implode(",",$tags);
           $sql="
-          SELECT ID, post_title
+          SELECT distinct ID, post_title
           FROM ".$wpdb->posts." , ".$wpdb->term_relationships.", ".$wpdb->term_taxonomy."
           WHERE ".$wpdb->term_taxonomy.".term_taxonomy_id =  ".$wpdb->term_relationships.".term_taxonomy_id
           AND ID = object_id
