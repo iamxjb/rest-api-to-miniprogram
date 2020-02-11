@@ -218,7 +218,7 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                 $checkbox=empty($wf_list_ad)?'':'checked';
                 echo '<input name="wf_list_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
                 ?>
-                &emsp;&emsp;&emsp;广告id:&emsp;<input type="text" name="wf_list_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_list_ad_id') ); ?>" />
+                &emsp;&emsp;&emsp;Banner广告id:&emsp;<input type="text" name="wf_list_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_list_ad_id') ); ?>" />
                 <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;每<input type="number" name="wf_list_ad_every" style="width:40px; height:40px" value="<?php echo esc_attr( get_option('wf_list_ad_every') ); ?>" />条列表展示一条广告<br/><p style="color: #959595; display:inline">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;请输入整数,否则无法正常展示广告</p>
             </td>
             </td>
@@ -233,7 +233,7 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                 $checkbox=empty($wf_detail_ad)?'':'checked';
                 echo '<input name="wf_detail_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
                 ?>
-                &emsp;&emsp;&emsp;广告id:&emsp;<input type="text" name="wf_detail_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_detail_ad_id') ); ?>" />
+                &emsp;&emsp;&emsp;Banner广告id:&emsp;<input type="text" name="wf_detail_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_detail_ad_id') ); ?>" />
             </td>
         </tr>
 
