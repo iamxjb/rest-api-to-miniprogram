@@ -521,31 +521,56 @@ function  getUserLevel($userId)
 
 }
 
+// function get_post_qq_video($content)
+// {
+//     $vcontent ='';
+//     preg_match('/https\:\/\/v.qq.com\/x\/(\S*)\/(\S*)\.html/',$content,$matches);
+//     if($matches)
+//     {
+//     	$vids=$matches[2];
+// 	    //$url='http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=1&defn=fhd&charge=0';
+// 	    //  defaultfmt： 1080P-fhd，超清-shd，高清-hd，标清-sd
+// 	    $url='http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=11001&defn=fhd&charge=0';
+// 	    //$res = file_get_contents($url);
+//         $res = https_request($url);
+// 	    if($res)
+// 	    {
+// 	    	$str = substr($res,13,-1);
+// 		    $newStr =json_decode($str,true);	    
+// 		    //$videoUrl= $newStr['vl']['vi'][0]['ul']['ui'][2]['url'].$newStr['vl']['vi'][0]['fn'].'?vkey='.$newStr['vl']['vi'][0]['fvkey']; 
+// 		    $videoUrl= $newStr['vl']['vi'][0]['ul']['ui'][0]['url'].$newStr['vl']['vi'][0]['fn'].'?vkey='.$newStr['vl']['vi'][0]['fvkey']; 
+// 		    $vcontent = preg_replace('~<video (.*?)></video>~s','<video src="'.$videoUrl.'" controls="controls" width="100%"></video>',$content);
+        
+//         }	    
+	    
+//     }
+
+//     return $vcontent;
+// }
+
 function get_post_qq_video($content)
 {
     $vcontent ='';
     preg_match('/https\:\/\/v.qq.com\/x\/(\S*)\/(\S*)\.html/',$content,$matches);
     if($matches)
     {
-    	$vids=$matches[2];
-	    //$url='http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=1&defn=fhd&charge=0';
-	    //  defaultfmt： 1080P-fhd，超清-shd，高清-hd，标清-sd
-	    $url='http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=11001&defn=fhd&charge=0';
-	    //$res = file_get_contents($url);
-        $res = https_request($url);
-	    if($res)
-	    {
-	    	$str = substr($res,13,-1);
-		    $newStr =json_decode($str,true);	    
-		    //$videoUrl= $newStr['vl']['vi'][0]['ul']['ui'][2]['url'].$newStr['vl']['vi'][0]['fn'].'?vkey='.$newStr['vl']['vi'][0]['fvkey']; 
-		    $videoUrl= $newStr['vl']['vi'][0]['ul']['ui'][0]['url'].$newStr['vl']['vi'][0]['fn'].'?vkey='.$newStr['vl']['vi'][0]['fvkey']; 
-		    $vcontent = preg_replace('~<video (.*?)></video>~s','<video src="'.$videoUrl.'" controls="controls" width="100%"></video>',$content);
-        
-        }	    
+        $vids=$matches[2];
+        $videoUrl= get_qq_video_url($vids);
+        $vcontent = preg_replace('~<video (.*?)></video>~s','<video src="'.$videoUrl.'" poster="https://puui.qpic.cn/qqvideo_ori/0/'.$vids.'_496_280/0" controls="controls" width="100%"></video>',$content);	    
 	    
     }
 
     return $vcontent;
+}
+
+function get_qq_video_url($vid)
+{
+    $url = 'https://vv.video.qq.com/getinfo?vids='.$vid.'&platform=101001&charge=0&otype=json';
+    $json = file_get_contents($url);
+    preg_match('/^QZOutputJson=(.*?);$/',$json,$json2);
+    $tempStr = json_decode($json2[1],true);
+    $vurl = 'https://ugcws.video.gtimg.com/'.$tempStr['vl']['vi'][0]['fn']."?vkey=".$tempStr['vl']['vi'][0]['fvkey'];
+    return $vurl;
 }
 
 function get_post_content_audio($post_content){
