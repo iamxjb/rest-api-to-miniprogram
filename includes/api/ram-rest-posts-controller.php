@@ -219,6 +219,9 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
             if(count($posts)>0)
             {
                 $post=$posts[0];
+                $enterpriseMinapp=get_option('wf_enterprise_minapp'); 
+                $enterpriseMinapp=empty($enterpriseMinapp)?'0':$enterpriseMinapp;
+                $post["enterpriseMinapp"]=$enterpriseMinapp;
                 $response = rest_ensure_response($post);
                 return $response;   
 
