@@ -20,6 +20,7 @@ include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-api.php' );
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-weixin-api.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/settings/wp-wechat-config.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/settings/wp-post-config.php');
+include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/settings/wp_tinymce_add_button.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-comment-fields.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-content.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-post-fields.php');
@@ -43,7 +44,8 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
             add_filter( 'manage_users_columns', 'users_columns' );
 			add_action( 'manage_users_custom_column', 'output_users_columns', 10, 3 );
-			
+			//给TinyMCE编辑器增加A标签按钮
+			add_action('after_wp_tiny_mce', 'add_tinyMCE_minapper_button');
 
 
             //更新浏览次数（pc）
