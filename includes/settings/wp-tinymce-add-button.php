@@ -6,7 +6,7 @@ global $pagenow;
     if (is_admin() && ( $pagenow == 'post-new.php' || $pagenow == 'post.php' ) && wp_script_is('quicktags')) {
 ?>
     <script type="text/javascript">   
-    QTags.addButton( 'linkPlusCode', 'Link+', '<a href="" path=""  redirectype="">','</a>' );
+    QTags.addButton( 'linkPlusCode', 'Link+', '<a href=""  appid=""  path=""  redirectype="">','</a>' );
     </script>
 <?php
     }
