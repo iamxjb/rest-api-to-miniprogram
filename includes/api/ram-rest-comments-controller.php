@@ -136,11 +136,8 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $openid =$request['openid'];
         $parent =$request['parent'];
         $userid=isset($request['userid'])?(int)$request['userid']:0; //被回复者
-        $formId =isset($request['formId'])?$request['formId']:"";
-
         $authorIp =ram_get_client_ip();
 	    $authorIp= empty($authorIp)?'':$authorIp;
-
         $wf_enable_comment_check= get_option('wf_enable_comment_check');
         $comment_approved="1";
         if(!empty($wf_enable_comment_check))
@@ -148,6 +145,17 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
              $comment_approved="0";
 
         }
+        $data = array(
+			'content' =>$content
+		);
+
+        $msgSecCheckResult = RAM()->wxapi->msgSecCheck($data);
+		$errcode=$msgSecCheckResult['errcode'];
+		$errmsg=$msgSecCheckResult['errmsg'];
+		if($errcode !=0)
+		{
+			return new WP_Error( $errcode, $errmsg, array( 'status' => 403 ) );
+		}
 
         global $wpdb;
         $user_id =0;
@@ -184,12 +192,7 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
                 $useropenid = $wpdb->get_var($sql);
                 
             }
-            $addcommentmetaflag=false;
-            if(!empty($formId))
-            {
-                $addcommentmetaflag =add_comment_meta($comment_id, 'formId', $formId,false); 
-
-            }
+           
             $result["code"]="success";
             $message='留言成功';
 
@@ -198,15 +201,9 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
                 $message='留言已提交,需管理员审核方可显示。';
             }
 
-            if($addcommentmetaflag)
-            {
-              $result["formId"]= "添加评论和formId成功";  
-            }
-            else
-             {
-                $result["formId"]= "添加评论成功,添加formId失败";
-             } 
+            
             $result["status"]="200"; 
+            $result['comment_approved']=$comment_approved;
             $result["message"]=$message;
             $result["useropenid"]=$useropenid;
             $response = rest_ensure_response( $result);

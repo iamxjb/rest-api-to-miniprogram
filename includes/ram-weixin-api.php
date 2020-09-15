@@ -3,12 +3,14 @@
 //禁止直接访问
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class RAW_Weixin_API {
+class RAM_Weixin_API {
 	
 	//获取Access Token
-	public function get_access_token($appid,$secret) {
+	public function get_access_token() {
 		
-		if( ($access_token = get_option('raw-access_token')) !== false && ! empty( $access_token ) && time() < $access_token['expire_time']) {
+		$appid = get_option('wf_appid');
+        $secret = get_option('wf_secret');
+		if( ($access_token = get_option('ram-access_token')) !== false && ! empty( $access_token ) && time() < $access_token['expire_time']) {
 			return $access_token['access_token'];
 		}		
 		
@@ -22,7 +24,7 @@ class RAW_Weixin_API {
 					'access_token' => $result['access_token'],
 					'expire_time' => time() + intval( $result['expires_in'] )
 				);
-				update_option( 'raw-access_token', $access_token );				
+				update_option( 'ram-access_token', $access_token );				
 				return $access_token['access_token'];
 			}
 		}
@@ -40,7 +42,8 @@ class RAW_Weixin_API {
 			'get_template_keywords' => 'https://api.weixin.qq.com/cgi-bin/wxopen/template/library/get',
 			'add_template' => 'https://api.weixin.qq.com/cgi-bin/wxopen/template/add',
 			'delete_template' => 'https://api.weixin.qq.com/cgi-bin/wxopen/template/del',
-			'send_template' => 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send'
+			'send_template' => 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send',
+			'msgSecCheck'=>'https://api.weixin.qq.com/wxa/msg_sec_check',
 		);
 		
 		return $api_urls[$key];
@@ -108,10 +111,31 @@ class RAW_Weixin_API {
 		$result = $this->request( $api_url, 'POST', array( 'template_id' => $template_id ) );
 		return $result ? true : false;
 	}
+
+	//内容审查
+	public function msgSecCheck($data) 
+    {
+		return $this->invokingRequest('msgSecCheck',$data);	
+	}
+
+	public function invokingRequest($api,$data)
+	{
+		$access_token = $this->get_access_token();
+		$access_token= $access_token?'?access_token=' . $access_token:'';
+		$api_url = $this->API($api);
+		$result ="";		
+		if(!empty($access_token))
+		{
+			$api_url=$api_url.$access_token;
+			$result = $this->request( $api_url, 'POST',$data);		
+			
+		}
+		return $result ;
+	}
 	
 	// 发送模板消息
 	public function send_template($appid,$secret,$touser, $template_id, $page, $form_id, $data, $emphasis_keyword ) {
-		$access_token = $this->get_access_token($appid,$secret);
+		$access_token = $this->get_access_token();
 		$access_token= $access_token?'?access_token=' . $access_token:'';
 		$api_url = $this->API('send_template');
 		$error="0";

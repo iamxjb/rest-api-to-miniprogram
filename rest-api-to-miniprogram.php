@@ -66,7 +66,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             }
 
             new RAM_API();//api
-            $this->wxapi = new RAW_Weixin_API();
+            $this->wxapi = new RAM_Weixin_API();
 
 
         }
@@ -79,7 +79,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
     // 实例化并加入全局变量
     $GLOBALS['RestAPIMiniProgram'] = new RestAPIMiniProgram();
     
-    function RAW() {
+    function RAM() {
         
         if( ! isset( $GLOBALS['RestAPIMiniProgram'] ) ) {
             $GLOBALS['RestAPIMiniProgram'] = new RestAPIMiniProgram();
