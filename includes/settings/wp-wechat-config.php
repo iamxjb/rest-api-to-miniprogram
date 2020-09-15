@@ -173,7 +173,7 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                 
 
                            ?>
-                           &emsp;&emsp;&emsp;&emsp;开启评论审核
+                           &emsp;&emsp;&emsp;&emsp;“订阅者”用户开启评论审核
 
                 <?php
                 $wf_enable_comment_check =get_option('wf_enable_comment_check');            

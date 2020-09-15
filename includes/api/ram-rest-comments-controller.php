@@ -139,12 +139,8 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $authorIp =ram_get_client_ip();
 	    $authorIp= empty($authorIp)?'':$authorIp;
         $wf_enable_comment_check= get_option('wf_enable_comment_check');
-        $comment_approved="1";
-        if(!empty($wf_enable_comment_check))
-        {
-             $comment_approved="0";
-
-        }
+       
+        
         $data = array(
 			'content' =>$content
 		);
@@ -162,6 +158,15 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $useropenid="";
         $sql ="SELECT ID FROM ".$wpdb->users ." WHERE user_login='".$openid."'";
         $user_id= (int)$wpdb->get_var($sql); //评论者id
+
+        $comment_approved="1";
+        $userLevel= getUserLevel($user_id);
+
+        if(!empty($wf_enable_comment_check) && $userLevel["level"] =='0')
+        {
+             $comment_approved="0";
+
+        }
        
         $commentdata = array(
         'comment_post_ID' => $post, // to which post the comment will show up
@@ -196,13 +201,14 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
             $result["code"]="success";
             $message='留言成功';
 
-            if(!empty($wf_enable_comment_check))
+            if(!empty($wf_enable_comment_check) && $userLevel["level"] =='0')
             {
                 $message='留言已提交,需管理员审核方可显示。';
             }
 
             
             $result["status"]="200"; 
+            $result["level"]=$userLevel;
             $result['comment_approved']=$comment_approved;
             $result["message"]=$message;
             $result["useropenid"]=$useropenid;
