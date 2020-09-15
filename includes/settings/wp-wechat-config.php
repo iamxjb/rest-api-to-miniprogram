@@ -15,7 +15,9 @@ function get_jquery_source() {
         $url = plugins_url('',__FILE__); 
         wp_enqueue_style("tabs", plugins_url()."/rest-api-to-miniprogram/includes/js/tab/tabs.css", false, "1.0", "all");
         wp_enqueue_script("tabs", plugins_url()."/rest-api-to-miniprogram/includes/js/tab/tabs.min.js", false, "1.0");
-}
+        wp_enqueue_script('rawscript', plugins_url().'/'.REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/includes/js/script.js', false, '1.0');
+    }
+
 
 function register_weixinappsettings() {
     // 注册设置
@@ -186,7 +188,8 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
 
             <tr valign="top">
             <th scope="row">海报图片默认地址</th>
-            <td><input type="text" name="wf_poster_imageurl" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_poster_imageurl') ); ?>" /><br/><p style="color: #959595; display:inline">* 请输完整的图片地址，例如：https://www.watch-life.net/images/poster.jpg</p></td>
+            <td><input type="text" name="wf_poster_imageurl" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_poster_imageurl') ); ?>" /> <input id="wf_poster_imageurl-btn" class="button im-upload" type="button" value="选择图片" /><br/><p style="color: #959595; display:inline">* 请输完整的图片地址，例如：https://www.watch-life.net/images/poster.jpg</p></td>
+           
             </tr>
 
             <tr valign="top">

@@ -3,7 +3,7 @@
 Plugin Name: REST API TO MiniProgram
 Plugin URI: http://www.watch-life.net
 Description: 为微信小程序、app提供定制化WordPress REST API json 输出.
-Version: 1.6.3
+Version: 1.6.5
 Author: jianbo
 Author URI: http://www.minapper.com
 License: GPL v3
@@ -26,7 +26,8 @@ include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-content
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-post-fields.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-category.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-users-columns.php');
-
+include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-category-rows.php');
+include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-posts-rows.php');
 if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
     class RestAPIMiniProgram {
@@ -47,7 +48,15 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 			//给TinyMCE编辑器增加A标签按钮
 			add_action('after_wp_tiny_mce', 'add_tinyMCE_minapper_button');
 
+            
+			//文章页显示自定义列
+			add_filter( 'manage_posts_columns' , 'ram_posts_columns' );
+			add_action( 'manage_posts_custom_column' , 'output_ram_posts_custom_columns', 10, 3 );
 
+
+            //分类目录页自定义列
+			add_filter('manage_edit-category_columns' , 'ram_custom_taxonomy_columns');
+			add_filter( 'manage_category_custom_column', 'ram_custom_taxonomy_columns_content', 10, 3 );
             //更新浏览次数（pc）
             add_action('wp_head', 'addPostPageviews');
 
