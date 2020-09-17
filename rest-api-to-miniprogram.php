@@ -3,7 +3,7 @@
 Plugin Name: REST API TO MiniProgram
 Plugin URI: http://www.watch-life.net
 Description: 为微信小程序、app提供定制化WordPress REST API json 输出.
-Version: 1.6.5
+Version: 1.6.6
 Author: jianbo
 Author URI: http://www.minapper.com
 License: GPL v3
@@ -52,6 +52,10 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 			//文章页显示自定义列
 			add_filter( 'manage_posts_columns' , 'ram_posts_columns' );
 			add_action( 'manage_posts_custom_column' , 'output_ram_posts_custom_columns', 10, 3 );
+
+            //页面显示自定义列
+			add_filter( 'manage_pages_columns' , 'ram_pages_columns' );
+			add_action( 'manage_pages_custom_column' , 'output_ram_pages_custom_columns', 10, 3 );
 
 
             //分类目录页自定义列
