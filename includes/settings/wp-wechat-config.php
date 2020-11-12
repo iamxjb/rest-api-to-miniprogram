@@ -16,6 +16,9 @@ function get_jquery_source() {
         wp_enqueue_style("tabs", plugins_url()."/rest-api-to-miniprogram/includes/js/tab/tabs.css", false, "1.0", "all");
         wp_enqueue_script("tabs", plugins_url()."/rest-api-to-miniprogram/includes/js/tab/tabs.min.js", false, "1.0");
         wp_enqueue_script('rawscript', plugins_url().'/'.REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/includes/js/script.js', false, '1.0');
+        if ( function_exists( 'wp_enqueue_media' ) ) {
+            wp_enqueue_media();
+        }    
     }
 
 
