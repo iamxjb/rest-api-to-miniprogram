@@ -84,7 +84,7 @@ class RAW_REST_Payment_Controller  extends WP_REST_Controller{
         $input->SetTotal_fee(strval($totalFee*100));
         //$input->SetTotal_fee(strval($totalFee));
         $input->SetTime_start(date("YmdHis"));
-        $input->SetTime_expire(date("YmdHis", time() + 600));
+        $input->SetTime_expire(date("YmdHis", time() + 6000));
         $input->SetNotify_url(get_rest_url( null, $this->namespace . '/' . $this->resource_name . '/notify' ) );
         $input->SetTrade_type( 'JSAPI' );
         $input->SetOpenid($openId);
