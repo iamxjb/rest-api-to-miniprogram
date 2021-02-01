@@ -118,7 +118,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
         array_unshift( $links, $settings_link );
 
 
-        $settings_link = '<a href="https://www.watch-life.net/" target="_blank"> <span style="color:green; font-weight:bold;">' . esc_html__( '技术支持', 'REST API TO MiniProgram' ) . '</span></a>';
+        $settings_link = '<a href="https://www.minapper.net/" target="_blank"> <span style="color:green; font-weight:bold;">' . esc_html__( '技术支持', 'REST API TO MiniProgram' ) . '</span></a>';
 
         array_unshift( $links, $settings_link );
 

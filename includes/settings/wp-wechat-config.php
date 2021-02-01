@@ -94,7 +94,7 @@ function weixinapp_settings_page() {
 <h2>微慕小程序设置</h2>
 
 
-<p>Rest API to miniprogram by <a href="https://www.watch-life.net" target="_blank">守望轩</a>.
+<p>Rest API to miniprogram by <a href="https://www.minapper.com" target="_blank">微慕</a>.
 <?php
 
 if (!empty($_REQUEST['settings-updated']))
