@@ -1,4 +1,4 @@
-# WordpPress rest api 定制化插件
+﻿# WordpPress rest api 定制化插件
 
 # 为微信小程序、app提供定制 WordPress rest api
 
@@ -18,12 +18,13 @@ https://www.watch-life.net/wordpress-weixin-app
 
 # 插件在Wordpress 官方更新地址：
 
-https://wordpress.org/plugins/rest-api-to-miniprogram/
+https://wordpress.org/plugins/rest-api-to-miniprogram
 
 # 插件镜像更新地址：
 
 https://gitee.com/iamxjb/rest-api-to-miniprogram
-https://coding.net/u/xjb/p/rest-api-to-miniprogram/git
+https://github.com/iamxjb/rest-api-to-miniprogram
+https://codechina.csdn.net/xjbx/rest-api-to-miniprogram
 
 
 
