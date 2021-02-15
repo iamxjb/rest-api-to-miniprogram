@@ -3,7 +3,7 @@
 Plugin Name: REST API TO MiniProgram
 Plugin URI: https://www.minapper.com
 Description: 为微信小程序、app提供定制化WordPress REST API json 输出.
-Version: 4.0.1
+Version: 4.0.2
 Author: jianbo
 Author URI: https://www.minapper.com
 License: GPL v3
@@ -12,8 +12,9 @@ WordPress requires at least: 4.7.1
 
 
 define('REST_API_TO_MINIPROGRAM_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('REST_API_TO_MINIPROGRAM_PLUGIN_FILE',__FILE__);
 const REST_API_TO_MINIPROGRAM_PLUGIN_NAME='rest-api-to-miniprogram';
+define('REST_API_TO_MINIPROGRAM_PLUGIN_URL',plugins_url(REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/', dirname(__FILE__)));
+
 
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-util.php' );
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-api.php' );
