@@ -170,13 +170,13 @@ function minapper_admin_menu()
                     'id'      => 'path',
                     'type'    => 'text',
                     'title'   => '小程序路径',
-                    'after'       => '跳转小程序时需填写',   // optional   
-                    'attributes' => array(
-                        'data-title' => 'title',
-                        'placeholder' => '请输入小程序页面路径。
+                    'after'       => '跳转小程序时需填写。
                         <br/>跳转本小程序的页面路径请以<font color=red>"/pages"</font>开头。
                         <br/>跳转其他小程序的页面路径一般以<font color=red>"pages"</font>开头。
-                        <br/>跳转直播间路径为<font color=red>"plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=11"</font>。room_id换成直播间的房间号'
+                        <br/>跳转直播间<font color=red>"plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=11"</font>开头。room_id换成直播间的房间号',   // optional   
+                    'attributes' => array(
+                        'data-title' => 'title',
+                        'placeholder' => '请输入小程序页面路径'
                     )
                     ),
                
