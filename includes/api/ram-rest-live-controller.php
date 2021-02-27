@@ -40,8 +40,8 @@ class RAM_REST_Live_Controller  extends WP_REST_Controller{
             // Here we register the readable endpoint for collections.
             array(
                 'methods'   => 'GET',
-                'callback'  => array( $this, 'getliveinfo' )
-                // 'permission_callback' => array( $this, 'get_pages_about_permissions_check' )
+                'callback'  => array( $this, 'getliveinfo' ),
+                'permission_callback' => array( $this, 'getliveinfo_permissions_check' )
                  
             ),
             // Register our schema callback.
@@ -140,5 +140,10 @@ class RAM_REST_Live_Controller  extends WP_REST_Controller{
 
        }        
        return true;
+   }
+
+   public function  getliveinfo_permissions_check($request)
+   {
+    return true;
    }
 }

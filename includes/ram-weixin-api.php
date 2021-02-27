@@ -53,6 +53,17 @@ class RAM_Weixin_API {
 	// 发起API请求
 	private function request( $url, $method, $body ) {
 		
+		if(strpos($url,'msg_sec_check') !==false)
+		{
+			//内容安全检测不进行unicode转码
+			$body =json_encode( $body,JSON_UNESCAPED_UNICODE);
+
+		}
+		else
+		{
+			$body =json_encode( $body );		
+
+		}
 		$response = wp_remote_request( $url, array(
 			'method' => $method,
 			'body' => json_encode( $body )

@@ -63,6 +63,21 @@ function register_weixinappsettings() {
     register_setting( 'weixinapp-group', 'wf_zan_imageurl' );
     register_setting( 'weixinapp-group', 'wf_logo_imageurl' );
 
+    register_setting( 'weixinapp-group', 'enable_index_interstitial_ad' );
+    register_setting( 'weixinapp-group', 'enable_detail_interstitial_ad' );
+    register_setting( 'weixinapp-group', 'enable_topic_interstitial_ad' );
+    register_setting( 'weixinapp-group', 'enable_list_interstitial_ad' );
+    register_setting( 'weixinapp-group', 'enable_hot_interstitial_ad' );
+    register_setting( 'weixinapp-group', 'enable_comments_interstitial_ad' );
+    register_setting( 'weixinapp-group', 'enable_live_interstitial_ad' );
+    
+    
+
+    
+
+
+
+
     
     
 
@@ -198,7 +213,17 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
 
                 ?>
                             </td>
-            </tr>    
+            </tr>   
+
+            <tr valign="top">
+            <th scope="row">小程序是否是企业主体</th>
+            <td>
+                <?php
+                $wf_enterprise_minapp =get_option('wf_enterprise_minapp');            
+                $checkbox=empty($wf_enterprise_minapp)?'':'checked';
+                echo '<input name="wf_enterprise_minapp"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?><p style="color: #959595; display:inline">* 如果是企业主体的小程序，请勾选</p>
+            </td> 
 
             <tr valign="top">
             <th scope="row">小程序logo图片地址</th>
@@ -237,15 +262,7 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                         <br/><p style="color: #959595; display:inline">请输入域名，用英文逗号分隔。仅支持企业主体小程序。</p></td>
                               
 
-            <tr valign="top">
-            <th scope="row">小程序是否是企业主体</th>
-            <td>
-                <?php
-                $wf_enterprise_minapp =get_option('wf_enterprise_minapp');            
-                $checkbox=empty($wf_enterprise_minapp)?'':'checked';
-                echo '<input name="wf_enterprise_minapp"  type="checkbox"  value="1" '.$checkbox. ' />';
-                ?><p style="color: #959595; display:inline">* 如果是企业主体的小程序，请勾选</p>
-            </td>
+            
         </tr> 
                    
         </table>
@@ -292,11 +309,61 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                                <input type="text" name="wf_video_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_video_ad_id') ); ?>" />
                             </td>
           </tr>
+          <tr valign="top">
           <th scope="row">插屏广告id</th>
                             <td>                                
                                <input type="text" name="wf_interstitial_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr( get_option('wf_interstitial_ad_id') ); ?>" />
-                            </td>
-                        </tr>
+         </td>
+         </tr>
+         <tr valign="top">
+                <th scope="row">启动插屏广告的页面</th>
+                <td>
+                <?php
+                $enable_index_interstitial_ad =get_option('enable_index_interstitial_ad');            
+                $checkbox=empty($enable_index_interstitial_ad)?'':'checked';
+                echo '首页<input name="enable_index_interstitial_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+                &emsp;
+                <?php
+                $enable_detail_interstitial_ad =get_option('enable_detail_interstitial_ad');            
+                $checkbox=empty($enable_detail_interstitial_ad)?'':'checked';
+                echo '文章详情页<input name="enable_detail_interstitial_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+
+                &emsp;
+                <?php
+                $enable_topic_interstitial_ad =get_option('enable_topic_interstitial_ad');            
+                $checkbox=empty($enable_topic_interstitial_ad)?'':'checked';
+                echo '专题(分类)页<input name="enable_topic_interstitial_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+                &emsp;
+                <?php
+                $enable_list_interstitial_ad =get_option('enable_list_interstitial_ad');            
+                $checkbox=empty($enable_list_interstitial_ad)?'':'checked';
+                echo '专题(分类)文章列表页 &emsp;<input name="enable_list_interstitial_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+                &emsp;
+                <?php
+                $enable_hot_interstitial_ad =get_option('enable_hot_interstitial_ad');            
+                $checkbox=empty($enable_hot_interstitial_ad)?'':'checked';
+                echo '排行页<input name="enable_hot_interstitial_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+                &emsp;
+                <?php
+                $enable_comments_interstitial_ad =get_option('enable_comments_interstitial_ad');            
+                $checkbox=empty($enable_comments_interstitial_ad)?'':'checked';
+                echo '最新评论页<input name="enable_comments_interstitial_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+                &emsp;
+                <?php
+                $enable_live_interstitial_ad =get_option('enable_live_interstitial_ad');            
+                $checkbox=empty($enable_live_interstitial_ad)?'':'checked';
+                echo '直播页<input name="enable_live_interstitial_ad"  type="checkbox"  value="1" '.$checkbox. ' />';
+                ?>
+
+
+                    </td>
+     </tr>
 </table>
     </div>
 

@@ -56,7 +56,7 @@ class RAM_REST_Categories_Controller  extends WP_REST_Controller{
             array(
                 'methods'   => 'GET',
                 'callback'  => array( $this, 'get_categories_ids' ),
-                //'permission_callback' => array( $this, 'get_item_permissions_check' )
+                'permission_callback' => array( $this, 'get_categories_ids_permissions_check' )
                  
             ),
             // Register our schema callback.
@@ -245,6 +245,11 @@ class RAM_REST_Categories_Controller  extends WP_REST_Controller{
             }
         
         }
+        return true;
+    }
+
+    public function get_categories_ids_permissions_check($request )
+    {
         return true;
     }
 

@@ -81,6 +81,29 @@ class RAM_REST_Options_Controller  extends WP_REST_Controller{
         $interstitialAdId  =empty(get_option('wf_interstitial_ad_id'))?"":get_option('wf_interstitial_ad_id');
         $wf_enterprise_minapp  =empty(get_option('wf_enterprise_minapp'))?"0":get_option('wf_enterprise_minapp');
        
+        $enable_index_interstitial_ad  =empty(get_option('enable_index_interstitial_ad'))?"0":get_option('enable_index_interstitial_ad');
+        $enable_detail_interstitial_ad  =empty(get_option('enable_detail_interstitial_ad'))?"0":get_option('enable_detail_interstitial_ad');
+        $enable_topic_interstitial_ad  =empty(get_option('enable_topic_interstitial_ad'))?"0":get_option('enable_topic_interstitial_ad');
+        $enable_list_interstitial_ad  =empty(get_option('enable_list_interstitial_ad'))?"0":get_option('enable_list_interstitial_ad');
+        $enable_hot_interstitial_ad  =empty(get_option('enable_hot_interstitial_ad'))?"0":get_option('enable_hot_interstitial_ad');
+        $enable_comments_interstitial_ad  =empty(get_option('enable_comments_interstitial_ad'))?"0":get_option('enable_comments_interstitial_ad');
+        $enable_live_interstitial_ad  =empty(get_option('enable_live_interstitial_ad'))?"0":get_option('enable_comments_interstitial_ad');
+        
+        
+        $result["enable_index_interstitial_ad"]=$enable_index_interstitial_ad;
+        $result["enable_detail_interstitial_ad"]=$enable_detail_interstitial_ad;
+        $result["enable_topic_interstitial_ad"]=$enable_topic_interstitial_ad;
+        $result["enable_list_interstitial_ad"]=$enable_list_interstitial_ad;
+        $result["enable_hot_interstitial_ad"]=$enable_hot_interstitial_ad;
+        $result["enable_comments_interstitial_ad"]=$enable_comments_interstitial_ad;
+        $result["enable_live_interstitial_ad"]=$enable_live_interstitial_ad;
+
+
+
+
+
+
+
         $result["wf_enable_comment_option"]=$wf_enable_comment_option;
         $result["interstitialAdId"]=$interstitialAdId;
         $result["wf_enterprise_minapp"]=$wf_enterprise_minapp;
