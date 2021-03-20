@@ -14,7 +14,7 @@ WordPress requires at least: 4.7.1
 define('REST_API_TO_MINIPROGRAM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 const REST_API_TO_MINIPROGRAM_PLUGIN_NAME='rest-api-to-miniprogram';
 define('REST_API_TO_MINIPROGRAM_PLUGIN_URL',plugins_url(REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/', dirname(__FILE__)));
-
+//define('REST_API_TO_WECHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-util.php' );
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-api.php' );
@@ -75,6 +75,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             if ( is_admin() ) {             
                 
                 //new WP_Category_Config();
+              add_action( 'admin_enqueue_scripts', 'admin_style', 9999 );
                add_action('admin_menu', 'weixinapp_create_menu');
                add_action('init','minapper_admin_menu');
                add_filter( 'plugin_action_links', 'ram_plugin_action_links', 10, 2 );
@@ -104,6 +105,10 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
         
         return $GLOBALS['RestAPIMiniProgram'];
     }
+
+    function admin_style() {
+		wp_enqueue_style( 'w2w-admin-css', REST_API_TO_MINIPROGRAM_PLUGIN_URL. 'includes/css/menu.css', array(),'4.0.4' );
+	}
 
     function ram_plugin_action_links( $links, $file ) {
         if ( plugin_basename( __FILE__ ) !== $file ) {
