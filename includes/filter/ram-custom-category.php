@@ -1,6 +1,9 @@
 <?php 
 
-function custom_fields_rest_prepare_category( $data, $item, $request ) {      
+function custom_fields_rest_prepare_category( $data, $item, $request ) { 
+   
+        
+
     $category_thumbnail_image='';
     $temp='';
     $openid= $request["openid"];
@@ -87,6 +90,9 @@ add_action( 'category_edit_form_fields', 'weixin_edit_term_catcover_field' );
 function weixin_edit_term_catcover_field( $term ) {
     $default = '';
     $catcover   = get_term_meta( $term->term_id, 'catcover', true );
+    if ( function_exists( 'wp_enqueue_media' ) ) {
+        wp_enqueue_media();
+    }
     wp_enqueue_script('rawscript', plugins_url().'/'.REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/includes/js/script.js', false, '1.0');
     if ( ! $catcover )
         $catcover = $default; ?>
