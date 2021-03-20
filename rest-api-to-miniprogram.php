@@ -75,7 +75,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             if ( is_admin() ) {             
                 
                 //new WP_Category_Config();
-              add_action( 'admin_enqueue_scripts', 'admin_style', 9999 );
+              add_action( 'admin_enqueue_scripts', 'ram_admin_style', 9999 );
                add_action('admin_menu', 'weixinapp_create_menu');
                add_action('init','minapper_admin_menu');
                add_filter( 'plugin_action_links', 'ram_plugin_action_links', 10, 2 );
@@ -106,8 +106,8 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
         return $GLOBALS['RestAPIMiniProgram'];
     }
 
-    function admin_style() {
-		wp_enqueue_style( 'w2w-admin-css', REST_API_TO_MINIPROGRAM_PLUGIN_URL. 'includes/css/menu.css', array(),'4.0.4' );
+    function ram_admin_style() {
+		wp_enqueue_style( 'raw-admin-css', REST_API_TO_MINIPROGRAM_PLUGIN_URL. 'includes/css/menu.css', array(),'4.0.4' );
 	}
 
     function ram_plugin_action_links( $links, $file ) {

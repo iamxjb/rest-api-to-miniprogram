@@ -8,6 +8,7 @@ function weixinapp_create_menu() {
     // 创建新的顶级菜单
     //add_menu_page('微慕小程序', '微慕小程序', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', REST_API_TO_MINIPROGRAM_PLUGIN_URL.'includes/images/icon16.png',null);
     add_menu_page('微慕小程序', '微慕小程序', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', 'none',99);
+     add_submenu_page('weixinapp_slug', "基础设置", "基础设置", "administrator", 'weixinapp_slug','weixinapp_settings_page');
     // 调用注册设置函数
     add_action( 'admin_init', 'register_weixinappsettings' );
 }
