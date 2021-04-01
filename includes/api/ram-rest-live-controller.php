@@ -60,7 +60,7 @@ class RAM_REST_Live_Controller  extends WP_REST_Controller{
     public  function  refreshliveinfo($request){
         $data = array(
             'start' =>0,
-            'limit' =>100
+            'limit' =>10
 
         );
         $updateResult=true;        
@@ -77,7 +77,7 @@ class RAM_REST_Live_Controller  extends WP_REST_Controller{
         }
         else{
 
-            if ($errcode==1 || $errcode=9410000)
+            if ($errcode==1 || $errcode==9410000)
             {
                 if(!empty(get_option('wf-liveInfo-option')))
                 {
@@ -95,7 +95,7 @@ class RAM_REST_Live_Controller  extends WP_REST_Controller{
            
         }
       
-        $result = array('success' => $errcode ,'message'=>$message,'liveInfo'=>$liveInfo);
+        $result = array('success' => $errcode ,'message'=>$message,'liveInfo'=>$liveInfo,'data'=>$data);
         $response = rest_ensure_response( $result );
          return $response;
         

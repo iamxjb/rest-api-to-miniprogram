@@ -22,7 +22,7 @@ class RAM_Weixin_API {
 				
 				$access_token = array(
 					'access_token' => $result['access_token'],
-					'expire_time' => time() + intval( $result['expires_in'] )
+					'expire_time' => time() + intval( $result['expires_in'])-300
 				);
 				update_option( 'ram-access_token', $access_token );				
 				return $access_token['access_token'];
@@ -53,7 +53,7 @@ class RAM_Weixin_API {
 	// 发起API请求
 	private function request( $url, $method, $body ) {
 		
-		if(strpos($url,'msg_sec_check') !==false)
+		if(strpos($url,'msg_sec_check') !=false)
 		{
 			//内容安全检测不进行unicode转码
 			$body =json_encode( $body,JSON_UNESCAPED_UNICODE);
