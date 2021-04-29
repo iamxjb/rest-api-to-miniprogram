@@ -3,14 +3,18 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 function custom_post_fields( $data, $post, $request) { 
+
+  
+  if(strpos( $_SERVER['REQUEST_URI'], 'watch-life-net/v1/posts') !== false)
+  {
+      
+        return $data;
+  }
     global $wpdb;
     $_data = $data->data; 
     $post_id =$post->ID;
 
-    //去除 _links 
-//   foreach($data->get_links() as $_linkKey => $_linkVal) {
-//     $data->remove_link($_linkKey);
-//  }
+ 
 
     //$content =get_the_content();
     $content=$_data['content']['rendered'];

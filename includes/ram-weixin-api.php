@@ -66,7 +66,7 @@ class RAM_Weixin_API {
 		}
 		$response = wp_remote_request( $url, array(
 			'method' => $method,
-			'body' => json_encode( $body )
+			'body' =>$body
 		) );
 		
 		return ! is_wp_error( $response ) ? json_decode( $response['body'], true ) : false;

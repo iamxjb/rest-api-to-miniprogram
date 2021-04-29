@@ -206,6 +206,12 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
                 $message='留言已提交,需管理员审核方可显示。';
             }
 
+            if(function_exists('MRAC'))
+            {
+            
+                $cachedata= MRAC()->cacheManager->delete_cache('postcomments',$post);
+            }
+
             
             $result["status"]="200"; 
             $result["level"]=$userLevel;
@@ -221,6 +227,19 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
 
     function get_comments($request)
     {
+        $cachedata='';
+		if(function_exists('MRAC'))
+		{
+			$cachedata= MRAC()->cacheManager->get_cache();		
+			if(!empty($cachedata))
+			{
+
+				$response = rest_ensure_response( $cachedata );			
+				return $response;
+				
+			}
+
+		}
         global $wpdb;
         $postid =isset($request['postid'])?(int)$request['postid']:0;
         $limit= isset($request['limit'])?(int)$request['limit']:0;
@@ -255,7 +274,11 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $result["status"]="200";
         $result["data"]=$commentslist;
          
-
+        if($cachedata =='' && function_exists('MRAC'))
+        {
+        
+            $cachedata= MRAC()->cacheManager->set_cache($result,'postcomments',$postid );
+        }
         $response = rest_ensure_response( $result);
         return $response;         
 

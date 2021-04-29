@@ -381,6 +381,19 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 
      function getTopPageviewsPostsThisYear($request)
      {
+        $cachedata='';
+		if(function_exists('MRAC'))
+		{
+			$cachedata= MRAC()->cacheManager->get_cache();		
+			if(!empty($cachedata))
+			{
+
+				$response = rest_ensure_response( $cachedata );			
+				return $response;
+				
+			}
+
+		}
         $limit=10;
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
             date_default_timezone_set('Asia/Shanghai');
@@ -424,11 +437,28 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                     
                     
             } 
+            if($cachedata =='' && function_exists('MRAC'))
+            {
+                $cachedata= MRAC()->cacheManager->set_cache($posts,'pageviewsthisyear',0);
+            }
          $response = rest_ensure_response($posts);
         return $response; 
      }
     function getTopLikePostsThisYear($request)
     {
+        $cachedata='';
+		if(function_exists('MRAC'))
+		{
+			$cachedata= MRAC()->cacheManager->get_cache();		
+			if(!empty($cachedata))
+			{
+
+				$response = rest_ensure_response( $cachedata );			
+				return $response;
+				
+			}
+
+		}
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
         $limit=10;
         date_default_timezone_set('Asia/Shanghai');
@@ -472,6 +502,11 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 
                 
         } 
+        if($cachedata =='' && function_exists('MRAC'))
+		{
+			$cachedata= MRAC()->cacheManager->set_cache($posts,'likethisyear',0);
+		}
+        
         $response = rest_ensure_response($posts);
         return $response;  
 
@@ -525,6 +560,20 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 
     function getTopHotPostsThisYear($request)
     {
+        $cachedata='';
+		if(function_exists('MRAC'))
+		{
+			$cachedata= MRAC()->cacheManager->get_cache();		
+			if(!empty($cachedata))
+			{
+
+				$response = rest_ensure_response( $cachedata );			
+				return $response;
+				
+			}
+
+		}
+
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
         date_default_timezone_set('Asia/Shanghai');
         $limit = 10;
@@ -567,6 +616,10 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                   $_data['post_all_images']=$images['post_all_images'];
                 $posts[] = $_data;
         }
+        if($cachedata =='' && function_exists('MRAC'))
+		{
+			$cachedata= MRAC()->cacheManager->set_cache($posts,'hotpostthisyear',0);
+		}
 
         $response = rest_ensure_response($posts);
         return $response;  
@@ -666,6 +719,12 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
             
             if(add_post_meta($postid, $openid,'like', true))
             {
+                if(function_exists('MRAC'))
+                {
+                
+                    $cachedata= MRAC()->cacheManager->delete_cache('post',$postid);
+                }
+              
                 $result["code"]="success";
                 $result["message"]= "点赞成功 ";
                 $result["status"]="200";    
