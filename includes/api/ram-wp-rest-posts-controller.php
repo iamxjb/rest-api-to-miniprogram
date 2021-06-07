@@ -498,10 +498,24 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if(function_exists('MRAC'))
 		{
 			$cachedata= MRAC()->cacheManager->get_cache();		
+			$post_id=(int)$request['id'];
+			$pageviews = (int) get_post_meta($post_id, 'wl_pageviews',true);	
+			$pageviews=$pageviews+1;      
+			if(!update_post_meta($post_id, 'wl_pageviews', $pageviews))   
+			{  
+			  add_post_meta($post_id, 'wl_pageviews', 1, true);  
+			}      
 			if(!empty($cachedata))
 			{
-
-				$response = rest_ensure_response( $cachedata );			
+				$minapper_cache_type =get_option('minapper_cache_type');
+				if($minapper_cache_type=='memcached')
+				{
+					$cachedata->pageviews=$pageviews;
+				}
+				else{
+					$cachedata['pageviews']=$pageviews;
+				}				
+				$response = rest_ensure_response( $cachedata );	
 				return $response;
 				
 			}
