@@ -510,13 +510,15 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				$minapper_cache_type =get_option('minapper_cache_type');
 				if($minapper_cache_type=='memcached')
 				{
-					$cachedata->pageviews=$pageviews;
+					$data=$cachedata->data;
+					$data['pageviews']=$pageviews;
+					$cachedata->data=$data;
 				}
 				else{
 					$cachedata['pageviews']=$pageviews;
 				}				
-				$response = rest_ensure_response( $cachedata );	
-				return $response;
+				//$response = rest_ensure_response( $cachedata );	
+				return $cachedata;
 				
 			}
 
