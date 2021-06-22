@@ -507,16 +507,17 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			}      
 			if(!empty($cachedata))
 			{
-				$minapper_cache_type =get_option('minapper_cache_type');
-				if($minapper_cache_type=='memcached')
-				{
-					$data=$cachedata->data;
-					$data['pageviews']=$pageviews;
-					$cachedata->data=$data;
-				}
-				else{
-					$cachedata['pageviews']=$pageviews;
-				}				
+				// $minapper_cache_type =get_option('minapper_cache_type');
+				// if($minapper_cache_type=='memcached')
+				// {
+				// 	$data=$cachedata->data;
+				// 	$data['pageviews']=$pageviews;
+				// 	$cachedata->data=$data;
+				// }
+				// else{
+				// 	$cachedata['pageviews']=$pageviews;
+				// }	
+				$cachedata['pageviews']=$pageviews;			
 				//$response = rest_ensure_response( $cachedata );	
 				return $cachedata;
 				
@@ -532,7 +533,14 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		$data = $this->prepare_item_for_response( $post, $request );
 		if($cachedata =='' && function_exists('MRAC'))
 		{
-			$cachedata= MRAC()->cacheManager->set_cache($data,'post',(int)$request['id']);
+			if(!empty($data->data))
+		    {
+		        $cachedata= MRAC()->cacheManager->set_cache($data->data,'post',(int)$request['id']);
+		    }
+		    else
+		    {
+		        $cachedata= MRAC()->cacheManager->set_cache($data,'post',(int)$request['id']);
+		    }
 		}
 		$response = rest_ensure_response( $data );
 
