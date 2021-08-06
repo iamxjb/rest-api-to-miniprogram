@@ -100,6 +100,12 @@ function minapper_admin_menu()
                         )
                     ),
                     array(
+                        'id'    => 'enable',
+                        'type'  => 'checkbox',
+                        'title' => '是否启用',
+                        //'label' => '是否启用?'
+                    ),
+                    array(
                         'id'      => 'title',
                         'type'    => 'text',
                         'title'   => '标题',                       
@@ -189,6 +195,12 @@ function minapper_admin_menu()
                         'data-title' => 'title',
                         'placeholder' => '请输入链接'
                     )
+                ),
+                array(
+                    'id'    => 'enable',
+                    'type'  => 'checkbox',
+                    'title' => '是否启用',
+                    //'label' => '是否启用?'
                 ),
                 array(
                     'id'      => 'title',
