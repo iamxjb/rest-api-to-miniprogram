@@ -8,7 +8,7 @@
   url('//at.alicdn.com/t/font_2380172_x6l3odtoauc.svg?t=1613952382449#iconfont') format('svg'); /* iOS 4.1- */
 }
 
-#adminmenu #toplevel_page_restAPIWechat_slug .dashicons-before::before {
+#adminmenu #toplevel_page_weixinapp_slug .dashicons-before::before {
     font-family: iconfont !important;
     content: '\e628'
 }
