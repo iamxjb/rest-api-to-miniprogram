@@ -251,7 +251,8 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                 return new WP_Error('error', 'API错误：' . json_encode( $api_result ), array( 'status' => 502 ) );
             }            
             $openId = $api_result['openid']; 
-            $sessionKey = $api_result['session_key'];                    
+            $sessionKey = $api_result['session_key'];  
+            $unionId = $api_result['unionid'];                      
             // $access_result =decrypt_data($appid, $sessionKey,$encryptedData, $iv, $data);                   
             // if($access_result !=0) {
             //     return new WP_Error( 'error', '解密错误：' . $access_result, array( 'status' => 503 ) );
@@ -279,6 +280,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 
                 update_user_meta( $userId,'avatar',$avatarUrl);
                 update_user_meta($userId,'usertype',"weixin");
+                update_user_meta($userId,'unionId',$unionId);
 
             }            
             else{
@@ -297,7 +299,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                 }             
                 update_user_meta($userId,'avatar',$avatarUrl);
                 update_user_meta($userId,'usertype',"weixin","weixin");
-                
+                update_user_meta($userId,'unionId',$unionId);
                   
             }
             $userLevel= getUserLevel($userId);
@@ -339,6 +341,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             }            
             $openId = $api_result['openid']; 
             $sessionKey = $api_result['session_key'];  
+            $unionId = $api_result['unionid']; 
             $userId=0;
             $nickname=filterEmoji($nickname);         
             $_nickname=base64_encode($nickname);          
@@ -361,6 +364,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 
                 update_user_meta( $userId,'avatar',$avatarUrl);
                 update_user_meta($userId,'usertype',"weixin");
+                update_user_meta($userId,'unionId',$unionId);
 
             }            
             else{
@@ -386,6 +390,10 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                     $flag=update_user_meta($userId,'usertype',"weixin");
                 }
                 
+                if(empty(get_user_meta( $userId, 'unionId', true )))
+                {                  
+                    update_user_meta($userId,'unionId',$unionId);
+                }
                   
             }
             $userLevel= getUserLevel($userId);
