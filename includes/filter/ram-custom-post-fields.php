@@ -163,7 +163,11 @@ function custom_post_fields( $data, $post, $request) {
       date_default_timezone_set('Asia/Shanghai');
       $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));
       $today = date("Y-m-d H:i:s"); //获取今天日期时间
-      $tags= $_data["tags"];
+        if(!empty($_data["tags"]))
+        {
+          $tags= $_data["tags"];
+        }
+     
         if(!empty($tags))
         {
           $tags=implode(",",$tags);
