@@ -555,8 +555,9 @@ function get_post_qq_video($content)
     if($matches)
     {
         $vids=$matches[2];
-        $videoUrl= get_qq_video_url($vids);
-        $vcontent = preg_replace('~<video (.*?)></video>~s','<video src="'.$videoUrl.'" poster="https://puui.qpic.cn/qqvideo_ori/0/'.$vids.'_496_280/0" controls="controls" width="100%"></video>',$content);	    
+        $vcontent = preg_replace('~<video (.*?)></video>~s', '<iframe frameborder="0" src="https://v.qq.com/txp/iframe/player.html?vid=' . $vids . '" allowFullScreen="true" width="100%" height="500px"></iframe>', $content);
+        //$videoUrl= get_qq_video_url($vids);
+        //$vcontent = preg_replace('~<video (.*?)></video>~s','<video src="'.$videoUrl.'" poster="https://puui.qpic.cn/qqvideo_ori/0/'.$vids.'_496_280/0" controls="controls" width="100%"></video>',$content);	    
 	    
     }
 
