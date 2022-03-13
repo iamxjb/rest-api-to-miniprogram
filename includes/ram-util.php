@@ -401,7 +401,7 @@ function time_tran($the_time){
  *
  * @return int 成功0，失败返回对应的错误码
  */
-function decrypt_data( $appid, $sessionKey, $encryptedData, $iv, &$data ) {
+function raw_decrypt_data( $appid, $sessionKey, $encryptedData, $iv, &$data ) {
     
     $errors = array(
         'OK'                => 0,
@@ -757,6 +757,9 @@ function  getPosts($ids)
           $praiseWord=get_option('wf_praise_word'); 
           $praiseWord=empty($praiseWord)?'鼓励':$praiseWord;
           $_data['praiseWord']=$praiseWord;
+
+          $copyright_state=empty(get_option('wf_copyright_state'))?'':get_option('wf_copyright_state'); 
+          $_data['copyright_state']=$copyright_state;
     
           //获取广告参数
           $detailAdId=empty(get_option('wf_detail_ad_id'))?'':get_option('wf_detail_ad_id');

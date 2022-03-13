@@ -72,6 +72,8 @@ function register_weixinappsettings() {
     register_setting( 'weixinapp-group', 'enable_hot_interstitial_ad' );
     register_setting( 'weixinapp-group', 'enable_comments_interstitial_ad' );
     register_setting( 'weixinapp-group', 'enable_live_interstitial_ad' );
+    register_setting( 'weixinapp-group', 'wf_copyright_state' );
+    
     
     
 
@@ -116,6 +118,11 @@ function weixinapp_settings_page() {
 
 if (!empty($_REQUEST['settings-updated']))
 {
+    if(function_exists('MRAC'))
+    {
+    
+        $cachedata= MRAC()->cacheManager->clear_cache();
+    }
     echo '<div id="message" class="updated fade"><p><strong>设置已保存</strong></p></div>';
 
 } 
@@ -256,16 +263,23 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
                             <td>
                             <textarea name="wf_downloadfile_domain" id="wf_downloadfile_domain" class="large-text code" rows="3"><?php echo esc_attr( get_option('wf_downloadfile_domain') ); ?></textarea>
                         <br/><p style="color: #959595; display:inline">请输入域名，用英文逗号分隔</p></td>
-
+            </tr>
                          <tr valign="top">
                             <th scope="row">业务域名</th>
                             <td>
                             <textarea name="wf_business_domain" id="wf_business_domain" class="large-text code" rows="3"><?php echo esc_attr( get_option('wf_business_domain') ); ?></textarea>
                         <br/><p style="color: #959595; display:inline">请输入域名，用英文逗号分隔。仅支持企业主体小程序。</p></td>
-                              
-
             
         </tr> 
+
+        <tr valign="top">
+                            <th scope="row">版权声明</th>
+                            <td>
+                            <textarea name="wf_copyright_state" id="wf_copyright_state" class="large-text code" rows="3"><?php echo esc_attr( get_option('wf_copyright_state') ); ?></textarea>
+                        <br/><p style="color: #959595; display:inline">支持html标签,将显示在文章结尾,不想显示请留空。</p></td>
+            
+        </tr> 
+               
                    
         </table>
     </div>

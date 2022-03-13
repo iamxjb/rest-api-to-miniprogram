@@ -77,6 +77,10 @@ function custom_post_fields( $data, $post, $request) {
       $praiseWord=empty($praiseWord)?'鼓励':$praiseWord;
       $_data['praiseWord']=$praiseWord;
 
+      $copyright_state=empty(get_option('wf_copyright_state'))?'':get_option('wf_copyright_state'); 
+      $_data['copyright_state']=$copyright_state;
+      
+
       //获取广告参数
       $detailAdId=empty(get_option('wf_detail_ad_id'))?'':get_option('wf_detail_ad_id');
       $detailAd=empty(get_option('wf_detail_ad'))?'0':"1";
