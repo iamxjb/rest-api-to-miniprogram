@@ -59,7 +59,19 @@ function minapper_admin_menu()
                         'default'     => 'apppage',                             // optional 
                         'class'       => 'chosen',                          // optional 
                        
-                    ),               
+                    ),  
+                    array(
+                        'id'             => 'jumptype',
+                        'type'           => 'select',
+                        'title'          => '跳转方式',
+                        'after'       => '跳转其他小程序时需选择',
+                        'options'        => array(
+                            'redirect'          => '切换跳转',
+                            'embedded'     => '半屏跳转'                            
+                        ),                      
+                        'default'     => 'redirect',                             // optional 
+                        'class'       => 'chosen',  
+                    ),              
                     array(
                         'id'      => 'appid',
                         'type'    => 'text',
@@ -156,7 +168,19 @@ function minapper_admin_menu()
                     'default'     => 'apppage',                             // optional 
                     'class'       => 'chosen',                          // optional 
                    
-                ),               
+                ),    
+                array(
+                    'id'             => 'jumptype',
+                    'type'           => 'select',
+                    'title'          => '跳转方式',
+                    'after'       => '跳转其他小程序时需选择',
+                    'options'        => array(
+                        'redirect'          => '切换跳转',
+                        'embedded'     => '半屏跳转'                            
+                    ),                      
+                    'default'     => 'redirect',                             // optional 
+                    'class'       => 'chosen',  
+                ),           
                 array(
                     'id'      => 'appid',
                     'type'    => 'text',
