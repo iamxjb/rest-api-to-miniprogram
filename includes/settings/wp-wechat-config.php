@@ -73,6 +73,9 @@ function register_weixinappsettings() {
     register_setting( 'weixinapp-group', 'enable_comments_interstitial_ad' );
     register_setting( 'weixinapp-group', 'enable_live_interstitial_ad' );
     register_setting( 'weixinapp-group', 'wf_copyright_state' );
+
+    register_setting('weixinapp-group', 'wf_detail_bottom_display_qrcode');
+    register_setting('weixinapp-group', 'wf_minapper_qrcode_url');
     
     
     
@@ -235,6 +238,17 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             </td> 
 
             <tr valign="top">
+                <th scope="row">web端文章底部显示二维码</th>
+                <td>
+                    <?php
+                    $wf_detail_bottom_display_qrcode = get_option('wf_detail_bottom_display_qrcode');
+                    $checkbox = empty($wf_detail_bottom_display_qrcode) ? '' : 'checked';
+                    echo '<input name="wf_detail_bottom_display_qrcode"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                    ?>
+                </td>
+            </tr>
+
+            <tr valign="top">
             <th scope="row">小程序logo图片地址</th>
             <td><input type="text" name="wf_logo_imageurl" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_logo_imageurl') ); ?>" /> <input id="wf_logo_imageurl-btn" class="button im-upload" type="button" value="选择图片" /><br/><p style="color: #959595; display:inline">* 请输完整的图片地址，例如：https://www.watch-life.net/images/poster.jpg</p></td>
            
@@ -249,6 +263,12 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             <tr valign="top">
             <th scope="row">赞赏码图片地址</th>
             <td><input type="text" name="wf_zan_imageurl" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_zan_imageurl') ); ?>" /> <input id="wf_zan_imageurl-btn" class="button im-upload" type="button" value="选择图片" /><br/><p style="color: #959595; display:inline">* 请输完整的图片地址，例如：https://www.watch-life.net/images/poster.jpg</p></td>
+           
+            </tr>
+
+            <tr valign="top">
+            <th scope="row">小程序码图片地址</th>
+            <td><input type="text" name="wf_minapper_qrcode_url" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_minapper_qrcode_url') ); ?>" /> <input id="wf_minapper_qrcode_url-btn" class="button im-upload" type="button" value="选择图片" /><br/><p style="color: #959595; display:inline">* 请输完整的图片地址，例如：https://www.watch-life.net/images/2017/04/weixinapp-watch-life.jpg</p></td>
            
             </tr>
 

@@ -897,3 +897,32 @@ function  getPosts($ids)
         // $data->data = $_data;     
         return $_data; 
     }
+
+    //重写内容
+    function ram_rewrite_content($content, $num)
+    {
+       
+        $tempContent = substr($content, 0, $num);
+        if (strlen($tempContent) == strlen($content))
+            return $content;
+
+        else {
+            if (($post_content = strrpos($tempContent, "<")) > strrpos($tempContent, ">"))
+                $tempContent = substr($tempContent, 0, $post_content);
+            return '' . strip_tags(ram_utf8_trim($tempContent), '<br/>') . '......';
+        }
+    }
+
+    function ram_utf8_trim($str)
+    {
+
+        $len = strlen($str);
+        $hex = '';
+        for ($i = strlen($str) - 1; $i >= 0; $i -= 1) {
+            $hex .= ' ' . ord($str[$i]);
+            $ch = ord($str[$i]);
+            if (($ch & 128) == 0) return (substr($str, 0, $i));
+            if (($ch & 192) == 192) return (substr($str, 0, $i));
+        }
+        return ($str . $hex);
+    }

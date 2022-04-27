@@ -27,7 +27,21 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                     )
                 )
                  
-            ),            
+            ),
+            array(
+                'methods'   => 'GET',
+                'callback'  => array( $this, 'getQrcodeImg' ),
+                'permission_callback' => array( $this, 'get_qrcodeimg_permissions_check' ),
+                'args'               => array(              
+                    'postid' => array(
+                        'required' => true
+                    ),                    
+                    'path' => array(
+                        'required' => true
+                    )
+                )
+                 
+            ),             
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
 
@@ -611,6 +625,111 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         return $data;
     }
  
+
+    function getQrcodeImg($request)
+    {
+        $postid= $request['postid'];      
+        $path=$request['path'];
+        $openid =$request['openid']; 
+
+        $qrcodeName = 'qrcode-'.$postid.'.png';//文章小程序二维码文件名     
+        $qrcodeurl = REST_API_TO_MINIPROGRAM_PLUGIN_DIR.'qrcode/'.$qrcodeName;//文章小程序二维码路径
+        $qrcodeimgUrl = plugins_url().'/'.REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/qrcode/'.$qrcodeName;
+        //自定义参数区域，可自行设置      
+        $appid = get_option('wf_appid');
+        $appsecret = get_option('wf_secret');
+       
+        //判断文章小程序二维码是否存在，如不存在，在此生成并保存
+        if(!is_file($qrcodeurl)) {
+            //$ACCESS_TOKEN = getAccessToken($appid,$appsecret,$access_token);
+            $access_token_url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$appsecret;
+             $access_token_result = https_request($access_token_url);
+             if($access_token_result !="ERROR")
+              {
+                $access_token_array= json_decode($access_token_result,true);
+                if(empty($access_token_array['errcode']))
+                {
+                  $access_token =$access_token_array['access_token'];
+                  if(!empty($access_token))
+                  {
+
+                    //接口A小程序码,总数10万个（永久有效，扫码进入path对应的动态页面）
+                    $url = 'https://api.weixin.qq.com/wxa/getwxacode?access_token='.$access_token;
+                    //接口B小程序码,不限制数量（永久有效，将统一打开首页，可根据scene跟踪推广人员或场景）
+                    //$url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=".$ACCESS_TOKEN;
+                    //接口C小程序二维码,总数10万个（永久有效，扫码进入path对应的动态页面）
+                    //$url = 'http://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token='.$ACCESS_TOKEN;
+
+                    //header('content-type:image/png');
+                    $color = array(
+                        "r" => "0",  //这个颜色码自己到Photoshop里设
+                        "g" => "0",  //这个颜色码自己到Photoshop里设
+                        "b" => "0",  //这个颜色码自己到Photoshop里设
+                    );
+                    $data = array(
+                        //$data['scene'] = "scene";//自定义信息，可以填写诸如识别用户身份的字段，注意用中文时的情况
+                        //$data['page'] = "pages/index/index";//扫码后对应的path，只能是固定页面
+                        'path' => $path, //前端传过来的页面path
+                        'width' => intval(100), //设置二维码尺寸
+                        'auto_color' => false,
+                        'line_color' => $color,
+                    );
+                    $data = json_encode($data);
+                    //可在此处添加或者减少来自前端的字段
+                    $QRCode = get_content_post($url,$data);//小程序二维码
+                    if($QRCode !='error')
+                    {
+                      //输出二维码
+                      file_put_contents($qrcodeurl,$QRCode);
+                      //imagedestroy($QRCode);
+                      $flag=true;
+                    }
+                    
+                  }
+                  else
+                  {
+                    $flag=false;
+                  }
+
+                }
+                else
+                {
+                  $flag=false;
+                }
+
+              }
+              else
+              {
+                $flag=false;
+              }
+            
+        }
+        else
+        {
+
+          $flag=true;
+        }
+
+        if($flag)
+        {
+          $result["code"]="success";
+            $result["message"]= "小程序码创建成功";
+            $result["qrcodeimgUrl"]=$qrcodeimgUrl; 
+            $result["status"]="200"; 
+            
+
+        }
+        else {
+            $result["code"]="success";
+            $result["message"]= "小程序码创建失败"; 
+            $result["status"]="500"; 
+            
+        } 
+
+        $response = rest_ensure_response( $result);
+        return $response;
+      
+    }
 
     function getWinxinQrcodeImg($request)
     {

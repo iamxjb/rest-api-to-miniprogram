@@ -1,20 +1,64 @@
 <?php
 //解析腾讯视频，只支持一个腾讯视频
-function custocm_content_filter($content) {
+function custocm_content_filter($content)
+{
 
-    $_content=$content;
-    if(is_single())
-    {
-        $vcontent =get_post_qq_video($content);
-        if(!empty($vcontent))
-        {
-            $_content=$vcontent;
+    $_content = $content;
+    if (is_single()) {
+        $vcontent = get_post_qq_video($content);
+        if (!empty($vcontent)) {
+            $_content = $vcontent;
         }
     }
 
+    $postId = get_the_ID();
+    $excitationAd = empty(get_post_meta($postId, '_excitation', true)) ? "0" : get_post_meta($postId, '_excitation', true);
+    $post = get_post($postId);
+
+    
+    $minapper_qrcode_url = empty(get_option('wf_minapper_qrcode_url')) ? '' : get_option('wf_minapper_qrcode_url');
+    $display_qrcode = empty(get_option('wf_detail_bottom_display_qrcode')) ? '0' : get_option('wf_detail_bottom_display_qrcode');
+    $excerpt = empty($post->post_excerpt) ? "" : $post->post_excerpt;
+    if (strlen($excerpt) < 1 &&  strlen($_content) > 0) {
+        $excerpt = ram_rewrite_content($_content, 500);
+    }
+    $message='';    
+    if (is_single()) {
+        $message = '微信扫描下方的二维码阅读本文<br/><br/>';
+        if ($excitationAd == '1') { 
+            $message = '微信扫描下方的二维码阅读全文<br/><br/>';       
+            $_content = $excerpt;        
+        }
+      
+        if($display_qrcode == '1')
+        {            
+            $path = "pages/detail/detail?id=" . $postId;
+            $url = get_option('siteurl') . '/wp-json/watch-life-net/v1/weixin/qrcodeimg?postid=' . $postId . '&path=' . $path;
+            $qrcode = "";
+            $response = wp_remote_get($url);
+            if (is_array($response) && !is_wp_error($response) && $response['response']['code'] == '200') {
+                
+                $body = json_decode($response['body'], true);
+                $qrcode = "<p><img  width='150' src='" . $body['qrcodeimgUrl'] . "' ></p>";
+                
+            }
+            else{
+                $qrcode = "<p><img  width='150' src='" . $minapper_qrcode_url . "' ></p>";
+            } 
+            $_content .= "<div style='width:100%,margin-top:20px;text-align:center;'><br/><br/>" . $message . $qrcode . "</div>";
+        }
+        else
+        {
+            if ($excitationAd == '1') {  
+                $message = '微信扫描下方的二维码阅读本文<br/><br/>';
+                $qrcode = "<p><img  width='150' src='" . $minapper_qrcode_url . "' ></p>";
+                $_content .= "<div style='width:100%,margin-top:20px;text-align:center;'><br/><br/>" . $message . $qrcode . "</div>";
+              
+            }
+           
+        }
+       
+        
+    }
     return $_content;
-
 }
-
-
-
