@@ -168,7 +168,104 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             'schema' => array( $this, 'get_public_item_schema' ),
             ) );
 
+            register_rest_route( $this->namespace, '/' . $this->resource_name . '/webchatuserlogin', array(
+                array(
+                    'methods'             => 'POST',
+                    'callback'            => array( $this, 'userlogin' ),
+                    'permission_callback' => array( $this, 'get_openid_permissions_check' ),
+                    'args'                => array(
+                        'context' => $this->get_context_param( array( 'default' => 'view' ) ),                  
+                        'js_code' => array(
+                            'required' => true
+                        )
+                    )
+                ),
+                'schema' => array( $this, 'get_public_item_schema' ),
+                ) );
+
+                register_rest_route($this->namespace, '/' . $this->resource_name . '/updatenickname', array(
+                    array(
+                        'methods'             => 'POST',
+                        'callback'            => array($this, 'updateNickname'),
+                        'permission_callback' => array($this, 'get_openid_permissions_check'),
+                        'args'                => array(
+                            'context' => $this->get_context_param(array('default' => 'view')),
+                            'js_code' => array(
+                                'required' => true
+                            ),
+                            'nickname' => array(
+                                'required' => true
+                            )
+                        )
+                    ),
+                    'schema' => array($this, 'get_public_item_schema'),
+                ));
+               
+
     }
+
+    
+    function updateNickname($request)
+    {
+        $js_code= $request['js_code']; 
+        $api_result=jscode2session($js_code);
+        if($api_result['errcode'] !=0)
+        {
+            return new WP_Error( 'error', $api_result['errmsg'], array( 'status' => 500 ) );
+        }          
+        $openId = $api_result['openid'];            
+        $user = get_user_by('login', $openId);
+        if(empty($user)) {   
+            return new WP_Error('error', '用户参数错误', array( 'status' => 502 ) );
+        }
+        $userId=(int)$user->ID;
+        $nickname=$request['nickname'];  
+        $count = ram_strLength($nickname);
+        if($count>15)
+        {
+            return new WP_Error( 'error', '用户昵称不能超过15个字符', array( 'status' => 200 ) );
+        }
+
+
+        $data = array(
+            'content' =>$nickname,
+            'openid'   =>$openId,
+            'scene'   =>1,
+            'version'=>2
+            
+        );
+
+        $msgSecCheckResult=security_msgSecCheck($data);
+        $errcode=$msgSecCheckResult['errcode'];		
+        $errmsg=$msgSecCheckResult['errmsg'];
+        if($errcode !=0)
+        {
+            return new WP_Error( 'error', $errmsg, array( 'status' => 200 ) );
+        }
+        $nickname=filterEmoji($nickname);
+        $_nickname=base64_encode($nickname);          
+        $_nickname=strlen($_nickname)>49?substr($_nickname,49):$_nickname; 
+        $userdata =array(
+            'ID'            => $userId,
+            'first_name'	=> $nickname,
+            'nickname'      => $nickname,
+            'user_nicename' => $_nickname,
+            'display_name'  => $nickname
+        );
+        $userId =wp_update_user($userdata);
+        if(is_wp_error($userId)){
+            return new WP_Error( 'error', '设置错误' , array( 'status' => 500 ) );
+        } 
+   
+        $result["code"]="success";            
+        $result["message"]= "设置成功";
+        $result["status"]="200";
+        $result["nickname"]=$nickname;                   
+        $response = rest_ensure_response($result);
+        return $response; 
+        
+    }
+
 
     function updateUserInfo($request)
     {
@@ -330,96 +427,104 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 
     function userlogin($request)
     {
-        $js_code= $request['js_code'];
-        // $encryptedData=$request['encryptedData'];
-        // $iv=$request['iv'];
-        $avatarUrl=$request['avatarUrl'];
-        $nickname=empty($request['nickname'])?'':$request['nickname'];
-
-
-        $appid = get_option('wf_appid');
-        $appsecret = get_option('wf_secret');
-        if(empty($appid) || empty($appsecret) ){
-            return new WP_Error( 'error', 'appid或appsecret为空', array( 'status' => 500 ) );
+        $js_code= $request['js_code'];       
+        $wxAvatarUrl=$request['avatarUrl'];
+        $wxNickname=$request['nickname']; 
+        $api_result=jscode2session($js_code);
+        if($api_result['errcode'] !=0)
+        {
+            return new WP_Error( 'error', $api_result['errmsg'], array( 'status' => 500 ) );
+        }           
+        $openId = $api_result['openid'];
+        $unionId = $api_result['unionid']; 
+        $userId=0;
+        $_nickname='';
+        $nickname='微信用户';
+        $avatarUrl = plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/images/gravatar.png';
+        if(!empty($wxNickname) && $wxNickname !='微信用户')
+        {
+            $avatarUrl =$wxAvatarUrl;
+            $nickname=filterEmoji($wxNickname);         
+            $_nickname=base64_encode($nickname);          
+            $_nickname=strlen($_nickname)>49?substr($_nickname,49):$_nickname;
         }
         else
-        {        
-            $access_url = "https://api.weixin.qq.com/sns/jscode2session?appid=".$appid."&secret=".$appsecret."&js_code=".$js_code."&grant_type=authorization_code";
-            $access_result = https_request($access_url);
-            if($access_result=='ERROR') {
-                return new WP_Error( 'error', 'API错误：' . json_encode($access_result), array( 'status' => 501 ) );
-            } 
-            $api_result  = json_decode($access_result,true);            
-            if( empty( $api_result['openid'] ) || empty( $api_result['session_key'] )) {
-                return new WP_Error('error', 'API错误：' . json_encode( $api_result ), array( 'status' => 502 ) );
-            }            
-            $openId = $api_result['openid']; 
-            $sessionKey = $api_result['session_key'];  
-            $unionId = $api_result['unionid']; 
-            $userId=0;
-            $nickname=filterEmoji($nickname);         
-            $_nickname=base64_encode($nickname);          
-		    $_nickname=strlen($_nickname)>49?substr($_nickname,49):$_nickname;
-            // $avatarUrl= $data['avatarUrl'];             
-            if(!username_exists($openId) ) {                
-                $new_user_data = apply_filters( 'new_user_data', array(
-                    'user_login'    => $openId,
-                    'first_name'	=> $nickname ,
-                    'nickname'      => $nickname,                    
-                    'user_nicename' => $_nickname,
-                    'display_name'  => $nickname,
-                    'user_pass'     => null,
-                    'user_email'    => $openId.'@weixin.com'
-                ) );                
-                $userId = wp_insert_user( $new_user_data );			
-                if ( is_wp_error( $userId ) || empty($userId) ||  $userId==0 ) {
-                    return new WP_Error( 'error', '插入wordpress用户错误：', array( 'status' => 500 ) );				
-                }
+        {
+            $nickname='微信用户'.ram_randString();
+            $_nickname = $nickname;
+        }
+        $display_name='';              
+        if(!username_exists($openId) ) {                         
+            $new_user_data = apply_filters( 'new_user_data', array(
+                'user_login'    => $openId,
+                'first_name'	=> $nickname ,
+                'nickname'      => $nickname,                    
+                'user_nicename' => $_nickname,
+                'display_name'  => $nickname,
+                'user_pass'     => null,
+                'user_email'    => $openId.'@weixin.com'
+            ) );                
+            $userId = wp_insert_user( $new_user_data );			
+            if ( is_wp_error( $userId ) || empty($userId) ||  $userId==0 ) {
+                return new WP_Error( 'error', '插入wordpress用户错误：', array( 'status' => 500 ) );				
+            }
 
-                update_user_meta( $userId,'avatar',$avatarUrl);
-                update_user_meta($userId,'usertype',"weixin");
-                update_user_meta($userId,'unionId',$unionId);
+            update_user_meta($userId,'avatar',$avatarUrl);
+            update_user_meta($userId,'usertype',"weixin");
+            update_user_meta($userId,'unionId',$unionId);
 
-            }            
-            else{
-                $user = get_user_by( 'login', $openId);
-                $userId=   $user->ID;   
+        }            
+        else{
+            $user = get_user_by('login', $openId);
+            $userId=   $user->ID;
+            if(!empty($wxNickname) && $wxNickname !='微信用户')
+            {                     
                 $userdata =array(
                     'ID'            => $user->ID,
                     'first_name'	=> $nickname,
                     'nickname'      => $nickname,
                     'user_nicename' => $_nickname,
-                    'display_name'  => $nickname,
-                    'user_email'    => $openId.'@weixin.com'
+                    'display_name'  => $nickname
                 );
                 $userId =wp_update_user($userdata);
                 if(is_wp_error($userId)){
-                    return new WP_Error( 'error', '更新wp用户错误：' , array( 'status' => 500 ) );
+                    return new WP_Error( 'error', '更新wp用户错误' , array( 'status' => 500 ) );
                 }             
+            }
+            $display_name= $user->display_name;
+            if(!empty($wxNickname) && $wxNickname !='微信用户')
+            {
                 if (delete_user_meta($userId, 'avatar') ) {
                     update_user_meta($userId,'avatar',$avatarUrl);
                 }
         
-                if (delete_user_meta($userId, 'usertype') ) {
-                    $flag=update_user_meta($userId,'usertype',"weixin");
-                }
-                
-                if(empty(get_user_meta( $userId, 'unionId', true )))
-                {                  
-                    update_user_meta($userId,'unionId',$unionId);
-                }
-                  
             }
-            $userLevel= getUserLevel($userId);
-            $result["code"]="success";            
-            $result["message"]= "获取用户信息成功";
-            $result["status"]="200";
-            $result["openid"]=$openId;
-            $result["userLevel"]=$userLevel; 
-            $result["userId"]=$userId;            
-            $response = rest_ensure_response($result);
-            return $response; 
-        }  
+            
+            if (delete_user_meta($userId, 'usertype') ) {
+                $flag=update_user_meta($userId,'usertype',"weixin");
+            }
+            
+            if(empty(get_user_meta( $userId, 'unionId', true )))
+            {                  
+                update_user_meta($userId,'unionId',$unionId);
+            }
+                
+        }
+        $userLevel= getUserLevel($userId);
+        $enableUpdateAvatarCount= (int)getEnableUpdateAvatarCount($userId);
+        $result["enableUpdateAvatarCount"]=$enableUpdateAvatarCount;  
+        $result["code"]="success";            
+        $result["message"]= "获取用户信息成功";
+        $result["status"]="200";
+        $result["openid"]=$openId;
+        $result["nickname"]=$display_name;
+        $result["avatarurl"]= get_user_meta( $userId, 'avatar', true );
+        $result["userLevel"]=$userLevel; 
+        $result["userId"]=$userId; 
+        $result["openid"]=$openId;        
+        $response = rest_ensure_response($result);
+        return $response; 
+         
     }
 
     function sendmessage($request)
@@ -887,11 +992,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 
     function get_openid_permissions_check($request)
     {
-      $js_code= $request['js_code'];
-      $encryptedData=$request['encryptedData'];
-      $iv=$request['iv'];
-      $avatarUrl=$request['avatarUrl'];
-      $nickname=empty($request['nickname'])?'':$request['nickname'];
+      $js_code= $request['js_code'];      
       if(empty($js_code))
       {
           return new WP_Error( 'error', 'js_code是空值', array( 'status' => 500 ) );

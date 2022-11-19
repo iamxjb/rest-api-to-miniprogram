@@ -76,36 +76,7 @@ function register_weixinappsettings() {
 
     register_setting('weixinapp-group', 'wf_detail_bottom_display_qrcode');
     register_setting('weixinapp-group', 'wf_minapper_qrcode_url');
-    
-    
-    
-
-    
-
-
-
-
-    
-    
-
-
-    
-    
-    
-   
-
-
-    
-
-
-
-
-    
-
-    
-    
-       
-    
+    register_setting('weixinapp-group', 'wf_updateAvatar_count');
     
 }
 
@@ -182,9 +153,16 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             <tr valign="top">
                 <th scope="row">在小程序里显示的文章分类id</th>
                 <td><input type="text" name="wf_display_categories" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_display_categories') ); ?>" />
-                <br /><p style="color: #959595 ; display:inline">* 文章分类id,只支持一级分类,请用英文半角逗号分隔，留空则显示所有分类</p>
+                <p style="color: #959595 ; display:inline">* 文章分类id,只支持一级分类,请用英文半角逗号分隔，留空则显示所有分类</p>
                     </td>
             </tr>
+            <tr valign="top">
+                <th scope="row">用户一年内可修改头像的次数</th>
+                <td><input type="numbver" name="wf_updateAvatar_count" placeholder="3" style="width:50px; height:40px" value="<?php echo esc_attr( get_option('wf_updateAvatar_count') ); ?>" />次
+                <p style="color: #959595 ; display:inline">* 填写整数,留空则修改次数为0次</p>
+                    </td>
+            </tr>
+
 
             <tr valign="top">
             <th scope="row">选择"关于"页面</th>

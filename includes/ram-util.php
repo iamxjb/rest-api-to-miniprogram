@@ -55,24 +55,36 @@ function getPostImages($content,$postId){
     $_data =array();
 
     if (has_post_thumbnail($postId)) {
-        //获取缩略的ID
-        $thumbnailId = get_post_thumbnail_id($postId);
-
-        //特色图缩略图
-        $image=wp_get_attachment_image_src($thumbnailId, 'thumbnail');
-        $post_thumbnail_image=$image[0];
-        $post_thumbnail_image_150=$image[0];
-        //特色中等图
-        $image=wp_get_attachment_image_src($thumbnailId, 'medium');
-        $post_medium_image=$image[0];
-        $post_medium_image_300=$image[0];
-        //特色大图
-        $image=wp_get_attachment_image_src($thumbnailId, 'large');
-        $post_large_image=$image[0];
-        $post_thumbnail_image_624=$image[0];
-        //特色原图
-        $image=wp_get_attachment_image_src($thumbnailId, 'full');
-        $post_full_image=$image[0];
+         //获取缩略的ID
+         $thumbnailId = get_post_thumbnail_id($postId);
+         //特色图缩略图
+         $image = wp_get_attachment_image_src($thumbnailId, 'thumbnail');
+         if($image !=false)
+         {
+             $post_thumbnail_image = $image[0];
+             $post_thumbnail_image_150 = $image[0];
+         }
+         //特色中等图
+         $image = wp_get_attachment_image_src($thumbnailId, 'medium');
+         if($image !=false)
+         {
+             $post_medium_image = $image[0];
+             $post_medium_image_300 = $image[0];
+         }
+         
+         //特色大图
+         $image = wp_get_attachment_image_src($thumbnailId, 'large');
+         if($image !=false)
+         {
+             $post_large_image = $image[0];
+             $post_thumbnail_image_624 = $image[0];
+         }
+         //特色原图
+         $image = wp_get_attachment_image_src($thumbnailId, 'full');
+         if($image !=false)
+         {
+             $post_full_image = $image[0];
+         }
 
     }
 
@@ -926,3 +938,136 @@ function  getPosts($ids)
         }
         return ($str . $hex);
     }
+
+    function ram_randString()
+    {
+        $code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $rand = $code[rand(0,25)]
+            .strtoupper(dechex(date('m')))
+            .date('d').substr(time(),-5)
+            .substr(microtime(),2,5)
+            .sprintf('%02d',rand(0,99));
+        for(
+            $a = md5( $rand, true ),
+            $s = '0123456789abcdefjhijklmnopqrstuv',
+            $d = '',
+            $f = 0;
+            $f < 8;
+            $g = ord( $a[ $f ] ),
+            $d .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ],
+            $f++
+        );
+        return  $d;
+    }
+
+    function ram_strLength($str,$charset='utf-8'){  
+        if($charset=='utf-8') $str = iconv('utf-8','gb2312',$str);  
+        $num = strlen($str);  
+        $cnNum = 0;  
+        for($i=0;$i<$num;$i++){  
+        if(ord(substr($str,$i+1,1))>127){  
+        $cnNum++;  
+        $i++;  
+        }  
+        }  
+        $enNum = $num-($cnNum*2);  
+        $number = ($enNum/2)+$cnNum;  
+        return ceil($number);  
+    }
+
+     function security_msgSecCheck($data){
+          
+        $msgSecCheckResult = RAM()->wxapi->msgSecCheck($data);
+		$errcode=$msgSecCheckResult['errcode'];		
+		$errmsg=$msgSecCheckResult['errmsg'];
+        $result=array();
+		if($errcode!=0)
+		{
+            $result['errcode']=$errcode;
+            $result['errmsg']=$errmsg;
+			
+		}
+
+		$checkResult=$msgSecCheckResult['result'];
+		$label=$checkResult['label'];
+		if($label !='100')
+		{
+            $result['errcode']=(int)$label;
+            $result['errmsg']="昵称无法通过审核";
+			
+		}
+        else
+        {
+            $result['errcode']=0;
+            $result['errmsg']="昵称合规合法";
+        }
+
+        return  $result;
+
+
+    }
+
+    function jscode2session($js_code){
+          
+            $appid = get_option('wf_appid');
+            $appsecret = get_option('wf_secret');
+            $api_result=array();
+            if(empty($appid) || empty($appsecret) ){
+                $api_result['errcode']="3";
+                $api_result['errmsg']="appid或appsecret为空";
+                //return new WP_Error( 'error', 'appid或appsecret为空', array( 'status' => 500 ) );
+            }
+            $access_url = "https://api.weixin.qq.com/sns/jscode2session?appid=".$appid."&secret=".$appsecret."&js_code=".$js_code."&grant_type=authorization_code";
+            $access_result = https_request($access_url);
+            
+            if($access_result=='ERROR') {
+
+                $api_result['errcode']="1";
+                $api_result['errmsg']=json_encode($access_result);
+
+                return $api_result;
+                //return new WP_Error( 'error', 'API错误：' . json_encode($access_result), array( 'status' => 501 ) );
+            } 
+            $api_result  = json_decode($access_result,true);            
+            if( empty( $api_result['openid'] ) || empty( $api_result['session_key'] )) {
+                $api_result['errcode']="2";
+                $api_result['errmsg']=json_encode( $api_result );
+                return $api_result;
+               // return new WP_Error('error', 'API错误：' . json_encode( $api_result ), array( 'status' => 502 ) );
+            }            
+            $api_result['errcode']="0";
+            $api_result['errmsg']="获取成功";              
+            return $api_result;
+
+
+    }
+
+    //获取可修改头像的次数
+    function getEnableUpdateAvatarCount($userId){
+        $year=date('Y', time());
+        $updateAvatarCount=$year."-"."updateAvatarCount";
+        $updateCount =empty(get_user_meta($userId,$updateAvatarCount))?0:(int)get_user_meta($userId,$updateAvatarCount,true);
+        $configCount =(int)get_option('wf_updateAvatar_count');
+        $count=$configCount-$updateCount;
+        if($count <0)
+        {
+            $count;
+        }
+        return $count;
+    }
+
+    //获取修改头像的次数
+    function getUpdateAvatarCount($userId){
+        $year=date('Y', time());
+        $updateAvatarCount=$year."-"."updateAvatarCount";
+        $updateCount =empty(get_user_meta($userId,$updateAvatarCount))?0:(int)get_user_meta($userId,$updateAvatarCount,true);
+        return  $updateCount;
+    }
+
+    //设置修改头像的次数
+    function setUpdateAvatarCount($userId,$count){
+        $year=date('Y', time());
+        $updateAvatarCount=$year."-"."updateAvatarCount";
+        update_user_meta($userId,$updateAvatarCount,$count);
+    }
+
