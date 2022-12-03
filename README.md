@@ -22,9 +22,12 @@ https://wordpress.org/plugins/rest-api-to-miniprogram
 
 # 插件镜像更新地址：
 
-https://gitee.com/iamxjb/rest-api-to-miniprogram
+# https://gitee.com/iamxjb/rest-api-to-miniprogram
+
 https://github.com/iamxjb/rest-api-to-miniprogram
+
 https://codechina.csdn.net/xjbx/rest-api-to-miniprogram
+
 
 
 
