@@ -258,12 +258,20 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
             if($comment->comment_parent==0){
                 $data["id"]=$comment->comment_ID;
                 $data["author_name"]=$comment->comment_author;
-                $author_url =$comment->comment_author_url;
-                $data["author_url"]=strpos($author_url, "wx.qlogo.cn")?$author_url:"../../images/gravatar.png";
+                $userId=$comment->user_id;
+                $data["userid"]= $userId;
+                $avatar= get_user_meta( $userId, 'avatar', true );
+                if(empty($avatar))
+                {
+                    $avatar ="../../images/gravatar.png";
+                }
+                $data["author_url"]= $avatar;
+                //$data["author_url"]=strpos($author_url, "wx.qlogo.cn")?$author_url:"../../images/gravatar.png";
+                
                 $data["date"]=time_tran($comment->comment_date);
                 $data["content"]=$comment->comment_content;
                 $data["formId"]=$comment->formId;
-                $data["userid"]=$comment->user_id;
+              
                 $order="asc";
                 $data["child"]=$this->getchildcomment($postid,$comment->comment_ID,5,$order);
                 $commentslist[] =$data;

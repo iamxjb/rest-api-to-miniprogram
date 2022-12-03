@@ -440,7 +440,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         $userId=0;
         $_nickname='';
         $nickname='微信用户';
-        $avatarUrl = plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/images/gravatar.png';
+        $avatarUrl = plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/includes/images/gravatar.png';
         if(!empty($wxNickname) && $wxNickname !='微信用户')
         {
             $avatarUrl =$wxAvatarUrl;

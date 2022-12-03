@@ -480,16 +480,19 @@ function ram_get_client_ip()
     return null;
 }
 
-function filterEmoji($str)
-{
-  $str = preg_replace_callback(
-    '/./u',
-    function (array $match) {
-      return strlen($match[0]) >= 4 ? '' : $match[0];
-    },
-    $str);
-
-  return $str;
+function filterEmoji($nickname){
+    $nickname = preg_replace('/[\x{1F600}-\x{1F64F}]/u', '', $nickname);
+    $nickname = preg_replace('/[\x{1F300}-\x{1F5FF}]/u', '', $nickname);
+    $nickname = preg_replace('/[\x{1F680}-\x{1F6FF}]/u', '', $nickname);
+    $nickname = preg_replace('/[\x{2600}-\x{26FF}]/u', '', $nickname);
+    $nickname = preg_replace('/[\x{2700}-\x{27BF}]/u', '', $nickname);
+    $nickname = str_replace(array('"','\''), '', $nickname);
+    $nickname = preg_replace_callback( '/./u',
+      function (array $match) {
+        return strlen($match[0]) >= 4 ? '' : $match[0];
+      },
+      $nickname);
+    return addslashes(trim($nickname));
 }
 
 function  getUserLevel($userId)
@@ -820,22 +823,11 @@ function  getPosts($ids)
     
             $sql=$wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
             $likes = $wpdb->get_results($sql);
-            //$_data['sql']=$sql;
+           // $_data['sql']=$sql;
             $avatarurls =array();
             foreach ($likes as $like) {
-                $userId = $like->id;
-                $display_name=$like->display_name;
-                $pos=stripos($display_name,'wx.qlogo.cn');
-                if($pos)
-                {
-    
-                  $avatar =$display_name;
-    
-                }
-                else
-                {
-                  $avatar= get_user_meta( $userId, 'avatar', true );
-                }
+                $userId = $like->id;                
+                $avatar= get_user_meta( $userId, 'avatar', true );
                 
                 if(!empty($avatar))
                 {
