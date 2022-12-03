@@ -44,7 +44,7 @@
 如果不想看文档也不想提问的话可以购买安装部署服务，具体服务价格请[点击查看](https://www.minapper.com/fuwu)。
 
  
-### 五、联系我们
+### 六、联系我们
 | 客服 | 公众号 |
 |----|-----|
 |   ![输入图片说明](https://5xo2e5q2j9.k.topthink.com/lfs/187d57d410d63a327d35071bc0dadd350be9af2f07e916d03e91aa1025431e5d) |   ![输入图片说明](https://5xo2e5q2j9.k.topthink.com/lfs/2db73985d9e3a95977c98d60f5a52ace854a5cc677490d67d2e4fe4ae094a4ff)  |
