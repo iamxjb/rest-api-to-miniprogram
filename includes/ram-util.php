@@ -719,10 +719,10 @@ function  getPosts($ids)
     
        
          
-         $siteurl = get_option('siteurl');
-         $upload_dir = wp_upload_dir();
-         $content = str_replace( 'http:'.strstr($siteurl, '//'), 'https:'.strstr($siteurl, '//'), $content);
-         $content = str_replace( 'http:'.strstr($upload_dir['baseurl'], '//'), 'https:'.strstr($upload_dir['baseurl'], '//'), $content);
+        $siteurl = get_option('siteurl');
+        $upload_dir = wp_upload_dir();
+        $content = str_replace( 'http:'.strstr($siteurl, '//'), 'https:'.strstr($siteurl, '//'), $content);
+        $content = str_replace( 'http:'.strstr($upload_dir['baseurl'], '//'), 'https:'.strstr($upload_dir['baseurl'], '//'), $content);
         
         $images =getPostImages($content, $post_id); 
         $_data['post_thumbnail_image']=$images['post_thumbnail_image'];

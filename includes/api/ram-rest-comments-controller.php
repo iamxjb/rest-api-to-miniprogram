@@ -260,7 +260,7 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
                 $data["author_name"]=$comment->comment_author;
                 $userId=$comment->user_id;
                 $data["userid"]= $userId;
-                $avatar= get_user_meta( $userId, 'avatar', true );
+                $avatar= get_user_meta($userId, 'avatar',true);
                 if(empty($avatar))
                 {
                     $avatar ="../../images/gravatar.png";
