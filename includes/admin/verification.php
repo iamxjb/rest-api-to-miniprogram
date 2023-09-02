@@ -1,7 +1,13 @@
 <?php
+function cmp_do_output_buffer()
+{
+    ob_start();
+}
+add_action('init', 'cmp_do_output_buffer');
+
 function minapper_check_validation()
 {
-    //delete_transient('minapper_is_validated');
+    delete_transient('minapper_is_validated');
 
     if (isset($_GET['page']) && ($_GET['page'] == 'weixinapp_slug' || $_GET['page'] == 'minapper_expand_settings_page')) {
 
@@ -31,7 +37,7 @@ add_action('admin_menu', 'minapper_add_validation_page');
 
 function minapper_render_validation_page()
 {
-    ob_start();
+    //ob_start(); 
 ?> <style>
         .Modal {
             -webkit-box-orient: vertical;
@@ -374,19 +380,19 @@ function minapper_render_validation_page()
                 $body = wp_remote_retrieve_body($response);
                 $json = json_decode($body, true);
                 if ($json['status'] === 'success') {
-                    ob_end_clean();  // 清除缓冲区
+                    //ob_end_clean();  // 清除缓冲区
                     // update_option('minapper_is_validated', true);
                     set_transient('minapper_is_validated', true, 30 * 24 * 60 * 60);
                     wp_redirect(admin_url('admin.php?page=weixinapp_slug'));
                     exit;
                 } else {
-                    echo '<p>Invalid verification code.</p>';
+                    echo '<p>无效的验证码。</p>';
                 }
             } else {
-                echo '<p>API request failed with status code: ' . wp_remote_retrieve_response_code($response) . '</p>';
+                echo '<p>API 请求失败，状态码：' . wp_remote_retrieve_response_code($response) . '</p>';
             }
         } else {
-            echo '<p>Verification code is missing.</p>';
+            echo '<p>缺少验证码。</p>';
         }
     }
 }
@@ -394,13 +400,13 @@ function minapper_render_validation_page()
 
 function minapper_add_plugin_page_settings_link($links)
 {
-    $is_validated = get_transient('minapper_is_validated');
+    $is_validated = get_transient('minapper_is_validated', false);
 
 
     if ($is_validated) {
         $settings_link = '<a href="admin.php?page=weixinapp_slug">' . __('设置', 'rest-api-to-miniprogram') . '</a>';
         $extension_settings_link = '<a href="admin.php?page=minapper_expand_settings_page">' . __('扩展设置', 'rest-api-to-miniprogram') . '</a>';
-        array_unshift($links, $settings_link, $extension_settings_link);
+        array_unshift($links, $settings_link);
     } else {
         $validation_link = '<a href="admin.php?page=minapper_validation_page">' . __('验证插件', 'rest-api-to-miniprogram') . '</a>';
         array_unshift($links, $validation_link);
