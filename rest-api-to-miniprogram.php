@@ -15,7 +15,7 @@ define('REST_API_TO_MINIPROGRAM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 const REST_API_TO_MINIPROGRAM_PLUGIN_NAME='rest-api-to-miniprogram';
 define('REST_API_TO_MINIPROGRAM_PLUGIN_URL',plugins_url(REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/', dirname(__FILE__)));
 //define('REST_API_TO_WECHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-
+include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/admin/verification.php' );
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-util.php' );
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-api.php' );
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/ram-weixin-api.php');
@@ -132,9 +132,7 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
         array_unshift( $links, $settings_link );
 
-        $settings_link = '<a href="admin.php?page=weixinapp_slug">' . esc_html__( '设置', 'REST API TO MiniProgram' ) . '</a>';
-
-        array_unshift( $links, $settings_link );
+       
 
         return $links;
     }
