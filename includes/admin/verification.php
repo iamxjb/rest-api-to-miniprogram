@@ -1,11 +1,9 @@
 <?php
-
-
 function minapper_check_validation()
 {
-    // delete_transient('minapper_is_validated');
+    //delete_transient('minapper_is_validated');
 
-    if (isset($_GET['page']) && ($_GET['page'] == 'weixinapp_slug'|| $_GET['page'] == 'minapper_expand_settings_page')) {
+    if (isset($_GET['page']) && ($_GET['page'] == 'weixinapp_slug' || $_GET['page'] == 'minapper_expand_settings_page')) {
 
         $is_validated = get_transient('minapper_is_validated');
         if (!$is_validated) {
@@ -34,10 +32,7 @@ add_action('admin_menu', 'minapper_add_validation_page');
 function minapper_render_validation_page()
 {
     ob_start();
-
-
-?>
-    <style>
+?> <style>
         .Modal {
             -webkit-box-orient: vertical;
             -webkit-box-direction: normal;
@@ -357,20 +352,15 @@ function minapper_render_validation_page()
             </div>
         </div>
     </div>
-
-
-
 <?php
-
-    $output = ob_get_clean();
-
-    echo $output;
+    //$output = ob_get_clean(); 
+    //echo $output;
 
 
     if (isset($_POST['minapper_verify'])) {
         if (isset($_POST['minapper_verification_code'])) {
             $code = sanitize_text_field($_POST['minapper_verification_code']);
-error_log('$code',$code);
+
             $args = array(
                 'body' => json_encode(array('code' => $code)),
                 'headers' => array('Content-Type' => 'application/json'),
@@ -383,11 +373,10 @@ error_log('$code',$code);
             if (is_array($response) && wp_remote_retrieve_response_code($response) == 200) {
                 $body = wp_remote_retrieve_body($response);
                 $json = json_decode($body, true);
-
-
                 if ($json['status'] === 'success') {
-                    update_option('minapper_is_validated', true);
-                    set_transient('minapper_is_validated', true, 7 * 24 * 60 * 60);
+                    ob_end_clean();  // 清除缓冲区
+                    // update_option('minapper_is_validated', true);
+                    set_transient('minapper_is_validated', true, 30 * 24 * 60 * 60);
                     wp_redirect(admin_url('admin.php?page=weixinapp_slug'));
                     exit;
                 } else {
@@ -395,7 +384,6 @@ error_log('$code',$code);
                 }
             } else {
                 echo '<p>API request failed with status code: ' . wp_remote_retrieve_response_code($response) . '</p>';
-                
             }
         } else {
             echo '<p>Verification code is missing.</p>';
@@ -406,14 +394,15 @@ error_log('$code',$code);
 
 function minapper_add_plugin_page_settings_link($links)
 {
-    $is_validated = get_option('minapper_is_validated', false);
+    $is_validated = get_transient('minapper_is_validated');
+
 
     if ($is_validated) {
         $settings_link = '<a href="admin.php?page=weixinapp_slug">' . __('设置', 'rest-api-to-miniprogram') . '</a>';
         $extension_settings_link = '<a href="admin.php?page=minapper_expand_settings_page">' . __('扩展设置', 'rest-api-to-miniprogram') . '</a>';
-        array_unshift($links, $settings_link);
+        array_unshift($links, $settings_link, $extension_settings_link);
     } else {
-        $validation_link = '<a href="admin.php?page=minapper_validation_page">' . __('Validation Required', 'rest-api-to-miniprogram') . '</a>';
+        $validation_link = '<a href="admin.php?page=minapper_validation_page">' . __('验证插件', 'rest-api-to-miniprogram') . '</a>';
         array_unshift($links, $validation_link);
     }
 
