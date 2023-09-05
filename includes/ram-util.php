@@ -321,11 +321,13 @@ function get_content_post($url,$post_data=array(),$header=array()){
     $info = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
     $code = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if($code == "200"){
-        return $content;
-    }else{
-        return "error";
+    if ($code == '200') {
+        $errcode = 0;
+    } else {
+        $errcode = (int)$code;
     }
+    $result =  array('code' => $code, 'errcode' => $errcode, 'buffer' => $content);
+    return $result;
 }
 
 //发起https请求
@@ -713,7 +715,7 @@ function  getPosts($ids)
     //  }
     
         //$content =get_the_content();
-        $content=$_data['content']['rendered'];
+        $content=html_entity_decode($_data['content']['rendered']);
         $content_protected=$_data['content']['protected'];
         $raw=empty($_data['content']['raw'])?'':$_data['content']['raw'];
     
@@ -1061,5 +1063,61 @@ function  getPosts($ids)
         $year=date('Y', time());
         $updateAvatarCount=$year."-"."updateAvatarCount";
         update_user_meta($userId,$updateAvatarCount,$count);
+    }
+
+    function creat_minapper_qrcode($postId)
+    {
+        $path ="pages/detail/detail?id=".$postId;
+        $qrcodeName = 'qrcode-'.$postId.'.png';//文章小程序二维码文件名     
+        $qrcodePath = REST_API_TO_MINIPROGRAM_PLUGIN_DIR.'qrcode/';//文章小程序二维码路径
+        $qrcodeUrl = plugins_url().'/'.REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/qrcode/'.$qrcodeName;
+        if (!is_dir($qrcodePath)) 
+        {
+            mkdir($qrcodePath, 0777);
+        }
+
+        $qrcodePath = REST_API_TO_MINIPROGRAM_PLUGIN_DIR.'qrcode/'.$qrcodeName;//文章小程序二维码路径
+        //判断文章小程序二维码是否存在        
+        if(is_file($qrcodePath)) {
+
+            $result['qrcodeUrl']=$qrcodeUrl;
+            $result['qrcodePath']=$qrcodePath;            
+            return $result;            
+        }
+        $color = array(
+            "r" => "0",  
+            "g" => "0", 
+            "b" => "0", 
+        );
+        $data = array(
+            
+            'path' => $path, //前端传过来的页面path
+            'width' => 430, //设置二维码尺寸
+            'auto_color' => false,
+            'line_color' => $color,
+        );
+        $qrcodeesult= RAM()->wxapi->get_qrcode($data);       
+        $errcode=(int)$qrcodeesult['errcode'];            
+        if($errcode==0)
+        {
+            $qrcode= $qrcodeesult['buffer'];
+            file_put_contents($qrcodePath,$qrcode);               
+            $result['qrcodeUrl']=$qrcodeUrl;
+            $result['qrcodePath']=$qrcodePath;
+            $result['errcode']="0";
+        
+        }
+        else
+        {
+
+            $result['errcode']="1";
+            $result['errmsg']="生成二维码错误";
+            
+
+        }
+        return $result;
+
+
+
     }
 

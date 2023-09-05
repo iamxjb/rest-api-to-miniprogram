@@ -31,6 +31,7 @@ include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-categor
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-posts-rows.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/admin/exopite-simple-options/exopite-simple-options-framework-class.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/settings/wp-wechat-admin.php');
+include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/settings/wp_code_verification.php' );
 if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
     class RestAPIMiniProgram {

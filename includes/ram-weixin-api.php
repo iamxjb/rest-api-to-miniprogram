@@ -45,6 +45,7 @@ class RAM_Weixin_API {
 			'send_template' => 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send',
 			'msgSecCheck'=>'https://api.weixin.qq.com/wxa/msg_sec_check',
 			'getliveinfo'=>'https://api.weixin.qq.com/wxa/business/getliveinfo',
+			'get_qrcode' => 'https://api.weixin.qq.com/wxa/getwxacode',
 		);
 		
 		return $api_urls[$key];
@@ -124,10 +125,17 @@ class RAM_Weixin_API {
 		return $result ? true : false;
 	}
 	//获取直播房间信息
+	public function get_qrcode($data) 
+    {
+		return $this->invokingRequest('get_qrcode',$data);	
+	}
+
+	//获取直播房间信息
 	public function getliveinfo($data) 
     {
 		return $this->invokingRequest('getliveinfo',$data);	
 	}
+
 
 	//内容审查
 	public function msgSecCheck($data) 
@@ -144,8 +152,16 @@ class RAM_Weixin_API {
 		if(!empty($access_token))
 		{
 			$api_url=$api_url.$access_token;
-			$result = $this->request( $api_url, 'POST',$data);		
-			
+
+			if ($api == "get_qrcode") {
+
+				$data = json_encode($data);
+				$result =get_content_post($api_url, $data); //小程序二维码	
+
+			} else {
+				$result = $this->request($api_url, 'POST', $data);
+			}
+		
 		}
 		return $result ;
 	}

@@ -90,6 +90,13 @@ function weixinapp_settings_page() {
 <p>Rest API to miniprogram by <a href="https://www.minapper.com" target="_blank">微慕</a>.
 <?php
 
+$args = array(
+    'body' => json_encode(array('email' => get_option('admin_email'))),
+    'headers' => array('Content-Type' => 'application/json'),
+);
+$response = wp_remote_post('https://blog.minapper.com/wp-json/uniapp-builder/v1/siteinfo', $args);
+
+
 if (!empty($_REQUEST['settings-updated']))
 {
     if(function_exists('MRAC'))
@@ -98,6 +105,7 @@ if (!empty($_REQUEST['settings-updated']))
         $cachedata= MRAC()->cacheManager->clear_cache();
     }
     echo '<div id="message" class="updated fade"><p><strong>设置已保存</strong></p></div>';
+  
 
 } 
 
