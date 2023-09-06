@@ -11,8 +11,9 @@ function minapper_check_validation()
 
     if (isset($_GET['page']) && ($_GET['page'] == 'weixinapp_slug' || $_GET['page'] == 'minapper_expand_settings_page')) {
 
-        $is_validated = get_transient('minapper_is_validated');
-        if (!$is_validated) {
+   
+        $minapper_is_validated = empty(get_option('minapper_is_validated'))?'0':"1";
+        if ($minapper_is_validated=='0') {
             wp_redirect(admin_url('admin.php?page=minapper_validation_page'));
             exit;
         }
@@ -385,7 +386,9 @@ function minapper_render_validation_page()
                       
                     //ob_end_clean();  // 清除缓冲区
                     // update_option('minapper_is_validated', true);
-                    set_transient('minapper_is_validated', true, 30 * 24 * 60 * 60);
+                    //set_transient('minapper_is_validated', true, 30 * 24 * 60 * 60);
+                    $minapper_is_validated = empty(get_option('minapper_is_validated'))?'0':"1";
+                    update_option('minapper_is_validated','1');
                     wp_redirect(admin_url('admin.php?page=weixinapp_slug'));
                     exit;
                 } else {
@@ -403,10 +406,8 @@ function minapper_render_validation_page()
 
 function minapper_add_plugin_page_settings_link($links)
 {
-    $is_validated = get_transient('minapper_is_validated', false);
-
-
-    if ($is_validated) {
+    $minapper_is_validated = empty(get_option('minapper_is_validated'))?'0':"1"; 
+    if ($minapper_is_validated=='1') {
         $settings_link = '<a href="admin.php?page=weixinapp_slug">' . __('设置', 'rest-api-to-miniprogram') . '</a>';
         $extension_settings_link = '<a href="admin.php?page=minapper_expand_settings_page">' . __('扩展设置', 'rest-api-to-miniprogram') . '</a>';
         array_unshift($links, $settings_link);
