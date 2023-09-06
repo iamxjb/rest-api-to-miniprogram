@@ -27,8 +27,7 @@ function get_jquery_source() {
 function register_weixinappsettings() {
     // 注册设置
     register_setting( 'weixinapp-group', 'wf_appid' );
-    register_setting( 'weixinapp-group', 'wf_secret' );
-    // register_setting( 'weixinapp-group', 'wf_swipe' );
+    register_setting( 'weixinapp-group', 'wf_secret' ); 
     
     register_setting( 'weixinapp-group', 'wf_mchid' );
     register_setting( 'weixinapp-group', 'wf_paykey' );
@@ -93,8 +92,7 @@ function weixinapp_settings_page() {
 if (!empty($_REQUEST['settings-updated']))
 {
     if(function_exists('MRAC'))
-    {
-    
+    {    
         $cachedata= MRAC()->cacheManager->clear_cache();
     }
     echo '<div id="message" class="updated fade"><p><strong>设置已保存</strong></p></div>';
@@ -103,9 +101,6 @@ if (!empty($_REQUEST['settings-updated']))
         'headers' => array('Content-Type' => 'application/json'),
     );
     $response = wp_remote_post('https://blog.minapper.com/wp-json/uniapp-builder/v1/siteinfo', $args);
-    
-    
-
 } 
 
 if (version_compare(PHP_VERSION, '5.6.0', '<=') )
