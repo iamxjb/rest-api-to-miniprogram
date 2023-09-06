@@ -1,9 +1,11 @@
 # 微慕WordpPress小程序开源版插件端
  
 微慕WordPress小程序开源版，使用开源建站程序WordPress作为后台，简单对接快速生成小程序。可将WordPress网站的文章、分类、评论等内容同步到小程序，并且可以一键同步到微信小程序端。
- ![输入图片说明](https://5xo2e5q2j9.k.topthink.com/lfs/cd9a8ff15f857cbfc85a2999d7dad7745ff2d6b9e327a86cba0fc46462cb1ca9)
+ ![输入图片说明](https://blog.minapper.com/images/minapper-free-git.png)
 
 -  **官方网站** ：https://www.minapper.com
+-  
+-  **最新版本** ：v4.66
 
 -  **作者微信** ：iamxjb
 
