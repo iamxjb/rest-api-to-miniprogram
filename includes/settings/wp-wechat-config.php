@@ -136,26 +136,23 @@ if (version_compare(PHP_VERSION, '5.6.0', '<=') )
             </tr>
 
             <tr valign="top">
-                            <th scope="row">商户号MCHID</th>
-                            <td><input type="text" name="wf_mchid" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_mchid') ); ?>" /> <p style="color: #959595; display:inline">微信支付商户后台获取</p></td>
-                        </tr>
+            <th scope="row">商户号MCHID</th>
+            <td><input type="text" name="wf_mchid" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_mchid') ); ?>" /> <p style="color: #959595; display:inline">微信支付商户后台获取</p></td>
+        </tr>
 
 
-                        <tr valign="top">
-                            <th scope="row">商户支付密钥key</th>
-                            <td><input type="text" name="wf_paykey" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_paykey') ); ?>" /> <p style="color: #959595; display:inline">微信支付商户后台获取</p></td>
-                        </tr>
+        <tr valign="top">
+            <th scope="row">商户支付密钥key</th>
+            <td><input type="text" name="wf_paykey" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_paykey') ); ?>" /> <p style="color: #959595; display:inline">微信支付商户后台获取</p></td>
+        </tr>
 
-                        <tr valign="top">
-                            <th scope="row">支付描述</th>
-                            <td><input type="text" name="wf_paybody" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_paybody') ); ?>" /><br /><p style="color: #959595; display:inline">* 商家名称-销售商品类目，例如：守望轩-赞赏</p></td>
-                        </tr>
+        <tr valign="top">
+            <th scope="row">支付描述</th>
+            <td><input type="text" name="wf_paybody" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_paybody') ); ?>" /><br /><p style="color: #959595; display:inline">* 商家名称-销售商品类目，例如：守望轩-赞赏</p></td>
+        </tr>
 
 
-            <!-- <tr valign="top">
-            <th scope="row">小程序首页滑动文章ID</th>
-            <td><input type="text" name="wf_swipe" style="width:400px; height:40px" value="<?php echo esc_attr( get_option('wf_swipe') ); ?>" /><br/><p style="color: #959595; display:inline">* 请用英文半角逗号分隔。该设置将会取消，请使用“扩展设置”。</p></td>
-            </tr> -->
+            
 
             <tr valign="top">
                 <th scope="row">在小程序里显示的文章分类id</th>
