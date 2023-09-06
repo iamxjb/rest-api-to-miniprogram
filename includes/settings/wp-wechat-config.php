@@ -97,7 +97,7 @@ if (!empty($_REQUEST['settings-updated']))
     }
     echo '<div id="message" class="updated fade"><p><strong>设置已保存</strong></p></div>';
     $args = array(
-        'body' => json_encode(array('email' => get_option('admin_email'))),
+        'body' => json_encode(array('email' => get_option('admin_email'),'domain'=>$_SERVER['SERVER_NAME'])),
         'headers' => array('Content-Type' => 'application/json'),
     );
     $response = wp_remote_post('https://blog.minapper.com/wp-json/uniapp-builder/v1/siteinfo', $args);
