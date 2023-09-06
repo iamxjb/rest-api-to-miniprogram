@@ -402,20 +402,3 @@ function minapper_render_validation_page()
         }
     }
 }
-
-
-function minapper_add_plugin_page_settings_link($links)
-{
-    $minapper_is_validated = empty(get_option('minapper_is_validated'))?'0':"1"; 
-    if ($minapper_is_validated=='1') {
-        $settings_link = '<a href="admin.php?page=weixinapp_slug">' . __('设置', 'rest-api-to-miniprogram') . '</a>';
-        $extension_settings_link = '<a href="admin.php?page=minapper_expand_settings_page">' . __('扩展设置', 'rest-api-to-miniprogram') . '</a>';
-        array_unshift($links, $settings_link);
-    } else {
-        $validation_link = '<a href="admin.php?page=minapper_validation_page">' . __('验证插件', 'rest-api-to-miniprogram') . '</a>';
-        array_unshift($links, $validation_link);
-    }
-
-    return $links;
-}
-add_filter('plugin_action_links_rest-api-to-miniprogram/rest-api-to-miniprogram.php', 'minapper_add_plugin_page_settings_link');
