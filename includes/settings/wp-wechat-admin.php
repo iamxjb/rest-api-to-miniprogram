@@ -15,7 +15,7 @@ function minapper_admin_menu()
         'id'                => 'minapper_expand_settings_page',              // Required, meta box id, unique per page, to save: get_option( id )
         'parent'            => 'weixinapp_slug',                   // Parent page of plugin menu (default Settings [options-general.php])
         'submenu'           => true,                            // Required for submenu
-        'title'             => '扩展设置 <p> supported  by <a href="https://www.minapper.com" target="_blank">微慕</a></p>',                       // The title of the options page and the name in admin menu
+        'title'             => '扩展设置',                       // The title of the options page and the name in admin menu
         'capability'        => 'manage_options',                // The capability needed to view the page
         'plugin_basename'   =>  plugin_basename(plugin_dir_path(__DIR__) . REST_API_TO_MINIPROGRAM_PLUGIN_NAME. '.php'),
         'tabbed'            => true,
