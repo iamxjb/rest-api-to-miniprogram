@@ -76,6 +76,8 @@ function register_weixinappsettings() {
     register_setting('weixinapp-group', 'wf_detail_bottom_display_qrcode');
     register_setting('weixinapp-group', 'wf_minapper_qrcode_url');
     register_setting('weixinapp-group', 'wf_updateAvatar_count');
+    register_setting('weixinapp-group', 'wf_hot_posts_years');
+    
     
 }
 
@@ -180,6 +182,19 @@ $response = wp_remote_post('https://blog.minapper.com/wp-json/uniapp-builder/v1/
                    <?php }  ?>
             </select>
             </td>
+            </tr>
+
+            <tr valign="top">
+                <th scope="row">文章排行的年限</th>
+                <td>距今
+                    <select id="wf_hot_posts_years" name="wf_hot_posts_years">
+                        <?php  for($i=1;$i<11;$i++) {?>
+                        <option value="<?php echo  $i; ?>" <?php echo get_option('wf_hot_posts_years') == $i.'' ? 'selected' : ''; ?>><?php echo  $i; ?></option>
+                        
+                    <?php } ?>
+                    </select>年
+                    
+                </td>
             </tr>
 
             <tr valign="top">

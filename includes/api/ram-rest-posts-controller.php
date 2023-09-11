@@ -394,12 +394,14 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 			}
 
 		}
-        $limit=10;
+        $limit=20;
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
             date_default_timezone_set('Asia/Shanghai');
-            $today = date("Y-m-d H:i:s"); //获取今天日期时间   
-           // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
-            $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
+            $today = date("Y-m-d H:i:s"); //获取今天日期时间
+            $hot_posts_years= empty(get_option('wf_hot_posts_years'))?'1':get_option('wf_hot_posts_years');
+            $hot_posts_years ='-'.$hot_posts_years.' year';
+            $fristday= date("Y-m-d H:i:s", strtotime($hot_posts_years));
+            //$fristday= date("Y-m-d H:i:s", strtotime("-1 year")); 
             $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, CONVERT(".$wpdb->postmeta.".meta_value,SIGNED) AS 'pageviews_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_key ='wl_pageviews' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' ORDER  BY pageviews_total DESC LIMIT ". $limit;
             $mostlikes = $wpdb->get_results($sql);
             $posts =array();
@@ -460,11 +462,13 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 
 		}
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
-        $limit=10;
+        $limit=20;
         date_default_timezone_set('Asia/Shanghai');
-        $today = date("Y-m-d H:i:s"); //获取今天日期时间   
-       // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
-        $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
+        $today = date("Y-m-d H:i:s"); //获取今天日期时间
+        $hot_posts_years= empty(get_option('wf_hot_posts_years'))?'1':get_option('wf_hot_posts_years');
+        $hot_posts_years ='-'.$hot_posts_years.' year';
+        $fristday= date("Y-m-d H:i:s", strtotime($hot_posts_years));
+       //$fristday= date("Y-m-d H:i:s", strtotime("-1 year")); 
         $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->postmeta.".post_id) AS 'like_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_value ='like' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' GROUP BY ".$wpdb->postmeta.".post_id ORDER  BY like_total DESC LIMIT ". $limit;
         $mostlikes = $wpdb->get_results($sql);
         $posts =array();
@@ -576,10 +580,12 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
         date_default_timezone_set('Asia/Shanghai');
-        $limit = 10;
-        $today = date("Y-m-d H:i:s"); //获取今天日期时间   
-       // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
-        $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
+        $limit = 20;
+        $today = date("Y-m-d H:i:s"); //获取今天日期时间          
+        $hot_posts_years= empty(get_option('wf_hot_posts_years'))?'1':get_option('wf_hot_posts_years');
+        $hot_posts_years ='-'.$hot_posts_years.' year';
+        $fristday= date("Y-m-d H:i:s", strtotime($hot_posts_years));
+       //$fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
         $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post' AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT ". $limit;
         $mostcommenteds = $wpdb->get_results($sql);
         $posts =array();
