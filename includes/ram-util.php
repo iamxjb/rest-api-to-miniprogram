@@ -1096,24 +1096,33 @@ function  getPosts($ids)
             'auto_color' => false,
             'line_color' => $color,
         );
-        $qrcodeesult= RAM()->wxapi->get_qrcode($data);       
-        $errcode=(int)$qrcodeesult['errcode'];            
-        if($errcode==0)
+        $qrcoderesult= RAM()->wxapi->get_qrcode($data);       
+        if(isset($qrcoderesult['errcode']))
         {
-            $qrcode= $qrcodeesult['buffer'];
-            file_put_contents($qrcodePath,$qrcode);               
-            $result['qrcodeUrl']=$qrcodeUrl;
-            $result['qrcodePath']=$qrcodePath;
-            $result['errcode']="0";
-        
+            $errcode=(int)$qrcoderesult['errcode'];            
+            if($errcode==0)
+            {
+                $qrcode= $qrcoderesult['buffer'];
+                file_put_contents($qrcodePath,$qrcode);               
+                $result['qrcodeUrl']=$qrcodeUrl;
+                $result['qrcodePath']=$qrcodePath;
+                $result['errcode']="0";
+            
+            }
+            else
+            {
+    
+                $result['errcode']="1";
+                $result['errmsg']="生成二维码错误";
+                
+    
+            }
         }
         else
         {
-
-            $result['errcode']="1";
-            $result['errmsg']="生成二维码错误";
-            
-
+            $result['errcode']="2";
+            $result['errmsg']="调用cURL出错";
+                
         }
         return $result;
 
