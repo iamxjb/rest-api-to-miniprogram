@@ -8,7 +8,7 @@ add_action('init', 'minapper_do_output_buffer');
 function minapper_check_validation()
 {
     //delete_transient('minapper_is_validated');
-
+    //delete_option('minapper_is_validated');
     if (isset($_GET['page']) && ($_GET['page'] == 'weixinapp_slug' || $_GET['page'] == 'minapper_expand_settings_page')) {
 
    
