@@ -203,6 +203,82 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
             // Register our schema callback.
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
+
+        register_rest_route( $this->namespace, '/' . $this->resource_name.'/rand', array(
+            // Here we register the readable endpoint for collections.
+            array(
+                'methods'   => 'GET',
+                'callback'  => array( $this, 'get_posts_rand' ),
+                'permission_callback' => array( $this, 'get_item_permissions_check' )
+                 
+            ),
+            // Register our schema callback.
+            'schema' => array( $this, 'get_public_item_schema' ),
+        ) );
+    }
+
+    public  function  get_posts_rand($request){
+        
+        $categoriesId =get_option('wf_display_categories');
+        global $wpdb;    
+        if(empty($categoriesId))
+        {
+            $args = array(
+                'numberposts' => 30,
+                'orderby' => 'rand',
+            );
+           
+        }
+        else
+        {
+            $args = array(
+                'numberposts' => 30,
+                'orderby' => 'rand',
+                'category' =>$categoriesId
+            );
+        }
+        $postsRand=get_posts($args);        
+       
+        
+        $posts =array();
+        foreach ($postsRand as $post) {
+        
+            $post_id = (int) $post->ID;
+            $post_title = stripslashes($post->post_title);
+            $comment_total = (int) $post->comment_total;
+            $post_date =$post->post_date;
+            $post_permalink = get_permalink($post->ID);            
+            $_data["post_id"]  =$post_id;
+            $_data["id"]  =$post_id;
+            $_data["post_title"] =$post_title; 
+            $_data["comment_total"] =$comment_total;  
+            $_data["post_date"] =$post_date; 
+            $_data["post_permalink"] =$post_permalink;
+            
+            $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
+            $_data['pageviews'] = $pageviews;
+
+            $like_count = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=".$post_id);
+            $_data['like_count']= $like_count;
+
+            $images =getPostImages($post->post_content,$post_id);         
+            
+            $_data['post_thumbnail_image']=$images['post_thumbnail_image'];
+            $_data['content_first_image']=$images['content_first_image'];
+            $_data['post_medium_image_300']=$images['post_medium_image_300'];
+            $_data['post_thumbnail_image_624']=$images['post_thumbnail_image_624'];
+
+            $_data['post_frist_image']=$images['post_frist_image'];
+              $_data['post_medium_image']=$images['post_medium_image'];
+              $_data['post_large_image']=$images['post_large_image'];
+              $_data['post_full_image']=$images['post_full_image'];
+              $_data['post_all_images']=$images['post_all_images'];
+            $posts[] = $_data;
+    }
+            $response = rest_ensure_response($posts);
+            return $response;
+
+
     }
 
     function getPostAbout($request)
@@ -346,6 +422,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $post_date =$post->post_date;
                 $post_permalink = get_permalink($post->ID);            
                 $_data["post_id"]  =$post_id;
+                $_data["id"]  =$post_id;
                 $_data["post_title"] =$post_title; 
                 //$_data["pageviews"] =$pageviews;  
                 $_data["post_date"] =$post_date; 
@@ -413,6 +490,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                     $post_date =$post->post_date;
                     $post_permalink = get_permalink($post->ID);            
                     $_data["post_id"]  =$post_id;
+                    $_data["id"]  =$post_id;
                     $_data["post_title"] =$post_title; 
                     $_data["pageviews"] =$pageviews;  
                     $_data["post_date"] =$post_date; 
@@ -480,6 +558,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $post_date =$post->post_date;
                 $post_permalink = get_permalink($post->ID);            
                 $_data["post_id"]  =$post_id;
+                $_data["id"]  =$post_id;
                 $_data["post_title"] =$post_title; 
                 $_data["like_count"] =$like_total;  
                 $_data["post_date"] =$post_date; 
@@ -531,6 +610,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $post_date =$post->post_date;
                 $post_permalink = get_permalink($post->ID);            
                 $_data["post_id"]  =$post_id;
+                $_data["id"]  =$post_id;
                 $_data["post_title"] =$post_title; 
                 $_data["comment_total"] =$comment_total;  
                 $_data["post_date"] =$post_date;
@@ -597,6 +677,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $post_date =$post->post_date;
                 $post_permalink = get_permalink($post->ID);            
                 $_data["post_id"]  =$post_id;
+                $_data["id"]  =$post_id;
                 $_data["post_title"] =$post_title; 
                 $_data["comment_total"] =$comment_total;  
                 $_data["post_date"] =$post_date; 
