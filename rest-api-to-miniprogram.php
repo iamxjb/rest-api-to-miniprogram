@@ -75,6 +75,10 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             //获取浏览次数（pc）
             //add_filter('raw_post_views', 'post_views');
 
+            //WordPress 禁止符号转码和页面提速(参考：https://mp.weixin.qq.com/s/nqoZ5LOIEznbxgpqXSxwNQ)
+			remove_filter('the_content', 'wptexturize');    //禁止内容转码
+			
+
             
             // 管理配置 
             if ( is_admin() ) {             
