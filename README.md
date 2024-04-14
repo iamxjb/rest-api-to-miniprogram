@@ -109,7 +109,11 @@
 我们在开源版基础上开发了更多功能的商业版本，了解详情请访问：https://www.minapper.com
 | 专业版 | 增强版微信 | 增强版百度 | 增强版字节 | 增强版QQ | 增强版支付宝 |  增强版快手版 |专业版App(Adroid) | 专业版App(iOS) |增强版APP |
 |-----|-------|-------|-------|-------|--------|-------|--------|--------|--------|
+<<<<<<< HEAD
 |   ![专业版](https://www.watch-life.net/images/minapper.jpg)  |    ![微信](https://www.watch-life.net/images/minapper-plus-wx.jpg)    |    ![百度](https://www.watch-life.net/images/minapper-plus-baidu.jpg)    |  ![字节](https://www.watch-life.net/images/minapper-plus-toutiao.jpg)       |  ![QQ](https://www.watch-life.net/images/minapper-plus-qq.jpg)     |   ![支付宝](https://www.watch-life.net/images/minapper-plus-alipay.jpg)     | ![快手](https://www.watch-life.net/images/minapper-plus-kuaishou.jpg)     |  <img src="https://www.minapper.com/data/attachment/forum/202403/01/minapperproandroid.png" alt="专业版安卓app" width="80" height="80"> |   ![专业版苹果app](https://www.minapper.com/data/attachment/forum/202403/01/minapperproios.png) |   ![增强版app](https://www.minapper.com/template/domi_mi/static/assets/images/app.png)
+=======
+|   ![专业版](https://www.watch-life.net/images/minapper.jpg)  |    ![微信](https://www.watch-life.net/images/minapper-plus-wx.jpg)    |    ![百度](https://www.watch-life.net/images/minapper-plus-baidu.jpg)    |  ![字节](https://www.watch-life.net/images/minapper-plus-toutiao.jpg)       |  ![QQ](https://www.watch-life.net/images/minapper-plus-qq.jpg)     |   ![支付宝](https://www.watch-life.net/images/minapper-plus-alipay.jpg)     | ![快手](https://www.watch-life.net/images/minapper-plus-kuaishou.jpg)     |  ![专业版安卓app](https://www.minapper.com/data/attachment/forum/202403/01/minapperproandroid.png =50x50)  |   ![专业版苹果app](https://www.minapper.com/data/attachment/forum/202403/01/minapperproios.png) |   ![增强版app](https://www.minapper.com/template/domi_mi/static/assets/images/app.png)
+>>>>>>> 1ef6c1f9bf94513366bb809853951f024672d216
 
 
 ### 七、增值服务
