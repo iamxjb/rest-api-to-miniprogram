@@ -9,7 +9,9 @@
 
 -  **作者微信** ：iamxjb
 
--  **讨论微信群** ：由于微信群超过100人，无法再扫描二维码加入。如果你想加入，请先加我的微信：iamxjb ，我拉你入群。
+-  **讨论微信群** ：
+<img src="https://www.watch-life.net/images/weixinshengtaiquan2.png" alt="流微信群" width="150px" height="150px">
+
 
 -  **开源协议** ：GPL v3
 
