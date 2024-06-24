@@ -61,9 +61,14 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 			add_filter( 'manage_posts_columns' , 'ram_posts_columns' );
 			add_action( 'manage_posts_custom_column' , 'output_ram_posts_custom_columns', 10, 3 );
 
+
             //页面显示自定义列
 			add_filter( 'manage_pages_columns' , 'ram_pages_columns' );
 			add_action( 'manage_pages_custom_column' , 'output_ram_pages_custom_columns', 10, 3 );
+            add_filter( 'bulk_actions-edit-post', 'ram_posts_custom_bulk_actions' );
+            add_filter( 'handle_bulk_actions-edit-post', 'ram_posts_custom_bulk_actions_handler', 10, 3 );
+ 
+
 
 
             //分类目录页自定义列

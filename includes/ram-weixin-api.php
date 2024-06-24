@@ -10,7 +10,14 @@ class RAM_Weixin_API {
 		
 		$appid = get_option('wf_appid');
         $secret = get_option('wf_secret');
-		if( ($access_token = get_option('ram-access_token')) !== false && ! empty( $access_token ) && time() < $access_token['expire_time']) {
+		 // 检查 AppID 和 AppSecret 是否已配置
+		 if (empty($appid) || empty($secret)) {
+			//error_log('Error: AppID or AppSecret is not configured.');
+			return false;
+		}
+		// 从缓存中获取 access_token
+		$access_token = get_option('ram-access_token');
+		if(!empty( $access_token ) && is_array($access_token) && time() < $access_token['expire_time']) {
 			return $access_token['access_token'];
 		}		
 		
@@ -18,7 +25,7 @@ class RAM_Weixin_API {
 		$response = wp_remote_get( $api_url );		
 		if( ! is_wp_error( $response ) && is_array( $response ) && isset( $response['body'] ) ) {			
 			$result = json_decode( $response['body'], true );
-			if( ! isset( $result['errcode'] ) || $result['errcode'] == 0 ) {
+			if( !isset( $result['errcode'] ) || $result['errcode'] == 0 ) {
 				
 				$access_token = array(
 					'access_token' => $result['access_token'],

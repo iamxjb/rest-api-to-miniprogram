@@ -1102,19 +1102,25 @@ function  getPosts($ids)
             $errcode=(int)$qrcoderesult['errcode'];            
             if($errcode==0)
             {
-                $qrcode= $qrcoderesult['buffer'];
-                file_put_contents($qrcodePath,$qrcode);               
-                $result['qrcodeUrl']=$qrcodeUrl;
-                $result['qrcodePath']=$qrcodePath;
-                $result['errcode']="0";
+                $qrcode= $qrcoderesult['buffer'];                
+                if (file_put_contents($qrcodePath,$qrcode) !== false) { 
+                    $result['qrcodeUrl']=$qrcodeUrl;
+                    $result['qrcodePath']=$qrcodePath;
+                    $result['errcode']="0";
+                }
+                else
+                {
+                    $result['errcode'] = "3";
+                    $result['errmsg'] = "无法保存二维码图片文件";
+                }             
+                
             
             }
             else
             {
     
                 $result['errcode']="1";
-                $result['errmsg']="生成二维码错误";
-                
+                $result['errmsg'] = "生成二维码错误:".getErrorMessage($errcode);
     
             }
         }
@@ -1129,4 +1135,27 @@ function  getPosts($ids)
 
 
     }
+
+    /**
+ * 获取错误信息
+ *
+ * @param int $errcode 错误码
+ * @return string 错误信息
+ */
+function getErrorMessage($errcode)
+{
+    $errorMessages = array(
+        40001 => 'invalid credential access_token is invalid or not latest',
+        40159 => 'invalid length for path or the data is not json string',
+        45029 => 'qrcode count out of limit',
+        85096 => 'not allow include scancode_time field',
+        40097 => 'invalid args',
+    );
+
+    if (isset($errorMessages[$errcode])) {
+        return $errorMessages[$errcode];
+    }
+
+    return "生成二维码错误，错误码：" . $errcode;
+}
 
