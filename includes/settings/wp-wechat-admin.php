@@ -105,11 +105,18 @@ function minapper_admin_menu()
                         'id'      => 'url',
                         'type'    => 'text',
                         'title'   => 'url地址',
-                        'after'       => '跳转到网页需填写',   // optional   
+                        'after'       => '跳转到网页需填写。链接包括：小程序业务域名链接，公众号文章链接',  
                         'attributes' => array(
                             'data-title' => 'title',
                             'placeholder' => '请输入链接'
                         )
+                    ),
+                    array(
+                        'id'    => 'unassociated',
+                        'type'  => 'checkbox',
+                        'title' => '网页链接是没有关联小程序的公众号文章',
+                        'after'       => '跳转<font color=red>没有关联</font>小程序的公众号文章时选中'
+                        //'label' => '是否启用?'
                     ),
                     array(
                         'id'    => 'enable',
@@ -214,11 +221,18 @@ function minapper_admin_menu()
                     'id'      => 'url',
                     'type'    => 'text',
                     'title'   => 'url地址',
-                    'after'       => '跳转到网页需填写',   // optional   
+                    'after'       => '跳转到网页需填写。链接包括：小程序业务域名链接，公众号文章链接',   // optional   
                     'attributes' => array(
                         'data-title' => 'title',
                         'placeholder' => '请输入链接'
                     )
+                ),
+                array(
+                    'id'    => 'unassociated',
+                    'type'  => 'checkbox',
+                    'title' => '网页链接是没有关联小程序的公众号文章',
+                    'after'       => '跳转<font color=red>没有关联</font>小程序的公众号文章时选中'
+                    //'label' => '是否启用?'
                 ),
                 array(
                     'id'    => 'enable',
