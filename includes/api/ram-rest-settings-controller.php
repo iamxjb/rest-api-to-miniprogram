@@ -63,9 +63,10 @@ class RAM_REST_Options_Controller  extends WP_REST_Controller{
 
         $zanImageurl=get_option('wf_zan_imageurl');
         $logoImageurl=get_option('wf_logo_imageurl');
+        $postImageUrl=get_option("wf_poster_imageurl");
         $result["zanImageurl"] =$zanImageurl;
         $result["logoImageurl"] =$logoImageurl;
-
+        $result["postImageUrl"] =$postImageUrl;
         $swipe_nav =$expand['swipe_nav'];
         $selected_nav=$expand['selected_nav'];       
         $_expand['swipe_nav']=$swipe_nav;
