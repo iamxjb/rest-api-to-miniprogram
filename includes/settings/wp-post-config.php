@@ -11,11 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
     function wf_add_post_fields()
     {     
-        $url=$_SERVER['PHP_SELF'];
-        if(strpos($url,'post-new.php') !=false)
-        {
-            return;
-        }
+        //$url=$_SERVER['PHP_SELF'];
+        // if(strpos($url,'post-new.php') !=false)
+        // {
+        //     return;
+        // }
         add_meta_box(
             'wf_post_fields_box_id',
             '激励视频',

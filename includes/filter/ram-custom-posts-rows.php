@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 function ram_posts_columns( $columns ) {
     $columns['id'] = __('id');
+    $columns['excitation'] = __('启用激励视频');
     $columns['qrcode'] = __('小程序码');
     return $columns;
 }
@@ -12,6 +13,20 @@ function ram_posts_columns( $columns ) {
 function output_ram_posts_custom_columns( $column,$post_id)
 {
     if($column=='id') echo $post_id; 
+    if($column=='excitation')
+    {
+        $excitation=empty(get_post_meta($post_id,'_excitation',true))?0:(int)get_post_meta($post_id,'_excitation',true);
+
+        if($excitation==1)
+        {
+            echo '是';
+        }
+        else
+        {
+            echo '否';
+        }
+    
+    } 
     if($column=='qrcode')
     {
         $qrcode_file = sprintf('%s/qrcode-%d.png', REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'qrcode/', $post_id);
@@ -42,6 +57,8 @@ function output_ram_pages_custom_columns( $column,$post_id)
 
 function ram_posts_custom_bulk_actions( $bulk_array ) {
 	$bulk_array['creat_post_qrcode'] = '生成小程序码';	
+    $bulk_array['enable_post_excitation'] = '启用激励视频';	
+    $bulk_array['cancel_post_excitation'] = '取消激励视频';	
 	return $bulk_array;
 }
 
@@ -50,6 +67,20 @@ function ram_posts_custom_bulk_actions_handler($redirect, $doaction, $object_ids
     if ( $doaction == 'creat_post_qrcode' ){
         foreach ( $object_ids as $post_id ) {
 			creat_minapper_qrcode($post_id);
+        }
+        $redirect = add_query_arg( 'ram_post_custom_bulk_actions', count( $object_ids ), $redirect );
+    }
+
+    if ( $doaction == 'enable_post_excitation' ){
+        foreach ( $object_ids as $post_id ) {			
+            update_post_meta($post_id,'_excitation','1'); 
+        }
+        $redirect = add_query_arg( 'ram_post_custom_bulk_actions', count( $object_ids ), $redirect );
+    }
+
+    if ( $doaction == 'cancel_post_excitation' ){
+        foreach ( $object_ids as $post_id ) {			
+            update_post_meta($post_id,'_excitation','0'); 
         }
         $redirect = add_query_arg( 'ram_post_custom_bulk_actions', count( $object_ids ), $redirect );
     }
