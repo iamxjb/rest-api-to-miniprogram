@@ -159,7 +159,7 @@ class RAM_REST_Categories_Controller  extends WP_REST_Controller{
             $usermeta = get_user_meta($user_id);
             if (!empty($usermeta))
             {
-                    //$usermetaList =$wpdb->get_results($sql);        
+                           
                     $result["code"]="success";
                     $result["message"]= "获取订阅成功";
                     $result["status"]="200";                    

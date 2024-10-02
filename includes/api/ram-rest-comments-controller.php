@@ -94,9 +94,8 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
             }
             else
             {
-
-                $sql ="SELECT * from ".$wpdb->posts."  where ID in  
-        (SELECT comment_post_ID from ".$wpdb->comments." where user_id=".$user_id."   GROUP BY comment_post_ID order by comment_date ) LIMIT 20";        
+                $sql=$wpdb->prepare("SELECT * from ".$wpdb->posts."  where ID in  
+        (SELECT comment_post_ID from ".$wpdb->comments." where user_id=%d   GROUP BY comment_post_ID order by comment_date ) LIMIT 20",$user_id);
                 $_posts = $wpdb->get_results($sql);
                 $posts =array();
                 foreach ($_posts as $post) {
@@ -158,9 +157,8 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         global $wpdb;
         $user_id =0;
         $useropenid="";
-        $sql ="SELECT ID FROM ".$wpdb->users ." WHERE user_login='".$openid."'";
+        $sql =$wpdb->prepare("SELECT ID FROM ".$wpdb->users ." WHERE user_login = %s",$openid);
         $user_id= (int)$wpdb->get_var($sql); //评论者id
-
         $comment_approved="1";
         $userLevel= getUserLevel($user_id);
 
@@ -195,9 +193,8 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
             $useropenid="";
             if(!empty($userid))
             {
-                $sql ="SELECT user_login FROM ".$wpdb->users ." WHERE ID=".$userid;        
-                $useropenid = $wpdb->get_var($sql);
-                
+                $sql =$wpdb->prepare("SELECT user_login FROM ".$wpdb->users ." WHERE ID=%d ",$userid);        
+                $useropenid = $wpdb->get_var($sql);                
             }
            
             $result["code"]="success";
@@ -253,7 +250,6 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         }
         $page=($page-1)*$limit;
         $sql=$wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=0 and t.comment_approved='1' order by t.comment_date ".$order." limit %d,%d",$postid,$page,$limit);    
-        
         $comments = $wpdb->get_results($sql); 
         $commentslist  =array();
         foreach($comments as $comment){
@@ -299,7 +295,6 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         if($limit>0){
             $commentslist  =array();
             $sql=$wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=%d and t.comment_approved='1' order by comment_date ".$order,$postid,$comment_id);
-
             $comments = $wpdb->get_results($sql); 
             foreach($comments as $comment){                     
                     $data["id"]=$comment->comment_ID;
@@ -311,7 +306,6 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
                     $data["formId"]=$comment->formId;
                     $data["userid"]=$comment->user_id;
                     $data["child"]=$this->getchildcomment($postid,$comment->comment_ID,$limit-1,$order);
-                    //$data["sql"]=$sql;
                     $commentslist[] =$data;         
             }
         }
@@ -326,6 +320,13 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         if(empty($order ))
         {
             $order ="asc";
+        }
+        else
+        {
+            if($order !='asc' && $order !='desc')
+            {
+                $order ="asc";
+            }
         }
 
         if(empty($postid) || empty($limit) || empty($page) || get_post($postid)==null)

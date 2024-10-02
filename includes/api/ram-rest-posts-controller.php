@@ -315,8 +315,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 
     function getallpraise ($request)
     {
-        global $wpdb;    
-
+        global $wpdb;
         $sql="SELECT ".$wpdb->users.".display_name as avatarurl ,".$wpdb->users.".id as id from (SELECT substring(substring_index(".$wpdb->postmeta.".meta_key,'@',1),2) as openid,".$wpdb->postmeta.".meta_id from ".$wpdb->postmeta." where ".$wpdb->postmeta.".meta_value like '%praise' )t1  LEFT JOIN ".$wpdb->users." ON ".$wpdb->users.".user_login = t1.openid  ORDER by t1.meta_id desc";
               
             $_vatarurls = $wpdb->get_results($sql);
@@ -349,8 +348,8 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         global $wpdb;
         $openid= $request['openid'];
-        $sql ="SELECT * from ".$wpdb->posts."  where  post_type='post' and ID in  
-    (SELECT post_id from ".$wpdb->postmeta." where meta_value like '%praise' and meta_key like'%".$openid."%') ORDER BY post_date desc LIMIT 20";        
+        $sql =$wpdb->prepare("SELECT * from ".$wpdb->posts."  where  post_type='post' and ID in  
+    (SELECT post_id from ".$wpdb->postmeta." where meta_value like '%praise' and meta_key like %s') ORDER BY post_date desc LIMIT 20",'%'.$openid.'%');        
             $_posts = $wpdb->get_results($sql);
             $posts =array();
             foreach ($_posts as $post) {
@@ -744,8 +743,9 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         global $wpdb;
         $openid= $request['openid'];
-        $sql ="SELECT * from ".$wpdb->posts."  where ID in  
-(SELECT post_id from ".$wpdb->postmeta." where meta_value='like' and meta_key='_".$openid."') ORDER BY post_date desc LIMIT 20";        
+        $openid='_'.$openid;
+        $sql =$wpdb->prepare("SELECT * from ".$wpdb->posts."  where ID in  
+(SELECT post_id from ".$wpdb->postmeta." where meta_value='like' and meta_key=%s) ORDER BY post_date desc LIMIT 20",$openid);        
         $_posts = $wpdb->get_results($sql);
         $posts =array();
         foreach ($_posts as $post) {
