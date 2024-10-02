@@ -138,12 +138,14 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $userid=isset($request['userid'])?(int)$request['userid']:0; //被回复者
         $authorIp =ram_get_client_ip();
 	    $authorIp= empty($authorIp)?'':$authorIp;
-        $wf_enable_comment_check= get_option('wf_enable_comment_check');
-       
+        $wf_enable_comment_check= get_option('wf_enable_comment_check');       
         
         $data = array(
-			'content' =>$content
-		);
+            'content' =>$content,
+            'openid'   =>$openId,            
+            'scene'   =>2,
+            'version'=>2            
+        );
 
         $msgSecCheckResult = RAM()->wxapi->msgSecCheck($data);
 		$errcode=$msgSecCheckResult['errcode'];

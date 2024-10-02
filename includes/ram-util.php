@@ -981,24 +981,23 @@ function  getPosts($ids)
             $result['errmsg']=$errmsg;
 			
 		}
-
-		$checkResult=$msgSecCheckResult['result'];
-		$label=$checkResult['label'];
-		if($label !='100')
-		{
-            $result['errcode']=(int)$label;
-            $result['errmsg']="昵称无法通过审核";
-			
-		}
         else
         {
-            $result['errcode']=0;
-            $result['errmsg']="昵称合规合法";
+            $checkResult=$msgSecCheckResult['result'];
+            $label=$checkResult['label'];
+            if($label !='100')
+            {
+                $result['errcode']=(int)$label;
+                $result['errmsg']="内容无法通过审核";
+                
+            }
+            else
+            {
+                $result['errcode']=0;
+                $result['errmsg']="内容合规合法";
+            }
         }
-
         return  $result;
-
-
     }
 
     function jscode2session($js_code){

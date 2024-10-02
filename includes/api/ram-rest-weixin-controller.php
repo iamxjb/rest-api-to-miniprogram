@@ -224,7 +224,8 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         $data = array(
             'content' =>$nickname,
             'openid'   =>$openId,
-            'scene'   =>1,
+            'nickname'=>$nickname,
+            'scene'   =>2,
             'version'=>2
             
         );
