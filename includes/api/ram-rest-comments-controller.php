@@ -244,7 +244,7 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $limit= isset($request['limit'])?(int)$request['limit']:0;
         $page= isset($request['page'])?(int)$request['page']:0;
         $order =isset($request['order'])?$request['order']:'';
-        if(empty($order ))
+        if(empty($order))
         {
             $order ="asc";
         }
@@ -317,24 +317,16 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $limit= isset($request['limit'])?(int)$request['limit']:0;
         $page= isset($request['page'])?(int)$request['page']:0;
         $order =isset($request['order'])?$request['order']:'';
-        if(empty($order ))
+        if($order !='asc' && $order !='desc')
         {
-            $order ="asc";
+            return new WP_Error( 'error', '参数order错误', array( 'status' => 500 ) );
         }
-        else
-        {
-            if($order !='asc' && $order !='desc')
-            {
-                $order ="asc";
-            }
-        }
-
-        if(empty($postid) || empty($limit) || empty($page) || get_post($postid)==null)
+        if(empty($postid) || empty($limit) || empty($page) || empty($postid))
         {
             return new WP_Error( 'error', ' 参数不能为空：postid,limit,page', array( 'status' => 500 ) );
         }
 
-        elseif (!is_numeric($limit) || !is_numeric($page) ||  !is_numeric($postid)) {
+        elseif (!is_numeric($limit) || !is_numeric($page) ||  !is_numeric($postid) || get_post($postid)==null) {
             return new WP_Error( 'error', ' 参数错误', array( 'status' => 500 ) );      
         }       
       return true;

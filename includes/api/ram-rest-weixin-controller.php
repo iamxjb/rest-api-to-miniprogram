@@ -119,28 +119,6 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
 
-        register_rest_route( $this->namespace, '/' . $this->resource_name.'/updateuserinfo', array(
-            // Here we register the readable endpoint for collections.
-            array(
-                'methods'   => 'POST',
-                'callback'  => array( $this, 'updateUserInfo' ),
-                'permission_callback' => array( $this, 'update_userInfo_permissions_check' ),
-                'args'               => array(              
-                    'openid' => array(
-                        'required' => true
-                    ),
-                    'avatarUrl' => array(
-                        'required' => true
-                    ),
-                    'nickname' => array(
-                        'required' => true
-                    )
-                )
-                 
-            ),            
-            'schema' => array( $this, 'get_public_item_schema' ),
-        ) );
-
         register_rest_route( $this->namespace, '/' . $this->resource_name . '/userlogin', array(
             array(
                 'methods'             => 'POST',
@@ -260,48 +238,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         return $response; 
         
     }
-
-
-    function updateUserInfo($request)
-    {
-        $openId =$request['openid'];
-        $nickname=empty($request['nickname'])?'':$request['nickname'];
-        $nickname=filterEmoji($nickname);
-        $_nickname=base64_encode($nickname);          
-		$_nickname=strlen($_nickname)>49?substr($_nickname,49):$_nickname;
-        $avatarUrl=empty($request['avatarUrl'])?'':$request['avatarUrl']; 
-        $user = get_user_by( 'login', $openId);
-        if(empty($user))
-        {
-            return new WP_Error( 'error', '此用户不存在' , array( 'status' => 500 ) );
-        }     
-        $userdata =array(
-            'ID'            => $user->ID,
-            'first_name'	=> $nickname,
-            'nickname'      => $nickname,
-            'user_nicename' => $_nickname,
-            'display_name'  => $nickname,
-            'user_email'    => $openId.'@weixin.com'
-        );
-        $userId =wp_update_user($userdata);
-        if(is_wp_error($userId)){
-            return new WP_Error( 'error', '更新wp用户错误：' , array( 'status' => 500 ) );
-        } 
-                
-        update_user_meta($userId,'avatar',$avatarUrl);
-        update_user_meta($userId,'usertype',"weixin","weixin");
-
-        $userLevel= getUserLevel($userId);
-        $result["code"]="success";
-        $result["message"]= "更新成功";
-        $result["status"]="200";
-        $result["openid"]=$openId;
-        $result["userLevel"]=$userLevel;            
-        $response = rest_ensure_response($result);
-        return $response;
-
-    }
-
+    
     function getUserInfo($request)
     {
       
