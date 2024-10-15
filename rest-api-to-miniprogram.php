@@ -3,7 +3,7 @@
 Plugin Name: REST API TO MiniProgram 微慕小程序
 Plugin URI: https://www.minapper.com
 Description: 为微慕小程序提供定制化WordPress REST API json 输出
-Version: 4.7.5
+Version: 4.7.6
 Author: jianbo
 Author URI: https://www.minapper.com
 License: GPL v3
@@ -31,7 +31,6 @@ include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-categor
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/filter/ram-custom-posts-rows.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/admin/exopite-simple-options/exopite-simple-options-framework-class.php');
 include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/settings/wp-wechat-admin.php');
-include(REST_API_TO_MINIPROGRAM_PLUGIN_DIR . 'includes/settings/wp_code_verification.php' );
 if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
     class RestAPIMiniProgram {

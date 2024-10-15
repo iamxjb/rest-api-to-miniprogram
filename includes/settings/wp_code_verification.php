@@ -3,7 +3,7 @@ function minapper_do_output_buffer()
 {
     ob_start();
 }
-add_action('init', 'minapper_do_output_buffer');
+//add_action('init', 'minapper_do_output_buffer');
 
 function minapper_check_validation()
 {
@@ -19,7 +19,7 @@ function minapper_check_validation()
         }
     }
 }
-add_action('admin_init', 'minapper_check_validation');
+//add_action('admin_init', 'minapper_check_validation');
 
 
 function minapper_add_validation_page()

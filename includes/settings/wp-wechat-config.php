@@ -105,12 +105,7 @@ function weixinapp_settings_page()
                 echo '<div class="notice notice-error is-dismissible">
     <p><font color="red">提示：php版本小于5.6.0, 插件程序将无法正常使用,当前系统的php版本是:' . PHP_VERSION . '</font></p>
     </div>';
-            }
-            $args = array(
-                'body' => json_encode(array('email' => get_option('admin_email'), 'domain' => $_SERVER['SERVER_NAME'])),
-                'headers' => array('Content-Type' => 'application/json'),
-            );
-            $response = wp_remote_post('https://blog.minapper.com/wp-json/uniapp-builder/v1/siteinfo', $args);
+            }            
             ?>
         <form method="post" action="options.php">
             <?php settings_fields('weixinapp-group'); ?>
