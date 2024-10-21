@@ -72,6 +72,9 @@ class RAM_REST_Options_Controller  extends WP_REST_Controller{
         $_expand['swipe_nav']=$swipe_nav;
         $_expand['selected_nav']=$selected_nav;      
         $result["expand"] =$_expand;
+
+        $history_post = get_history_post_list(date('Y'), date('m'), date('j'));
+        $result["history_post"] =$history_post;
         $response = rest_ensure_response($result);
         return $response;
     

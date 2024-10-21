@@ -707,13 +707,7 @@ function  getPosts($ids)
     function custom_minapper_post_fields( $_data, $post, $request) { 
 
         global $wpdb;       
-        $post_id =$post->ID;
-    
-        //去除 _links 
-    //   foreach($_data->get_links() as $_linkKey => $_linkVal) {
-    //     $_data->remove_link($_linkKey);
-    //  }
-    
+        $post_id =$post->ID;    
         //$content =get_the_content();
         $content=html_entity_decode($_data['content']['rendered']);
         $content_protected=$_data['content']['protected'];
@@ -770,7 +764,18 @@ function  getPosts($ids)
         $post_views = (int)get_post_meta($post_id, 'wl_pageviews', true);     
         $params = $request->get_params();
          if ( isset( $params['id'] ) ) {
-    
+
+
+          $post_year =date('Y',strtotime($post_date));
+          $post_month =date('m',strtotime($post_date));
+          $post_day =date('d',strtotime($post_date));
+          $history_post_single = get_history_post_list($post_year,$post_month,$post_day);
+          $_data['history_post_single']=$history_post_single;
+      
+
+
+
+          
           $praiseWord=get_option('wf_praise_word'); 
           $praiseWord=empty($praiseWord)?'鼓励':$praiseWord;
           $_data['praiseWord']=$praiseWord;
@@ -1156,5 +1161,18 @@ function getErrorMessage($errcode)
     }
 
     return "生成二维码错误，错误码：" . $errcode;
+}
+
+function get_history_post_list($post_year, $post_month, $post_day){
+	global $wpdb;
+	$limit = 10;
+	$order = "latest";
+	if($order == "latest"){ $order = "DESC";} else { $order = '';}
+	$sql = "select ID, year(post_date_gmt) as post_year,date(post_date_gmt) as post_date, post_title, comment_count FROM 
+	$wpdb->posts WHERE post_password = '' AND post_type = 'post' AND post_status = 'publish'
+	AND year(post_date_gmt)!='".$post_year."' AND month(post_date_gmt)='".$post_month."' AND day(post_date_gmt)='".$post_day."'
+	order by post_date_gmt ".$order." limit ".$limit;
+	$histtory_post = $wpdb->get_results($sql);
+	return $histtory_post;
 }
 

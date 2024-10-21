@@ -24,18 +24,7 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                     )
                 )
                  
-            ),
-            // array(
-            //     'methods'   => 'GET',
-            //     'callback'  => array( $this, 'getQrcodeImg' ),
-            //     'permission_callback' => array( $this, 'get_qrcodeimg_permissions_check' ),
-            //     'args'               => array(              
-            //         'postid' => array(
-            //             'required' => true
-            //         )
-            //     )
-                 
-            // ),             
+            ),                        
             'schema' => array( $this, 'get_public_item_schema' ),
         ) );
 
@@ -172,10 +161,28 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                     ),
                     'schema' => array($this, 'get_public_item_schema'),
                 ));
+                // register_rest_route($this->namespace, '/' . $this->resource_name . '/getcallbackip', array(
+                //     array(
+                //         'methods'             => 'GET',
+                //         'callback'            => array($this, 'get_callbackip'),
+                //         'permission_callback' => array($this, 'get_userInfo_permissions_check'),
+                //         'args'                => array(
+                //             'context' => $this->get_context_param(array('default' => 'view')),
+                            
+                //         )
+                //     ),
+                //     'schema' => array($this, 'get_public_item_schema'),
+                // ));
                
 
     }
 
+    // function get_callbackip() {
+    //     $data=array();
+    //     $ip= RAM()->wxapi->get_callbackip($data); 
+    //     $response = rest_ensure_response($ip);
+    //     return $response;   
+    // }
     
     function updateNickname($request)
     {

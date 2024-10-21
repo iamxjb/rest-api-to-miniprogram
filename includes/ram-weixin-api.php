@@ -53,6 +53,8 @@ class RAM_Weixin_API {
 			'msgSecCheck'=>'https://api.weixin.qq.com/wxa/msg_sec_check',
 			'getliveinfo'=>'https://api.weixin.qq.com/wxa/business/getliveinfo',
 			'get_qrcode' => 'https://api.weixin.qq.com/wxa/getwxacode',
+			'get_callbackip' => 'https://api.weixin.qq.com/cgi-bin/getcallbackip',
+			
 		);
 		
 		return $api_urls[$key];
@@ -131,7 +133,7 @@ class RAM_Weixin_API {
 		$result = $this->request( $api_url, 'POST', array( 'template_id' => $template_id ) );
 		return $result ? true : false;
 	}
-	//获取直播房间信息
+	//获取小程序二维码
 	public function get_qrcode($data) 
     {
 		return $this->invokingRequest('get_qrcode',$data);	
@@ -150,7 +152,14 @@ class RAM_Weixin_API {
 		return $this->invokingRequest('msgSecCheck',$data);	
 	}
 
-	public function invokingRequest($api,$data)
+	//获取微信调用开发者服务器所使用的出口IP
+	public function get_callbackip($data) 
+    {
+		return $this->invokingRequest('get_callbackip',$data);	
+		
+	}
+	public function invokingRequest($api,$data,$method='POST')
+
 	{
 		$access_token = $this->get_access_token();
 		$access_token= $access_token?'?access_token=' . $access_token:'';
@@ -166,7 +175,7 @@ class RAM_Weixin_API {
 				$result =get_content_post($api_url, $data); //小程序二维码	
 
 			} else {
-				$result = $this->request($api_url, 'POST', $data);
+				$result = $this->request($api_url, $method, $data);
 			}
 		
 		}
