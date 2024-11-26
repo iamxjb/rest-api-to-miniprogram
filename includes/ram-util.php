@@ -766,6 +766,9 @@ function  getPosts($ids)
          if ( isset( $params['id'] ) ) {
 
 
+             //获取推荐商品（微信小店商品）
+          $_data['recommendWechatShopGoods'] = getRecommendWechatShopGoods($post_id);
+          
           $post_year =date('Y',strtotime($post_date));
           $post_month =date('m',strtotime($post_date));
           $post_day =date('d',strtotime($post_date));
@@ -1175,4 +1178,26 @@ function get_history_post_list($post_year, $post_month, $post_day){
 	$histtory_post = $wpdb->get_results($sql);
 	return $histtory_post;
 }
+
+function getRecommendWechatShopGoods($post_id)
+    {
+       
+        $wechatshopGoods = empty(get_post_meta($post_id, '_wechatshopGoods', true)) ? '' : get_post_meta($post_id, '_wechatshopGoods', true);
+
+        $recommendGoods = array();
+        if (!empty($wechatshopGoods)) {
+            $cnt = count($wechatshopGoods['appid']);
+            for ($i = 0; $i < $cnt; $i++) {
+                $goods = array();
+                $goods["type"] = "miniappGoods";
+                $goods['redirecttype'] = "wechatshop";
+                $goods["title"] = $wechatshopGoods['title'][$i];
+                $goods["storeappid"] = $wechatshopGoods['appid'][$i];
+                $goods["productid"] = $wechatshopGoods['productid'][$i];
+                $goods["productpromotionlink"] = $wechatshopGoods['productpromotionlink'][$i];
+                $recommendGoods[] = $goods;
+            }
+        }
+        return $recommendGoods;
+    }
 

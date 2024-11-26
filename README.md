@@ -88,10 +88,10 @@
 开源版安装文档：https://docs.minapper.com/minfree
 
 ### 三、下载源码
--   **最新稳定版本下载** ：[点击下载](https://gitee.com/iamxjb/rest-api-to-miniprogram/releases)
+-   **最新稳定版本下载(推荐)** ：[点击下载](https://gitee.com/iamxjb/rest-api-to-miniprogram/releases)
 
 
--   **WordPress插件市场** 下载：[点击下载](https://wordpress.org/plugins/rest-api-to-miniprogram)
+-   **WordPress插件市场** 下载：[点击下载](https://wordpress.org/plugins/rest-api-to-miniprogram)（注：wordprss官方一直不能最新的版本，原因不明）
 
 
 ### 四、扩展插件
