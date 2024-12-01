@@ -86,7 +86,7 @@
 
 31. 增加“那年今日”功能，展示历史上“今日”的文章列表。
 
-32. 增加“微信小店”功能。
+32. 增加“[微信小店](https://www.watch-life.net/wechat/minapper-wechat-shop.html)”功能。
 
 ### 二、安装教程：
 开源版安装文档：https://docs.minapper.com/minfree
@@ -95,7 +95,7 @@
 -   **最新稳定版本下载(推荐)** ：[点击下载](https://gitee.com/iamxjb/rest-api-to-miniprogram/releases)
 
 
--   **WordPress插件市场** 下载：[点击下载](https://wordpress.org/plugins/rest-api-to-miniprogram)（注：wordprss官方一直不最新的版本，原因不明）
+-   **WordPress插件市场** ：[点击下载](https://wordpress.org/plugins/rest-api-to-miniprogram)（注：wordprss官方一直不最新的版本，原因不明）
 
 -   **镜像下载地址** :
 
