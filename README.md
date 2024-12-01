@@ -97,6 +97,10 @@
 
 -   **WordPress插件市场** 下载：[点击下载](https://wordpress.org/plugins/rest-api-to-miniprogram)（注：wordprss官方一直不最新的版本，原因不明）
 
+-   **镜像下载地址** :
+
+https://github.com/iamxjb/rest-api-to-miniprogram
+
 
 ### 四、扩展插件
 -  [API缓存加速（299元）]( https://www.minapper.com/shops/)
