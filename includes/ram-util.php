@@ -631,16 +631,24 @@ function get_content_gallery($content,$flag){
     if(!empty($ids))
     {
         $ids =explode(',',$ids);
-        $img='';
+        $img = '';
+        $realwidth = '';
+        $real_height = '';
+        $i = 0;
         foreach($ids as $id)
         {
             $image=wp_get_attachment_image_src((int)$id,'full');
-
-            $img .='<img width="'.$image[1].'" height="'.$image[2].'" src="'.$image[0].'" />';
+            $img = $i == 0 ? $img . $image[0] : $img . ',' . $image[0];
+            $realwidth = $i == 0 ? $realwidth . $image[1] : $realwidth . ',' . $image[1];
+            $real_height = $i == 0 ? $real_height . $image[2] : $real_height . ',' . $image[2];
+            $i++;
+            //$img .='<img width="'.$image[1].'" height="'.$image[2].'" src="'.$image[0].'" />';
            
 
         }
-        $vcontent = preg_replace('~\[gallery (.*?)\]~s',$img,$content);
+        $minappergallery = '<minappergallery images="' . $img . '"  real-width="' . $realwidth . '"  real_height="' . $real_height . '">';
+        $vcontent = preg_replace('~\[gallery (.*?)\]~s', $minappergallery, $content);
+        //$vcontent = preg_replace('~\[gallery (.*?)\]~s',$img,$content);
         
 
     }
