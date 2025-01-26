@@ -9,10 +9,21 @@ function weixinapp_create_menu()
     // 创建新的顶级菜单
     //add_menu_page('微慕小程序', '微慕小程序', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', REST_API_TO_MINIPROGRAM_PLUGIN_URL.'includes/images/icon16.png',null);
     add_menu_page('微慕小程序', '微慕小程序', 'administrator', 'weixinapp_slug', 'weixinapp_settings_page', 'none', 99);
-    add_submenu_page('weixinapp_slug', "基础设置", "基础设置", "administrator", 'weixinapp_slug', 'weixinapp_settings_page');
+    add_submenu_page('weixinapp_slug', "基础设置", "基础设置", "administrator", 'weixinapp_slug', 'weixinapp_settings_page');    
+   
+    if (empty(get_option( 'minapper_weixin_user'))) {
+        add_submenu_page('weixinapp_slug', "扩展设置", "扩展设置", "administrator", 'minapper_validation_slug', 'minapper_validation_page');  
+    }   
     // 调用注册设置函数
     add_action('admin_init', 'register_weixinappsettings');
 }
+if (!empty(get_option( 'minapper_weixin_user'))){
+
+     add_action('init','minapper_admin_menu');
+}
+
+
+
 
 function get_jquery_source()
 {

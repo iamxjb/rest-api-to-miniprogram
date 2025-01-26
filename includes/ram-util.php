@@ -1188,24 +1188,71 @@ function get_history_post_list($post_year, $post_month, $post_day){
 }
 
 function getRecommendWechatShopGoods($post_id)
-    {
-       
-        $wechatshopGoods = empty(get_post_meta($post_id, '_wechatshopGoods', true)) ? '' : get_post_meta($post_id, '_wechatshopGoods', true);
+{
+    
+    $wechatshopGoods = empty(get_post_meta($post_id, '_wechatshopGoods', true)) ? '' : get_post_meta($post_id, '_wechatshopGoods', true);
 
-        $recommendGoods = array();
-        if (!empty($wechatshopGoods)) {
-            $cnt = count($wechatshopGoods['appid']);
-            for ($i = 0; $i < $cnt; $i++) {
-                $goods = array();
-                $goods["type"] = "miniappGoods";
-                $goods['redirecttype'] = "wechatshop";
-                $goods["title"] = $wechatshopGoods['title'][$i];
-                $goods["storeappid"] = $wechatshopGoods['appid'][$i];
-                $goods["productid"] = $wechatshopGoods['productid'][$i];
-                $goods["productpromotionlink"] = $wechatshopGoods['productpromotionlink'][$i];
-                $recommendGoods[] = $goods;
+    $recommendGoods = array();
+    if (!empty($wechatshopGoods)) {
+        $cnt = count($wechatshopGoods['appid']);
+        for ($i = 0; $i < $cnt; $i++) {
+            $goods = array();
+            $goods["type"] = "miniappGoods";
+            $goods['redirecttype'] = "wechatshop";
+            $goods["title"] = $wechatshopGoods['title'][$i];
+            $goods["storeappid"] = $wechatshopGoods['appid'][$i];
+            $goods["productid"] = $wechatshopGoods['productid'][$i];
+            $goods["productpromotionlink"] = $wechatshopGoods['productpromotionlink'][$i];
+            $recommendGoods[] = $goods;
+        }
+    }
+    return $recommendGoods;
+}
+
+function minapper_verify()
+{
+    $minapper_weixin_user=get_option( 'minapper_weixin_user');
+    if(!empty($minapper_weixin_user))
+    {
+        $verify_result = get_transient('minapper-verify-result'); 
+        if(empty($verify_result))
+        {
+            $openid= $minapper_weixin_user['openid'];        
+            $args = array(
+                'body' => json_encode(array('openid' => $openid)),
+                'headers' => array('Content-Type' => 'application/json'),
+            );
+            $response = wp_remote_post('https://plus.minapper.com/wp-json/minapper/v1/wechat/verify', $args);
+            if (is_array($response) && !is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
+                $result = json_decode(wp_remote_retrieve_body($response), true);
+                if($result['success'])
+                {
+                    if($result['issubscribe']=='1')
+                    {
+                        set_transient('minapper-verify-result', $result, 24*7 * HOUR_IN_SECONDS);
+                        return true;
+                    }
+                    else
+                    {
+                        delete_option('minapper_weixin_user');                        
+                        return false;
+                    }
+                  
+                }
+                
+            }
+            else
+            {
+                delete_user_meta($user_id, 'minapper_weixin_user');
+                return false;
             }
         }
-        return $recommendGoods;
+        else
+        {
+            return true;
+        }
     }
+    
+
+}
 
