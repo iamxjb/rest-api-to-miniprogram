@@ -161,6 +161,25 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                     ),
                     'schema' => array($this, 'get_public_item_schema'),
                 ));
+
+                register_rest_route($this->namespace, '/' . $this->resource_name . '/updatewechatshopinfo', array(
+                    array(
+                        'methods'             => "POST",
+                        'callback'            => array($this, 'update_user_wechatshop_info'),
+                        'permission_callback' => array($this, 'update_user_wechatshop_info_permissions_check'),
+                        'args'                => array(
+                            'openid' => array(
+                                'required' => true
+                            ),                            
+                            'storeappid' => array(
+                                'required' => true
+                            ),
+
+				),
+        
+                    ),
+                    'schema' => array($this, 'get_public_item_schema'),
+                ));
                 // register_rest_route($this->namespace, '/' . $this->resource_name . '/getcallbackip', array(
                 //     array(
                 //         'methods'             => 'GET',
@@ -183,6 +202,82 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
     //     $response = rest_ensure_response($ip);
     //     return $response;   
     // }
+
+    function get_shop_list($request) {
+        $data=new class
+        {
+        };
+        $result =  RAM()->wxapi->get_cooperation_shop_list($data);
+        return $result;
+    } 
+
+    public function  update_user_wechatshop_info($request)
+	{
+		$userId = (int)$request['userid'];
+		$storeAppId = $request['storeappid'];
+
+		$storeLocation = $request['storelocation'];
+		$storeAddress = $request['storeaddress'];
+		$storeLatitude = $request['storelatitude'];
+		$storeLongitude = $request['storelongitude'];
+
+		$storeName="";
+		$flag=false;
+		$data=new class
+        {
+        };
+        $result =  RAM()->wxapi->get_cooperation_shop_list($data);
+		if($result['errcode']==0)
+		{
+			$shop_list=$result['shop_list'];
+			foreach($shop_list as $item)
+			{
+				if($item['status']==1 &&  $item['appid']==$storeAppId)
+				{
+					$storeName=$item['nickname'];
+					$flag=true;
+					break;
+				}
+			}
+		}
+		else
+		{
+			return new WP_Error('error', '你的微信小店尚未绑定本小程序', array('status' => 200));
+		}
+
+		if($flag)
+		{
+			$storeInfo=array(
+				'storeappid'=>$storeAppId,
+				'storename'=>$storeName,
+				'storelocation'=>$storeLocation,
+				'storeaddress'=>$storeAddress,
+				'storelatitude'=>$storeLatitude,
+				'storelongitude'=>$storeLongitude
+			);
+			if(!empty($storeInfo) && !empty($storeLocation))
+			{
+				update_user_meta($userId, 'storeinfo', $storeInfo);
+			}
+			else
+			{
+				update_user_meta($userId, 'storeinfo', '');
+			}
+
+			
+			update_user_meta($userId, 'storeappid', $storeAppId);
+			update_user_meta($userId, 'storename', $storeName);			
+			$response = array('success' => true, 'message' => '设置成功','storeappid'=>$storeAppId,'storename'=>$storeName,'storeinfo'=>$storeInfo);	
+			$response = rest_ensure_response($response);
+			return $response;
+		}
+		else
+		{
+			return new WP_Error('error', '你的微信小店尚未绑定本小程序', array('status' => 200));
+		}
+
+		
+	}
     
     function updateNickname($request)
     {
@@ -457,10 +552,13 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
         $result["status"]="200";
         $result["openid"]=$openId;
         $result["nickname"]=$display_name;
-        $result["avatarurl"]= get_user_meta( $userId, 'avatar', true );
+        $result["avatarurl"]= get_user_meta($userId, 'avatar', true );
         $result["userLevel"]=$userLevel; 
         $result["userId"]=$userId; 
-        $result["openid"]=$openId;        
+        $result["openid"]=$openId;     
+        $result["storeappid"]=get_user_meta($userId, 'storeappid', true); 
+        $result["storename"]=get_user_meta($userId, 'storename', true); 
+        $result["storeinfo"]=get_user_meta($userId, 'storeinfo', true); 
         $response = rest_ensure_response($result);
         return $response; 
          
@@ -760,8 +858,16 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
     {
         return true;
     }
-    function  update_userInfo_permissions_check($request)
+  
+
+    function update_user_wechatshop_info_permissions_check($request)
     {
+        $openid= $request['openid'];
+        $user=get_user_by('login',$openid);
+        if(empty($user))
+        {
+            return new WP_Error( 'error', '参数错误', array( 'status' => 500 ) );
+        }
         return true;
     }
 

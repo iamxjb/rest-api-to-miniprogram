@@ -54,7 +54,7 @@ class RAM_Weixin_API {
 			'getliveinfo'=>'https://api.weixin.qq.com/wxa/business/getliveinfo',
 			'get_qrcode' => 'https://api.weixin.qq.com/wxa/getwxacode',
 			'get_callbackip' => 'https://api.weixin.qq.com/cgi-bin/getcallbackip',
-			
+			'get_miniprogram_cooperation_shop_list'=>'https://api.weixin.qq.com/channels/ec/cooperation/shop/list'		
 		);
 		
 		return $api_urls[$key];
@@ -151,6 +151,13 @@ class RAM_Weixin_API {
     {
 		return $this->invokingRequest('msgSecCheck',$data);	
 	}
+
+	//获取小程序合作微信小店列表
+	public function get_cooperation_shop_list($data)
+	{
+		$result = $this->invokingRequest('get_miniprogram_cooperation_shop_list',$data);
+		return $result;
+	} 
 
 	//获取微信调用开发者服务器所使用的出口IP
 	public function get_callbackip($data) 
