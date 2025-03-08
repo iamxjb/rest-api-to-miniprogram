@@ -79,6 +79,9 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
 
             //WordPress 禁止符号转码和页面提速(参考：https://mp.weixin.qq.com/s/nqoZ5LOIEznbxgpqXSxwNQ)
 			remove_filter('the_content', 'wptexturize');    //禁止内容转码
+
+            //注册自定义相册短代码
+			add_shortcode ('gallery' , 'minapper_gallery');
 			
 
             
@@ -143,6 +146,71 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
         array_unshift( $links, $settings_link );
 
         return $links;
+    }
+
+    function minapper_gallery($atts, $content)
+    {
+
+        $minappergallery = "";    
+
+
+        $web_gallery_style=get_option("wf_web_gallery_style");       
+        extract(shortcode_atts(array(
+            'size' => '',
+            'ids' => ''
+        ), $atts));
+        $img = '';
+        $images=[];
+        if(!empty($ids)) {
+                $ids = explode(',', $ids);           
+                $realwidth = '';
+                $real_height = '';
+                $i = 0;
+                foreach ($ids as $id) {
+                    $image = wp_get_attachment_image_src((int)$id, 'full');
+                    $img = $i == 0 ? $img . $image[0] : $img . ',' . $image[0];
+                    $realwidth = $i == 0 ? $realwidth . $image[1] : $realwidth . ',' . $image[1];
+                    $real_height = $i == 0 ? $real_height . $image[2] : $real_height . ',' . $image[2];
+                    $i++;
+                    $images[] = $image[0];
+                }
+            
+            } 
+        if (is_single() || is_home() || is_feed()) {        
+            $attr = array(
+                'size' => $size,
+                'ids' => $ids
+            );
+            if($web_gallery_style=='wp')
+            {
+                $minappergallery =gallery_shortcode($attr, '');
+            }
+            elseif($web_gallery_style=='swiper')
+            {
+                wp_enqueue_style('minappergallerycss', plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/includes/css/gallery.css', false, '1.0', 'all');
+                wp_enqueue_script('minappergalleryjs',  plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/includes/js/gallery.js', false, '1.0');
+                $minappergallery .='<div class="gallery-container">
+            <div class="gallery-viewport">
+                <div class="slides-container">';
+
+                foreach ($images as $item) {
+                    $minappergallery.='
+                    <div class="slide"><img data-src="'. $item. '" ></div> ';
+                }
+            $minappergallery.=' 
+                </div>
+            </div>
+            <button class="nav-button prev">❮</button>
+            <button class="nav-button next">❯</button>
+            <div class="navigation-dots"></div>
+        </div>';
+            }
+        
+        
+        } else {
+            $minappergallery = '<minappergallery images="' . $img . '"  real-width="' . $realwidth . '"  real_height="' . $real_height . '">';
+        }
+        return $minappergallery;
     }
 
 }

@@ -91,6 +91,8 @@ function register_weixinappsettings()
     register_setting('weixinapp-group', 'wf_minapper_qrcode_url');
     register_setting('weixinapp-group', 'wf_updateAvatar_count');
     register_setting('weixinapp-group', 'wf_hot_posts_years');
+    register_setting('weixinapp-group', 'wf_web_gallery_style');
+    
 }
 
 function weixinapp_settings_page()
@@ -172,6 +174,17 @@ function weixinapp_settings_page()
                                 <p style="color: #959595 ; display:inline">* 填写整数,留空则修改次数为0次</p>
                             </td>
                         </tr>
+
+                        <tr valign="top">
+                                <th scope="row">网页端相册显示样式</th>
+                                <td>
+                                    <select id="wf_web_gallery_style" name="wf_web_gallery_style">
+                                        <option value="wp" <?php echo get_option('wf_web_gallery_style') == 'wp' ? 'selected' : ''; ?>>WordPress原样式</option>
+                                        <option value="swiper" <?php echo get_option('wf_web_gallery_style') == 'swiper' ? 'selected' : ''; ?>>滑动显示(画廊效果)</option>
+                                    </select>
+                                    <p style="color: #959595 ; display:inline">只针对网页端</p>
+                                </td>
+                            </tr>
 
 
                         <tr valign="top">

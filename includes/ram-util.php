@@ -824,10 +824,10 @@ function  getPosts($ids)
     
             $sql="select post_content from ".$wpdb->posts." where id=".$post_id;
             $postContent = $wpdb->get_var($sql);
-            if(has_shortcode($postContent, 'gallery' ))//处理内容里的相册显示
-            {
-              $content= get_content_gallery($postContent,true);
-            }
+            // if(has_shortcode($postContent, 'gallery' ))//处理内容里的相册显示
+            // {
+            //   $content= get_content_gallery($postContent,true);
+            // }
             $_content['rendered'] =$content;
             $_content['raw'] =$raw;//古腾堡编辑器需要该属性，否则报错
             $_content['protected'] =$content_protected;  
