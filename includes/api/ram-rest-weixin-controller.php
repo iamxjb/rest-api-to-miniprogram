@@ -235,6 +235,52 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 				if($item['status']==1 &&  $item['appid']==$storeAppId)
 				{
 					$storeName=$item['nickname'];
+                    
+                    try{
+
+						if(!empty($storeLocation))
+						{
+							global $wpdb; 
+							$wpdb->minapper_cooperation_shop = $wpdb->prefix .'minapper_cooperation_shop';
+							if ($wpdb->get_var("show tables like '" . $wpdb->minapper_cooperation_shop. "'") == $wpdb->minapper_cooperation_shop) {
+								$sql = "select count(1) from ". $wpdb->minapper_cooperation_shop. " where appid='". $storeAppId. "'";
+								$count = $wpdb->get_var($sql);
+								if($count==0)
+								{
+									$data=array(
+										'appid' => $storeAppId,
+										'nickname' => $storeName,
+										'status'=>$item['status'],
+										'bind_time'=>$item['bind_time'],
+										'unbind_time'=>$item['unbind_time'],
+										'cancel_time'=>$item['cancel_time'],
+										'address' => $storeAddress,
+										'location' =>$storeLocation,
+										'latitude' =>$storeLatitude,
+										'longitude' =>$storeLongitude,
+									);
+									$wpdb->insert($wpdb->minapper_cooperation_shop, $data);	
+								}
+								else
+								{
+									$data=array(
+										'address' => $storeAddress,
+										'location' =>$storeLocation,
+										'latitude' =>$storeLatitude,
+										'longitude' =>$storeLongitude,
+									);
+									$where = array('appid' => $storeAppId);
+									$updateResult = $wpdb->update($wpdb->minapper_cooperation_shop, $data, $where);
+									
+								}
+							}
+						}
+
+					}
+					catch(Exception $e)
+					{
+
+					}
 					$flag=true;
 					break;
 				}

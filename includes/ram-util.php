@@ -30,17 +30,23 @@ function get_post_image_url($image_id, $size='full'){
 
 function getPostImages($content,$postId){
     $content_first_image= get_post_content_first_image($content);
+
+    
     $post_frist_image=$content_first_image;
 
-    if(empty($content_first_image))
-    {
-        $content_first_image='';
+    if (empty($post_frist_image) && !empty(get_option('wf_default_thumbnail_image'))) {
+        $post_frist_image = get_option('wf_default_thumbnail_image');
     }
 
-    if(empty($post_frist_image))
-    {
-        $post_frist_image='';
-    }
+    // if(empty($content_first_image))
+    // {
+    //     $content_first_image='';
+    // }
+
+    // if(empty($post_frist_image))
+    // {
+    //     $post_frist_image='';
+    // }
 
     $post_thumbnail_image_150='';
     $post_medium_image_300='';
@@ -88,28 +94,28 @@ function getPostImages($content,$postId){
 
     }
 
-    if(!empty($content_first_image) && empty($post_thumbnail_image))
+    if(!empty($post_frist_image) && empty($post_thumbnail_image))
      {
-        $post_thumbnail_image=$content_first_image;
-        $post_thumbnail_image_150=$content_first_image;
+        $post_thumbnail_image=$post_frist_image;
+        $post_thumbnail_image_150=$post_frist_image;
      }
 
-     if(!empty($content_first_image) && empty($post_medium_image))
+     if(!empty($post_frist_image) && empty($post_medium_image))
      {
-        $post_medium_image=$content_first_image;
-        $post_medium_image_300=$content_first_image;
+        $post_medium_image=$post_frist_image;
+        $post_medium_image_300=$post_frist_image;
         
      }
 
-     if(!empty($content_first_image) && empty($post_large_image))
+     if(!empty($post_frist_image) && empty($post_large_image))
      {
-        $post_large_image=$content_first_image;
-        $post_thumbnail_image_624=$content_first_image;
+        $post_large_image=$post_frist_image;
+        $post_thumbnail_image_624=$post_frist_image;
      }
 
-     if(!empty($content_first_image) && empty($post_full_image))
+     if(!empty($post_frist_image) && empty($post_full_image))
      {
-        $post_full_image=$content_first_image;
+        $post_full_image=$post_frist_image;
      }
 
      //$post_all_images = get_attached_media( 'image', $postId);

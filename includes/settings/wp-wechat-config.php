@@ -77,6 +77,8 @@ function register_weixinappsettings()
     register_setting('weixinapp-group', 'wf_business_domain');
     register_setting('weixinapp-group', 'wf_zan_imageurl');
     register_setting('weixinapp-group', 'wf_logo_imageurl');
+    register_setting('weixinapp-group', 'wf_default_thumbnail_image')
+    ;
 
     register_setting('weixinapp-group', 'enable_index_interstitial_ad');
     register_setting('weixinapp-group', 'enable_detail_interstitial_ad');
@@ -261,6 +263,13 @@ function weixinapp_settings_page()
                                 ?>
                             </td>
                         </tr>
+
+                        <tr valign="top">
+                                <th scope="row">文章默认的缩略图地址</th>
+                                <td><input type="text" name="wf_default_thumbnail_image" style="width:400px; height:40px" value="<?php echo esc_attr(get_option('wf_default_thumbnail_image')); ?>" /><input id="wf_default_thumbnail_image-btn" class="button im-upload" type="button" value="选择图片" /><br />
+                                    <p style="color: #959595; display:inline">文章无图片时会缩略图默认显示此图，例如：https://www.minapper.com/images/minapper.jpg</p>
+                                </td>
+                            </tr>
 
                         <tr valign="top">
                             <th scope="row">小程序logo图片地址</th>
