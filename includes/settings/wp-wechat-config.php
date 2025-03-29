@@ -186,7 +186,7 @@ function weixinapp_settings_page()
                                     </select>
                                     <p style="color: #959595 ; display:inline">只针对网页端</p>
                                 </td>
-                            </tr>
+                         </tr>
 
 
                         <tr valign="top">
