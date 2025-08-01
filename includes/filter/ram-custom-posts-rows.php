@@ -4,15 +4,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 function ram_posts_columns( $columns ) {
-    $columns['id'] = __('id');
-    $columns['excitation'] = __('启用激励视频');
-    $columns['qrcode'] = __('小程序码');
+    $columns['id'] = __('id','rest-api-to-miniprogram');
+    $columns['excitation'] = __('启用激励视频','rest-api-to-miniprogram');
+    $columns['qrcode'] = __('小程序码','rest-api-to-miniprogram');
     return $columns;
 }
 
 function output_ram_posts_custom_columns( $column,$post_id)
 {
-    if($column=='id') echo $post_id; 
+    if($column=='id') echo esc_html($post_id); 
     if($column=='excitation')
     {
         $excitation=empty(get_post_meta($post_id,'_excitation',true))?0:(int)get_post_meta($post_id,'_excitation',true);
@@ -34,7 +34,7 @@ function output_ram_posts_custom_columns( $column,$post_id)
         if (file_exists($qrcode_file)) {
             // 如果小程序码图片存在,则显示该图片
             $qrcode_url = plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/qrcode/qrcode-' . $post_id . '.png';
-            echo "<p><img width='80' src='{$qrcode_url}' alt='QR Code'/></p>";
+            echo "<p><img width='80' src='".esc_html($qrcode_url)."' alt='QR Code'/></p>";
         } else {
             // 否则显示占位符或提示信息
             echo '<span class="qrcode-placeholder">暂未生成</span>';
@@ -45,13 +45,14 @@ function output_ram_posts_custom_columns( $column,$post_id)
 
 
 function ram_pages_columns( $columns ) {
-    $columns['id'] = __('id');
+    $columns['id'] = __('id','rest-api-to-miniprogram');
+
     return $columns;
 }
 
 function output_ram_pages_custom_columns( $column,$post_id)
 {
-    if($column=='id') echo $post_id; 
+    if($column=='id') echo esc_html($post_id); 
 
 }
 
@@ -94,7 +95,8 @@ add_action( 'admin_notices', 'ram_post_custom_bulk_actions_notices' );
 
 function ram_post_custom_bulk_actions_notices() {
 	// 改为草稿
-	if ( ! empty( $_REQUEST['ram_post_custom_bulk_actions'] ) ) {
+    $ram_post_custom_bulk_actions=isset($_REQUEST['ram_post_custom_bulk_actions']) ? sanitize_text_field(wp_unslash($_REQUEST['ram_post_custom_bulk_actions'])) : '';
+	if (!empty($ram_post_custom_bulk_actions) && wp_verify_nonce( $ram_post_custom_bulk_actions, 'ram_post_custom_bulk_actions' ) ) {
 		echo '<div id="message" class="updated notice is-dismissible">
 			<p>小程序码已生成</p>
 		</div>';

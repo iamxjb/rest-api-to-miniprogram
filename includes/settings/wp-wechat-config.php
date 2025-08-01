@@ -29,8 +29,10 @@ function get_jquery_source()
 {
     $url = plugins_url('', __FILE__);
     wp_enqueue_style("tabs", plugins_url() . "/rest-api-to-miniprogram/includes/js/tab/tabs.css", false, "1.0", "all");
+    // phpcs:disable WordPress.WP.EnqueuedResourceParameters.NotInFooter
     wp_enqueue_script("tabs", plugins_url() . "/rest-api-to-miniprogram/includes/js/tab/tabs.min.js", false, "1.0");
     wp_enqueue_script('rawscript', plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/includes/js/script.js', false, '1.0');
+    // phpcs:enable WordPress.WP.EnqueuedResourceParameters.NotInFooter
     if (function_exists('wp_enqueue_media')) {
         wp_enqueue_media();
     }
@@ -40,60 +42,75 @@ function get_jquery_source()
 function register_weixinappsettings()
 {
     // 注册设置
-    register_setting('weixinapp-group', 'wf_appid');
-    register_setting('weixinapp-group', 'wf_secret');
+    $args = array(
+    'type' => 'string'
+    );
+    register_setting('weixinapp-group', 'wf_appid',$args);
+    register_setting('weixinapp-group', 'wf_secret',$args);
 
-    register_setting('weixinapp-group', 'wf_mchid');
-    register_setting('weixinapp-group', 'wf_paykey');
-    register_setting('weixinapp-group', 'wf_paybody');
+    register_setting('weixinapp-group', 'wf_mchid',$args);
+    register_setting('weixinapp-group', 'wf_paykey',$args);
+    register_setting('weixinapp-group', 'wf_paybody',$args);
 
-    register_setting('weixinapp-group', 'wf_poster_imageurl');
-    register_setting('weixinapp-group', 'wf_enable_comment_option');
-    register_setting('weixinapp-group', 'wf_enable_comment_check');
+    register_setting('weixinapp-group', 'wf_poster_imageurl',$args);
+    register_setting('weixinapp-group', 'wf_enable_comment_option',$args);
+    register_setting('weixinapp-group', 'wf_enable_comment_check',$args);
 
-    register_setting('weixinapp-group', 'wf_praise_word');
-    register_setting('weixinapp-group', 'wf_enterprise_minapp');
+    register_setting('weixinapp-group', 'wf_praise_word',$args);
+    register_setting('weixinapp-group', 'wf_enterprise_minapp',$args);
 
-    register_setting('weixinapp-group', 'wf_list_ad');
-    register_setting('weixinapp-group', 'wf_list_ad_id');
+    register_setting('weixinapp-group', 'wf_list_ad',$args);
+    register_setting('weixinapp-group', 'wf_list_ad_id',$args);
 
-    register_setting('weixinapp-group', 'wf_list_ad_every');
-
-
-    register_setting('weixinapp-group', 'wf_excitation_ad_id');
-    register_setting('weixinapp-group', 'wf_video_ad_id');
-    register_setting('weixinapp-group', 'wf_interstitial_ad_id');
+    register_setting('weixinapp-group', 'wf_list_ad_every',$args);
 
 
+    register_setting('weixinapp-group', 'wf_excitation_ad_id',$args);
+    register_setting('weixinapp-group', 'wf_video_ad_id',$args);
+    register_setting('weixinapp-group', 'wf_interstitial_ad_id',$args);
+
+    register_setting('weixinapp-group', 'wf_detail_ad',$args);
+    register_setting('weixinapp-group', 'wf_detail_ad_id',$args);
+    register_setting('weixinapp-group', 'wf_about',$args);
+    register_setting('weixinapp-group', 'wf_display_categories',$args);
 
 
 
-    register_setting('weixinapp-group', 'wf_detail_ad');
-    register_setting('weixinapp-group', 'wf_detail_ad_id');
-    register_setting('weixinapp-group', 'wf_about');
-    register_setting('weixinapp-group', 'wf_display_categories');
 
-    register_setting('weixinapp-group', 'wf_downloadfile_domain');
-    register_setting('weixinapp-group', 'wf_business_domain');
-    register_setting('weixinapp-group', 'wf_zan_imageurl');
-    register_setting('weixinapp-group', 'wf_logo_imageurl');
-    register_setting('weixinapp-group', 'wf_default_thumbnail_image')
-    ;
 
-    register_setting('weixinapp-group', 'enable_index_interstitial_ad');
-    register_setting('weixinapp-group', 'enable_detail_interstitial_ad');
-    register_setting('weixinapp-group', 'enable_topic_interstitial_ad');
-    register_setting('weixinapp-group', 'enable_list_interstitial_ad');
-    register_setting('weixinapp-group', 'enable_hot_interstitial_ad');
-    register_setting('weixinapp-group', 'enable_comments_interstitial_ad');
-    register_setting('weixinapp-group', 'enable_live_interstitial_ad');
-    register_setting('weixinapp-group', 'wf_copyright_state');
+    register_setting('weixinapp-group', 'wf_detail_ad',$args);
+    register_setting('weixinapp-group', 'wf_detail_ad_id',$args);
+    register_setting('weixinapp-group', 'wf_about',$args);
+    register_setting('weixinapp-group', 'wf_display_categories',$args);
 
-    register_setting('weixinapp-group', 'wf_detail_bottom_display_qrcode');
-    register_setting('weixinapp-group', 'wf_minapper_qrcode_url');
-    register_setting('weixinapp-group', 'wf_updateAvatar_count');
-    register_setting('weixinapp-group', 'wf_hot_posts_years');
-    register_setting('weixinapp-group', 'wf_web_gallery_style');
+    register_setting('weixinapp-group', 'wf_detail_ad',$args);
+    register_setting('weixinapp-group', 'wf_detail_ad_id',$args);
+    register_setting('weixinapp-group', 'wf_about',$args);
+    register_setting('weixinapp-group', 'wf_display_categories',$args);
+
+    register_setting('weixinapp-group', 'wf_downloadfile_domain',$args);
+    register_setting('weixinapp-group', 'wf_business_domain',$args);
+    register_setting('weixinapp-group', 'wf_zan_imageurl',$args);
+    register_setting('weixinapp-group', 'wf_logo_imageurl',$args);
+    register_setting('weixinapp-group', 'wf_default_thumbnail_image',$args);
+    register_setting('weixinapp-group', 'wf_about',$args);
+    register_setting('weixinapp-group', 'wf_display_categories',$args);
+
+    register_setting('weixinapp-group', 'enable_index_interstitial_ad',$args);
+    register_setting('weixinapp-group', 'enable_detail_interstitial_ad',$args);
+    register_setting('weixinapp-group', 'enable_topic_interstitial_ad',$args);
+    register_setting('weixinapp-group', 'enable_list_interstitial_ad',$args);
+    register_setting('weixinapp-group', 'enable_hot_interstitial_ad',$args);
+    register_setting('weixinapp-group', 'enable_comments_interstitial_ad',$args);
+    register_setting('weixinapp-group', 'enable_live_interstitial_ad',$args);
+    register_setting('weixinapp-group', 'wf_copyright_state',$args);
+
+    register_setting('weixinapp-group', 'wf_detail_bottom_display_qrcode',$args);
+    register_setting('weixinapp-group', 'wf_minapper_qrcode_url',$args);
+    register_setting('weixinapp-group', 'wf_updateAvatar_count',$args);
+    register_setting('weixinapp-group', 'wf_hot_posts_years',$args);
+    register_setting('weixinapp-group', 'wf_hot_posts_years',$args);
+    register_setting('weixinapp-group', 'wf_web_gallery_style',$args);
     
 }
 
@@ -107,13 +124,14 @@ function weixinapp_settings_page()
 
         <p>Rest API to miniprogram by <a href="https://www.minapper.com" target="_blank">微慕</a>.
             <?php
-
+            // phpcs:disable WordPress.Security.NonceVerification.Recommended
             if (!empty($_REQUEST['settings-updated'])) {
                 if (function_exists('MRAC')) {
                     $cachedata = MRAC()->cacheManager->clear_cache();
                 }
                 echo '<div id="message" class="updated fade"><p><strong>设置已保存</strong></p></div>';
             }
+            // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
             if (version_compare(PHP_VERSION, '5.6.0', '<=')) {
 
@@ -201,7 +219,7 @@ function weixinapp_settings_page()
                                         $pageId = $page->ID;
                                     ?>
 
-                                        <option value="<?php echo $pageId;  ?>" <?php echo get_option('wf_about') == $pageId ? 'selected' : ''; ?>><?php echo $title ?></option>"
+                                        <option value="<?php echo esc_attr($pageId);  ?>" <?php echo get_option('wf_about') == $pageId ? 'selected' : ''; ?>><?php echo esc_attr($title) ?></option>"
                                     <?php }  ?>
                                 </select>
                             </td>
@@ -212,7 +230,8 @@ function weixinapp_settings_page()
                             <td>距今
                                 <select id="wf_hot_posts_years" name="wf_hot_posts_years">
                                     <?php for ($i = 1; $i < 11; $i++) { ?>
-                                        <option value="<?php echo  $i; ?>" <?php echo get_option('wf_hot_posts_years') == $i . '' ? 'selected' : ''; ?>><?php echo  $i; ?></option>
+                                        <option value="<?php echo  esc_attr($i); ?>" <?php echo get_option('wf_hot_posts_years') == $i . '' ? 'selected' : ''; ?>><?php echo  esc_attr($i); ?></option>
+
 
                                     <?php } ?>
                                 </select>年
@@ -228,7 +247,7 @@ function weixinapp_settings_page()
 
                                 $wf_enable_comment_option = get_option('wf_enable_comment_option');
                                 $checkbox = empty($wf_enable_comment_option) ? '' : 'checked';
-                                echo '<input name="wf_enable_comment_option"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '<input name="wf_enable_comment_option"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
 
 
                                 ?>
@@ -237,7 +256,7 @@ function weixinapp_settings_page()
                                 <?php
                                 $wf_enable_comment_check = get_option('wf_enable_comment_check');
                                 $checkbox1 = empty($wf_enable_comment_check) ? '' : 'checked';
-                                echo '<input name="wf_enable_comment_check"  type="checkbox"  value="1" ' . $checkbox1 . ' />';
+                                echo '<input name="wf_enable_comment_check"  type="checkbox"  value="1" ' . esc_attr($checkbox1) . ' />';
 
                                 ?>
                             </td>
@@ -249,7 +268,8 @@ function weixinapp_settings_page()
                                 <?php
                                 $wf_enterprise_minapp = get_option('wf_enterprise_minapp');
                                 $checkbox = empty($wf_enterprise_minapp) ? '' : 'checked';
-                                echo '<input name="wf_enterprise_minapp"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '<input name="wf_enterprise_minapp"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
+
                                 ?><p style="color: #959595; display:inline">* 如果是企业主体的小程序，请勾选</p>
                             </td>
 
@@ -259,7 +279,8 @@ function weixinapp_settings_page()
                                 <?php
                                 $wf_detail_bottom_display_qrcode = get_option('wf_detail_bottom_display_qrcode');
                                 $checkbox = empty($wf_detail_bottom_display_qrcode) ? '' : 'checked';
-                                echo '<input name="wf_detail_bottom_display_qrcode"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '<input name="wf_detail_bottom_display_qrcode"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
+
                                 ?>
                             </td>
                         </tr>
@@ -351,7 +372,7 @@ function weixinapp_settings_page()
                                 <?php
                                 $wf_list_ad = get_option('wf_list_ad');
                                 $checkbox = empty($wf_list_ad) ? '' : 'checked';
-                                echo '<input name="wf_list_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '<input name="wf_list_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
                                 &emsp;&emsp;&emsp;Banner广告id:&emsp;<input type="text" name="wf_list_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr(get_option('wf_list_ad_id')); ?>" />
                                 <br />&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;每<input type="number" name="wf_list_ad_every" style="width:40px; height:40px" value="<?php echo esc_attr(get_option('wf_list_ad_every')); ?>" />条列表展示一条广告<br />
@@ -367,7 +388,7 @@ function weixinapp_settings_page()
                                 <?php
                                 $wf_detail_ad = get_option('wf_detail_ad');
                                 $checkbox = empty($wf_detail_ad) ? '' : 'checked';
-                                echo '<input name="wf_detail_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '<input name="wf_detail_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
                                 &emsp;&emsp;&emsp;Banner广告id:&emsp;<input type="text" name="wf_detail_ad_id" style="width:300px; height:40px" value="<?php echo esc_attr(get_option('wf_detail_ad_id')); ?>" />
                             </td>
@@ -397,44 +418,44 @@ function weixinapp_settings_page()
                                 <?php
                                 $enable_index_interstitial_ad = get_option('enable_index_interstitial_ad');
                                 $checkbox = empty($enable_index_interstitial_ad) ? '' : 'checked';
-                                echo '首页<input name="enable_index_interstitial_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '首页<input name="enable_index_interstitial_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
                                 &emsp;
                                 <?php
                                 $enable_detail_interstitial_ad = get_option('enable_detail_interstitial_ad');
                                 $checkbox = empty($enable_detail_interstitial_ad) ? '' : 'checked';
-                                echo '文章详情页<input name="enable_detail_interstitial_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '文章详情页<input name="enable_detail_interstitial_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
 
                                 &emsp;
                                 <?php
                                 $enable_topic_interstitial_ad = get_option('enable_topic_interstitial_ad');
                                 $checkbox = empty($enable_topic_interstitial_ad) ? '' : 'checked';
-                                echo '专题(分类)页<input name="enable_topic_interstitial_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '专题(分类)页<input name="enable_topic_interstitial_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
                                 &emsp;
                                 <?php
                                 $enable_list_interstitial_ad = get_option('enable_list_interstitial_ad');
                                 $checkbox = empty($enable_list_interstitial_ad) ? '' : 'checked';
-                                echo '专题(分类)文章列表页 &emsp;<input name="enable_list_interstitial_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '专题(分类)文章列表页 &emsp;<input name="enable_list_interstitial_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
                                 &emsp;
                                 <?php
                                 $enable_hot_interstitial_ad = get_option('enable_hot_interstitial_ad');
                                 $checkbox = empty($enable_hot_interstitial_ad) ? '' : 'checked';
-                                echo '排行页<input name="enable_hot_interstitial_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '排行页<input name="enable_hot_interstitial_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
                                 &emsp;
                                 <?php
                                 $enable_comments_interstitial_ad = get_option('enable_comments_interstitial_ad');
                                 $checkbox = empty($enable_comments_interstitial_ad) ? '' : 'checked';
-                                echo '最新评论页<input name="enable_comments_interstitial_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '最新评论页<input name="enable_comments_interstitial_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
                                 &emsp;
                                 <?php
                                 $enable_live_interstitial_ad = get_option('enable_live_interstitial_ad');
                                 $checkbox = empty($enable_live_interstitial_ad) ? '' : 'checked';
-                                echo '直播页<input name="enable_live_interstitial_ad"  type="checkbox"  value="1" ' . $checkbox . ' />';
+                                echo '直播页<input name="enable_live_interstitial_ad"  type="checkbox"  value="1" ' . esc_attr($checkbox) . ' />';
                                 ?>
 
 
@@ -455,7 +476,7 @@ function weixinapp_settings_page()
                     </div>
                     <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕增强版WordPress小程序是一款，在原守望轩开源小程序（现微慕开源小程序）基础上重新架构、设计、优化过的wordpress多端小程序，性能和用户体验更佳，界面设计更加简洁清新，同时打通<span style="font-weight:bold">微信小程序、QQ小程序、百度小程序、支付宝小程序、头条小程序...真正实现一站多端</span>，可使用微信扫描下方小程序码直接体验：</p>
                     <div>
-                        <img src="<?php echo REST_API_TO_MINIPROGRAM_PLUGIN_URL . 'includes/images/minapper-plus.jpg' ?>" alt="微慕增强版" width="100%"></img>
+                        <img src="<?php echo esc_attr(REST_API_TO_MINIPROGRAM_PLUGIN_URL) . 'includes/images/minapper-plus.jpg' ?>" alt="微慕增强版" width="100%"></img>
                     </div>
                 </div>
 
@@ -471,7 +492,8 @@ function weixinapp_settings_page()
                     </div>
                     <p style="color: #4c4c4c;text-align:justify; line-height: 2">微慕版专业版WordPress小程序和插件，在“守望轩”开源小程序的基础上，架构完全重构，在性能上大幅度优化，增加了<span style="font-weight:bold">动态圈子、积分系统、文章投稿、发布动态、付费阅读、会员权限、多种图文列表样式、预约表单、订阅消息</span>等功能</p>
                     <div>
-                        <img src="<?php echo REST_API_TO_MINIPROGRAM_PLUGIN_URL . 'includes/images/minapper-pro.jpg' ?>" alt="微慕专业版" width="100%"></img>
+                        <img src="<?php echo esc_attr(REST_API_TO_MINIPROGRAM_PLUGIN_URL) . 'includes/images/minapper-pro.jpg' ?>" alt="微慕专业版" width="100%"></img>
+
 
                     </div>
                 </div>

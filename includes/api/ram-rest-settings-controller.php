@@ -74,7 +74,7 @@ class RAM_REST_Options_Controller  extends WP_REST_Controller{
         $result["expand"] =$_expand;        
         $appid=get_option('wf_appid');
         $result["appid"] =$appid;
-        $history_post = get_history_post_list(date('Y'), date('m'), date('j'));
+        $history_post = get_history_post_list(gmdate('Y'), gmdate('m'), gmdate('j'));
         $result["history_post"] =$history_post;
         $response = rest_ensure_response($result);
         return $response;

@@ -77,9 +77,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_select' ) ) {
 
 		public function output() {
 
-			echo $this->element_before();
+			echo esc_attr($this->element_before());
 
-			echo $this->element_prepend();
+			echo esc_attr($this->element_prepend());
 
 			if ( isset( $this->field['options'] ) || isset( $this->field['query'] ) ) {
 
@@ -89,14 +89,14 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_select' ) ) {
 				$class      = $this->element_class();
 				$extra_name = ( isset( $this->field['attributes']['multiple'] ) ) ? '[]' : '';
 
-				echo '<select name="' . $this->element_name( $extra_name ) . '"' . $this->element_class() . $this->element_attributes() . '>';
+				echo '<select name="' . esc_attr($this->element_name( $extra_name )) . '"' . esc_attr($this->element_class()) . esc_attr($this->element_attributes()) . '>';
 
-				echo ( isset( $this->field['default_option'] ) ) ? '<option value="">' . $this->field['default_option'] . '</option>' : '';
+				echo ( isset( $this->field['default_option'] ) ) ? '<option value="">' . esc_attr($this->field['default_option']) . '</option>' : '';
 
 				if ( ! empty( $select ) ) {
 
 					foreach ( $select as $key => $value ) {
-						echo '<option value="' . $key . '" ' . $this->checked( $this->element_value(), $key, 'selected' ) . '>' . $value . '</option>';
+						echo '<option value="' . esc_attr($key) . '" ' . esc_attr($this->checked( $this->element_value(), $key, 'selected' )) . '>' . esc_attr($value) . '</option>';
 
 					}
 				}
@@ -105,9 +105,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_select' ) ) {
 
 			}
 
-			echo $this->element_append();
+			echo esc_attr($this->element_append());
 
-			echo $this->element_after();
+			echo esc_attr($this->element_after());
 
 		}
 
@@ -203,7 +203,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_select' ) ) {
 				case 'tag':
 
 					$taxonomies = ( isset( $query_args['taxonomies'] ) ) ? $query_args['taxonomies'] : 'post_tag';
-					$tags       = get_terms( $taxonomies, $query_args );
+					$tags       = get_terms( $taxonomies);
 
 					if ( ! is_wp_error( $tags ) && ! empty( $tags ) ) {
 						foreach ( $tags as $tag ) {

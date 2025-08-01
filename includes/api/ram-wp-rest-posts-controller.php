@@ -75,7 +75,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		);
 		if ( isset( $schema['properties']['password'] ) ) {
 			$get_item_args['password'] = array(
-				'description' => __( 'The password for the post if it is password protected.' ),
+				'description' => __( 'The password for the post if it is password protected.', 'rest-api-to-miniprogram' ),
 				'type'        => 'string',
 			);
 		}
@@ -85,7 +85,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			array(
 				'args'   => array(
 					'id' => array(
-						'description' => __( 'Unique identifier for the object.' ),
+						'description' => __( 'Unique identifier for the object.', 'rest-api-to-miniprogram' ),
 						'type'        => 'integer',
 					),
 				),
@@ -115,7 +115,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( 'edit' === $request['context'] && ! current_user_can( $post_type->cap->edit_posts ) ) {
 			return new WP_Error(
 				'rest_forbidden_context',
-				__( 'Sorry, you are not allowed to edit posts in this post type.' ),
+				__( 'Sorry, you are not allowed to edit posts in this post type.', 'rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -153,7 +153,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['orderby'] ) && 'relevance' === $request['orderby'] && empty( $request['search'] ) ) {
 			return new WP_Error(
 				'rest_no_search_term_defined',
-				__( 'You need to define a search term to order by relevance.' ),
+				__( 'You need to define a search term to order by relevance.' ,'rest-api-to-miniprogram'),
 				array( 'status' => 400 )
 			);
 		}
@@ -162,7 +162,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['orderby'] ) && 'include' === $request['orderby'] && empty( $request['include'] ) ) {
 			return new WP_Error(
 				'rest_orderby_include_missing_include',
-				__( 'You need to define an include parameter to order by include.' ),
+				__( 'You need to define an include parameter to order by include.','rest-api-to-miniprogram' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -177,6 +177,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		 * name equivalents (some are the same). Only values which are also
 		 * present in $registered will be set.
 		 */
+		// phpcs:disable WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 		$parameter_mappings = array(
 			'author'         => 'author__in',
 			'author_exclude' => 'author__not_in',
@@ -193,6 +194,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			'slug'           => 'post_name__in',
 			'status'         => 'post_status',
 		);
+		// phpcs:enable WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 
 		/*
 		 * For each known parameter which is both registered and present in the request,
@@ -249,7 +251,9 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				 * are not sticky, we have to support the case where post__not_in
 				 * was already specified.
 				 */
+				// phpcs:disable WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
 				$args['post__not_in'] = array_merge( $args['post__not_in'], $sticky_posts );
+				// phpcs:enable WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
 			}
 		}
 
@@ -274,7 +278,9 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
 
 		if ( ! empty( $request['tax_relation'] ) ) {
+			// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			$query_args['tax_query'] = array( 'relation' => $request['tax_relation'] );
+			// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		}
 
 		foreach ( $taxonomies as $taxonomy ) {
@@ -342,7 +348,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( $page > $max_pages && $total_posts > 0 ) {
 			return new WP_Error(
 				'rest_post_invalid_page_number',
-				__( 'The page number requested is larger than the number of pages available.' ),
+				__( 'The page number requested is larger than the number of pages available.' ,'rest-api-to-miniprogram'),
 				array( 'status' => 400 )
 			);
 		}
@@ -391,7 +397,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 	protected function get_post( $id ) {
 		$error = new WP_Error(
 			'rest_post_invalid_id',
-			__( 'Invalid post ID.' ),
+			__( 'Invalid post ID.' ,'rest-api-to-miniprogram'),
 			array( 'status' => 404 )
 		);
 
@@ -424,7 +430,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( 'edit' === $request['context'] && $post && ! $this->check_update_permission( $post ) ) {
 			return new WP_Error(
 				'rest_forbidden_context',
-				__( 'Sorry, you are not allowed to edit this post.' ),
+				__( 'Sorry, you are not allowed to edit this post.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -434,7 +440,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			if ( ! hash_equals( $post->post_password, $request['password'] ) ) {
 				return new WP_Error(
 					'rest_post_incorrect_password',
-					__( 'Incorrect post password.' ),
+					__( 'Incorrect post password.', 'rest-api-to-miniprogram' ),
 					array( 'status' => 403 )
 				);
 			}
@@ -563,7 +569,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['id'] ) ) {
 			return new WP_Error(
 				'rest_post_exists',
-				__( 'Cannot create existing post.' ),
+				__( 'Cannot create existing post.' ,'rest-api-to-miniprogram'),
 				array( 'status' => 400 )
 			);
 		}
@@ -573,7 +579,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 			return new WP_Error(
 				'rest_cannot_edit_others',
-				__( 'Sorry, you are not allowed to create posts as this user.' ),
+				__( 'Sorry, you are not allowed to create posts as this user.',	'rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -581,7 +587,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['sticky'] ) && ! current_user_can( $post_type->cap->edit_others_posts ) && ! current_user_can( $post_type->cap->publish_posts ) ) {
 			return new WP_Error(
 				'rest_cannot_assign_sticky',
-				__( 'Sorry, you are not allowed to make posts sticky.' ),
+				__( 'Sorry, you are not allowed to make posts sticky.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -589,7 +595,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! current_user_can( $post_type->cap->create_posts ) ) {
 			return new WP_Error(
 				'rest_cannot_create',
-				__( 'Sorry, you are not allowed to create posts as this user.' ),
+				__( 'Sorry, you are not allowed to create posts as this user.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -597,7 +603,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! $this->check_assign_terms_permission( $request ) ) {
 			return new WP_Error(
 				'rest_cannot_assign_term',
-				__( 'Sorry, you are not allowed to assign the provided terms.' ),
+				__( 'Sorry, you are not allowed to assign the provided terms.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -617,7 +623,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['id'] ) ) {
 			return new WP_Error(
 				'rest_post_exists',
-				__( 'Cannot create existing post.' ),
+				__( 'Cannot create existing post.' ,'rest-api-to-miniprogram'),
 				array( 'status' => 400 )
 			);
 		}
@@ -744,7 +750,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( $post && ! $this->check_update_permission( $post ) ) {
 			return new WP_Error(
 				'rest_cannot_edit',
-				__( 'Sorry, you are not allowed to edit this post.' ),
+				__( 'Sorry, you are not allowed to edit this post.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -752,7 +758,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 			return new WP_Error(
 				'rest_cannot_edit_others',
-				__( 'Sorry, you are not allowed to update posts as this user.' ),
+				__( 'Sorry, you are not allowed to update posts as this user.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -760,7 +766,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['sticky'] ) && ! current_user_can( $post_type->cap->edit_others_posts ) && ! current_user_can( $post_type->cap->publish_posts ) ) {
 			return new WP_Error(
 				'rest_cannot_assign_sticky',
-				__( 'Sorry, you are not allowed to make posts sticky.' ),
+				__( 'Sorry, you are not allowed to make posts sticky.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -768,7 +774,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! $this->check_assign_terms_permission( $request ) ) {
 			return new WP_Error(
 				'rest_cannot_assign_term',
-				__( 'Sorry, you are not allowed to assign the provided terms.' ),
+				__( 'Sorry, you are not allowed to assign the provided terms.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -889,7 +895,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( $post && ! $this->check_delete_permission( $post ) ) {
 			return new WP_Error(
 				'rest_cannot_delete',
-				__( 'Sorry, you are not allowed to delete this post.' ),
+				__( 'Sorry, you are not allowed to delete this post.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -937,7 +943,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! $this->check_delete_permission( $post ) ) {
 			return new WP_Error(
 				'rest_user_cannot_delete_post',
-				__( 'Sorry, you are not allowed to delete this post.' ),
+				__( 'Sorry, you are not allowed to delete this post.','rest-api-to-miniprogram' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -961,7 +967,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				return new WP_Error(
 					'rest_trash_not_supported',
 					/* translators: %s: force=true */
-					sprintf( __( "The post does not support trashing. Set '%s' to delete." ), 'force=true' ),
+					sprintf( __( "The post does not support trashing. Set '%s' to delete.",'rest-api-to-miniprogram' ), 'force=true' ),
 					array( 'status' => 501 )
 				);
 			}
@@ -970,7 +976,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			if ( 'trash' === $post->post_status ) {
 				return new WP_Error(
 					'rest_already_trashed',
-					__( 'The post has already been deleted.' ),
+					__( 'The post has already been deleted.','rest-api-to-miniprogram' ),
 					array( 'status' => 410 )
 				);
 			}
@@ -985,7 +991,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( ! $result ) {
 			return new WP_Error(
 				'rest_cannot_delete',
-				__( 'The post cannot be deleted.' ),
+				__( 'The post cannot be deleted.','rest-api-to-miniprogram' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -1194,7 +1200,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				if ( ! $user_obj ) {
 					return new WP_Error(
 						'rest_invalid_author',
-						__( 'Invalid author ID.' ),
+						__( 'Invalid author ID.','rest-api-to-miniprogram' ),
 						array( 'status' => 400 )
 					);
 				}
@@ -1211,7 +1217,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				if ( ! empty( $schema['properties']['sticky'] ) && ! empty( $request['sticky'] ) ) {
 					return new WP_Error(
 						'rest_invalid_field',
-						__( 'A post can not be sticky and have a password.' ),
+						__( 'A post can not be sticky and have a password.','rest-api-to-miniprogram' ),
 						array( 'status' => 400 )
 					);
 				}
@@ -1219,7 +1225,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				if ( ! empty( $prepared_post->ID ) && is_sticky( $prepared_post->ID ) ) {
 					return new WP_Error(
 						'rest_invalid_field',
-						__( 'A sticky post can not be password protected.' ),
+						__( 'A sticky post can not be password protected.','rest-api-to-miniprogram' ),
 						array( 'status' => 400 )
 					);
 				}
@@ -1230,7 +1236,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			if ( ! empty( $prepared_post->ID ) && post_password_required( $prepared_post->ID ) ) {
 				return new WP_Error(
 					'rest_invalid_field',
-					__( 'A password protected post can not be set to sticky.' ),
+					__( 'A password protected post can not be set to sticky.','rest-api-to-miniprogram' ),
 					array( 'status' => 400 )
 				);
 			}
@@ -1246,7 +1252,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				if ( empty( $parent ) ) {
 					return new WP_Error(
 						'rest_post_invalid_id',
-						__( 'Invalid post parent ID.' ),
+						__( 'Invalid post parent ID.','rest-api-to-miniprogram' ),
 						array( 'status' => 400 )
 					);
 				}
@@ -1309,7 +1315,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
 					return new WP_Error(
 						'rest_cannot_publish',
-						__( 'Sorry, you are not allowed to create private posts in this post type.' ),
+						__( 'Sorry, you are not allowed to create private posts in this post type.' ,'rest-api-to-miniprogram'),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -1319,7 +1325,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
 					return new WP_Error(
 						'rest_cannot_publish',
-						__( 'Sorry, you are not allowed to publish posts in this post type.' ),
+						__( 'Sorry, you are not allowed to publish posts in this post type.','rest-api-to-miniprogram' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -1353,7 +1359,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			} else {
 				return new WP_Error(
 					'rest_invalid_featured_media',
-					__( 'Invalid featured media ID.' ),
+					__( 'Invalid featured media ID.','rest-api-to-miniprogram' ),
 					array( 'status' => 400 )
 				);
 			}
@@ -1399,7 +1405,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		return new WP_Error(
 			'rest_invalid_param',
 			/* translators: 1: Parameter, 2: List of valid values. */
-			sprintf( __( '%1$s is not one of %2$s.' ), 'template', implode( ', ', array_keys( $allowed_templates ) ) )
+			sprintf( __( '%1$s is not one of %2$s.','rest-api-to-miniprogram' ), 'template', implode( ', ', array_keys( $allowed_templates ) ) )
 		);
 	}
 
@@ -2080,31 +2086,31 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			// Base properties for every Post.
 			'properties' => array(
 				'date'         => array(
-					'description' => __( "The date the object was published, in the site's timezone." ),
+					'description' => __( "The date the object was published, in the site's timezone.",'rest-api-to-miniprogram' ),
 					'type'        => array( 'string', 'null' ),
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
 				'date_gmt'     => array(
-					'description' => __( 'The date the object was published, as GMT.' ),
+					'description' => __( 'The date the object was published, as GMT.' ,'rest-api-to-miniprogram'),
 					'type'        => array( 'string', 'null' ),
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'guid'         => array(
-					'description' => __( 'The globally unique identifier for the object.' ),
+					'description' => __( 'The globally unique identifier for the object.' ,'rest-api-to-miniprogram'),
 					'type'        => 'object',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 					'properties'  => array(
 						'raw'      => array(
-							'description' => __( 'GUID for the object, as it exists in the database.' ),
+							'description' => __( 'GUID for the object, as it exists in the database.' ,'rest-api-to-miniprogram'),
 							'type'        => 'string',
 							'context'     => array( 'edit' ),
 							'readonly'    => true,
 						),
 						'rendered' => array(
-							'description' => __( 'GUID for the object, transformed for display.' ),
+							'description' => __( 'GUID for the object, transformed for display.' ,'rest-api-to-miniprogram'),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
@@ -2112,34 +2118,34 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 					),
 				),
 				'id'           => array(
-					'description' => __( 'Unique identifier for the object.' ),
+					'description' => __( 'Unique identifier for the object.' ,'rest-api-to-miniprogram'),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit', 'embed' ),
 					'readonly'    => true,
 				),
 				'link'         => array(
-					'description' => __( 'URL to the object.' ),
+					'description' => __( 'URL to the object.' ,'rest-api-to-miniprogram'),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit', 'embed' ),
 					'readonly'    => true,
 				),
 				'modified'     => array(
-					'description' => __( "The date the object was last modified, in the site's timezone." ),
+					'description' => __( "The date the object was last modified, in the site's timezone." ,'rest-api-to-miniprogram'),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
 				'modified_gmt' => array(
-					'description' => __( 'The date the object was last modified, as GMT.' ),
+					'description' => __( 'The date the object was last modified, as GMT.' ,'rest-api-to-miniprogram'),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
 				'slug'         => array(
-					'description' => __( 'An alphanumeric identifier for the object unique to its type.' ),
+					'description' => __( 'An alphanumeric identifier for the object unique to its type.' ,'rest-api-to-miniprogram'),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit', 'embed' ),
 					'arg_options' => array(
@@ -2147,19 +2153,19 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 					),
 				),
 				'status'       => array(
-					'description' => __( 'A named status for the object.' ),
+					'description' => __( 'A named status for the object.' ,'rest-api-to-miniprogram'),
 					'type'        => 'string',
 					'enum'        => array_keys( get_post_stati( array( 'internal' => false ) ) ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'type'         => array(
-					'description' => __( 'Type of Post for the object.' ),
+					'description' => __( 'Type of Post for the object.' ,'rest-api-to-miniprogram'),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit', 'embed' ),
 					'readonly'    => true,
 				),
 				'password'     => array(
-					'description' => __( 'A password to protect access to the content and excerpt.' ),
+					'description' => __( 'A password to protect access to the content and excerpt.' ,'rest-api-to-miniprogram'),
 					'type'        => 'string',
 					'context'     => array( 'edit' ),
 				),
@@ -2169,14 +2175,14 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		$post_type_obj = get_post_type_object( $this->post_type );
 		if ( is_post_type_viewable( $post_type_obj ) && $post_type_obj->public ) {
 			$schema['properties']['permalink_template'] = array(
-				'description' => __( 'Permalink template for the object.' ),
+				'description' => __( 'Permalink template for the object.', 'rest-api-to-miniprogram' ),
 				'type'        => 'string',
 				'context'     => array( 'edit' ),
 				'readonly'    => true,
 			);
 
 			$schema['properties']['generated_slug'] = array(
-				'description' => __( 'Slug automatically generated from the object title.' ),
+				'description' => __( 'Slug automatically generated from the object title.' ,'rest-api-to-miniprogram'),
 				'type'        => 'string',
 				'context'     => array( 'edit' ),
 				'readonly'    => true,
@@ -2185,7 +2191,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( $post_type_obj->hierarchical ) {
 			$schema['properties']['parent'] = array(
-				'description' => __( 'The ID for the parent of the object.' ),
+				'description' => __( 'The ID for the parent of the object.' ,'rest-api-to-miniprogram'),
 				'type'        => 'integer',
 				'context'     => array( 'view', 'edit' ),
 			);
@@ -2246,7 +2252,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 				case 'title':
 					$schema['properties']['title'] = array(
-						'description' => __( 'The title for the object.' ),
+						'description' => __( 'The title for the object.' ,'rest-api-to-miniprogram'),
 						'type'        => 'object',
 						'context'     => array( 'view', 'edit', 'embed' ),
 						'arg_options' => array(
@@ -2255,12 +2261,12 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 						),
 						'properties'  => array(
 							'raw'      => array(
-								'description' => __( 'Title for the object, as it exists in the database.' ),
+								'description' => __( 'Title for the object, as it exists in the database.' ,'rest-api-to-miniprogram'),
 								'type'        => 'string',
 								'context'     => array( 'edit' ),
 							),
 							'rendered' => array(
-								'description' => __( 'HTML title for the object, transformed for display.' ),
+								'description' => __( 'HTML title for the object, transformed for display.' ,'rest-api-to-miniprogram'),
 								'type'        => 'string',
 								'context'     => array( 'view', 'edit', 'embed' ),
 								'readonly'    => true,
@@ -2271,7 +2277,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 				case 'editor':
 					$schema['properties']['content'] = array(
-						'description' => __( 'The content for the object.' ),
+						'description' => __( 'The content for the object.' ,'rest-api-to-miniprogram'),
 						'type'        => 'object',
 						'context'     => array( 'view', 'edit' ),
 						'arg_options' => array(
@@ -2280,24 +2286,24 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 						),
 						'properties'  => array(
 							'raw'           => array(
-								'description' => __( 'Content for the object, as it exists in the database.' ),
+								'description' => __( 'Content for the object, as it exists in the database.' ,'rest-api-to-miniprogram'),
 								'type'        => 'string',
 								'context'     => array( 'edit' ),
 							),
 							'rendered'      => array(
-								'description' => __( 'HTML content for the object, transformed for display.' ),
+								'description' => __( 'HTML content for the object, transformed for display.' ,'rest-api-to-miniprogram'),
 								'type'        => 'string',
 								'context'     => array( 'view', 'edit' ),
 								'readonly'    => true,
 							),
 							'block_version' => array(
-								'description' => __( 'Version of the content block format used by the object.' ),
+								'description' => __( 'Version of the content block format used by the object.' ,'rest-api-to-miniprogram'),
 								'type'        => 'integer',
 								'context'     => array( 'edit' ),
 								'readonly'    => true,
 							),
 							'protected'     => array(
-								'description' => __( 'Whether the content is protected with a password.' ),
+								'description' => __( 'Whether the content is protected with a password.' ,'rest-api-to-miniprogram'),
 								'type'        => 'boolean',
 								'context'     => array( 'view', 'edit', 'embed' ),
 								'readonly'    => true,
@@ -2308,7 +2314,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 				case 'author':
 					$schema['properties']['author'] = array(
-						'description' => __( 'The ID for the author of the object.' ),
+						'description' => __( 'The ID for the author of the object.' ,'rest-api-to-miniprogram'),
 						'type'        => 'integer',
 						'context'     => array( 'view', 'edit', 'embed' ),
 					);
@@ -2316,7 +2322,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 				case 'excerpt':
 					$schema['properties']['excerpt'] = array(
-						'description' => __( 'The excerpt for the object.' ),
+						'description' => __( 'The excerpt for the object.' ,'rest-api-to-miniprogram'),
 						'type'        => 'object',
 						'context'     => array( 'view', 'edit', 'embed' ),
 						'arg_options' => array(
@@ -2325,18 +2331,18 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 						),
 						'properties'  => array(
 							'raw'       => array(
-								'description' => __( 'Excerpt for the object, as it exists in the database.' ),
+								'description' => __( 'Excerpt for the object, as it exists in the database.' ,'rest-api-to-miniprogram'),
 								'type'        => 'string',
 								'context'     => array( 'edit' ),
 							),
 							'rendered'  => array(
-								'description' => __( 'HTML excerpt for the object, transformed for display.' ),
+								'description' => __( 'HTML excerpt for the object, transformed for display.' ,'rest-api-to-miniprogram'),
 								'type'        => 'string',
 								'context'     => array( 'view', 'edit', 'embed' ),
 								'readonly'    => true,
 							),
 							'protected' => array(
-								'description' => __( 'Whether the excerpt is protected with a password.' ),
+								'description' => __( 'Whether the excerpt is protected with a password.' ,'rest-api-to-miniprogram'),
 								'type'        => 'boolean',
 								'context'     => array( 'view', 'edit', 'embed' ),
 								'readonly'    => true,
@@ -2347,7 +2353,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 				case 'thumbnail':
 					$schema['properties']['featured_media'] = array(
-						'description' => __( 'The ID of the featured media for the object.' ),
+						'description' => __( 'The ID of the featured media for the object.' ,'rest-api-to-miniprogram'),
 						'type'        => 'integer',
 						'context'     => array( 'view', 'edit', 'embed' ),
 					);
@@ -2355,13 +2361,13 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 				case 'comments':
 					$schema['properties']['comment_status'] = array(
-						'description' => __( 'Whether or not comments are open on the object.' ),
+						'description' => __( 'Whether or not comments are open on the object.', 'rest-api-to-miniprogram' ),
 						'type'        => 'string',
 						'enum'        => array( 'open', 'closed' ),
 						'context'     => array( 'view', 'edit' ),
 					);
 					$schema['properties']['ping_status']    = array(
-						'description' => __( 'Whether or not the object can be pinged.' ),
+						'description' => __( 'Whether or not the object can be pinged.', 'rest-api-to-miniprogram' ),
 						'type'        => 'string',
 						'enum'        => array( 'open', 'closed' ),
 						'context'     => array( 'view', 'edit' ),
@@ -2370,7 +2376,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 				case 'page-attributes':
 					$schema['properties']['menu_order'] = array(
-						'description' => __( 'The order of the object in relation to other object of its type.' ),
+						'description' => __( 'The order of the object in relation to other object of its type.', 'rest-api-to-miniprogram' ),
 						'type'        => 'integer',
 						'context'     => array( 'view', 'edit' ),
 					);
@@ -2381,7 +2387,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 					$formats = array_values( get_post_format_slugs() );
 
 					$schema['properties']['format'] = array(
-						'description' => __( 'The format for the object.' ),
+						'description' => __( 'The format for the object.', 'rest-api-to-miniprogram' ),
 						'type'        => 'string',
 						'enum'        => $formats,
 						'context'     => array( 'view', 'edit' ),
@@ -2397,14 +2403,14 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( 'post' === $this->post_type ) {
 			$schema['properties']['sticky'] = array(
-				'description' => __( 'Whether or not the object should be treated as sticky.' ),
+				'description' => __( 'Whether or not the object should be treated as sticky.' ,'rest-api-to-miniprogram'),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 			);
 		}
 
 		$schema['properties']['template'] = array(
-			'description' => __( 'The theme file to use to display the object.' ),
+			'description' => __( 'The theme file to use to display the object.' ,'rest-api-to-miniprogram'),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 			'arg_options' => array(
@@ -2423,10 +2429,10 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 					'register_taxonomy',
 					sprintf(
 						/* translators: 1. The taxonomy name, 2. The property name, either 'rest_base' or 'name', 3. The conflicting value. */
-						__( 'The "%1$s" taxonomy "%2$s" property (%3$s) conflicts with an existing property on the REST API Posts Controller. Specify a custom "rest_base" when registering the taxonomy to avoid this error.' ),
-						$taxonomy->name,
-						$taxonomy_field_name_with_conflict,
-						$base
+						esc_html_e( 'The "%1$s" taxonomy "%2$s" property (%3$s) conflicts with an existing property on the REST API Posts Controller. Specify a custom "rest_base" when registering the taxonomy to avoid this error.' ,'rest-api-to-miniprogram' ),
+						esc_html($taxonomy->name),
+						esc_html($taxonomy_field_name_with_conflict),
+						esc_html($base)
 					),
 					'5.4.0'
 				);
@@ -2434,7 +2440,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 			$schema['properties'][ $base ] = array(
 				/* translators: %s: Taxonomy name. */
-				'description' => sprintf( __( 'The terms assigned to the object in the %s taxonomy.' ), $taxonomy->name ),
+				'description' => sprintf( __( 'The terms assigned to the object in the %s taxonomy.' ,'rest-api-to-miniprogram'), $taxonomy->name ),
 				'type'        => 'array',
 				'items'       => array(
 					'type' => 'integer',
@@ -2471,7 +2477,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				__METHOD__,
 				sprintf(
 					/* translators: %s: register_rest_field */
-					__( 'Please use %s to add new schema properties.' ),
+					esc_html_e( 'Please use %s to add new schema properties.' ,'rest-api-to-miniprogram'),
 					'register_rest_field'
 				),
 				'5.4.0'
@@ -2499,7 +2505,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( 'attachment' !== $this->post_type ) {
 			$links[] = array(
 				'rel'          => 'https://api.w.org/action-publish',
-				'title'        => __( 'The current user can publish this post.' ),
+				'title'        => __( 'The current user can publish this post.' ,'rest-api-to-miniprogram' ),
 				'href'         => $href,
 				'targetSchema' => array(
 					'type'       => 'object',
@@ -2515,7 +2521,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		$links[] = array(
 			'rel'          => 'https://api.w.org/action-unfiltered-html',
-			'title'        => __( 'The current user can post unfiltered HTML markup and JavaScript.' ),
+			'title'        => __( 'The current user can post unfiltered HTML markup and JavaScript.' ,'rest-api-to-miniprogram' ),
 			'href'         => $href,
 			'targetSchema' => array(
 				'type'       => 'object',
@@ -2532,7 +2538,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( 'post' === $this->post_type ) {
 			$links[] = array(
 				'rel'          => 'https://api.w.org/action-sticky',
-				'title'        => __( 'The current user can sticky this post.' ),
+				'title'        => __( 'The current user can sticky this post.' ,'rest-api-to-miniprogram' ),
 				'href'         => $href,
 				'targetSchema' => array(
 					'type'       => 'object',
@@ -2548,7 +2554,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( post_type_supports( $this->post_type, 'author' ) ) {
 			$links[] = array(
 				'rel'          => 'https://api.w.org/action-assign-author',
-				'title'        => __( 'The current user can change the author on this post.' ),
+				'title'        => __( 'The current user can change the author on this post.' ,'rest-api-to-miniprogram' ),
 				'href'         => $href,
 				'targetSchema' => array(
 					'type'       => 'object',
@@ -2567,9 +2573,9 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			$tax_base = ! empty( $tax->rest_base ) ? $tax->rest_base : $tax->name;
 
 			/* translators: %s: Taxonomy name. */
-			$assign_title = sprintf( __( 'The current user can assign terms in the %s taxonomy.' ), $tax->name );
+			$assign_title = sprintf( __( 'The current user can assign terms in the %s taxonomy.' ,'rest-api-to-miniprogram' ), $tax->name );
 			/* translators: %s: Taxonomy name. */
-			$create_title = sprintf( __( 'The current user can create terms in the %s taxonomy.' ), $tax->name );
+			$create_title = sprintf( __( 'The current user can create terms in the %s taxonomy.' ,'rest-api-to-miniprogram' ), $tax->name );
 
 			$links[] = array(
 				'rel'          => 'https://api.w.org/action-assign-' . $tax_base,
@@ -2622,14 +2628,14 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		$query_params['context']['default'] = 'view';
 
 		$query_params['after'] = array(
-			'description' => __( 'Limit response to posts published after a given ISO8601 compliant date.' ),
+			'description' => __( 'Limit response to posts published after a given ISO8601 compliant date.' ,'rest-api-to-miniprogram' ),
 			'type'        => 'string',
 			'format'      => 'date-time',
 		);
 
 		if ( post_type_supports( $this->post_type, 'author' ) ) {
 			$query_params['author']         = array(
-				'description' => __( 'Limit result set to posts assigned to specific authors.' ),
+				'description' => __( 'Limit result set to posts assigned to specific authors.' ,'rest-api-to-miniprogram' ),
 				'type'        => 'array',
 				'items'       => array(
 					'type' => 'integer',
@@ -2637,7 +2643,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				'default'     => array(),
 			);
 			$query_params['author_exclude'] = array(
-				'description' => __( 'Ensure result set excludes posts assigned to specific authors.' ),
+				'description' => __( 'Ensure result set excludes posts assigned to specific authors.', 'rest-api-to-miniprogram' ),
 				'type'        => 'array',
 				'items'       => array(
 					'type' => 'integer',
@@ -2647,22 +2653,23 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		$query_params['before'] = array(
-			'description' => __( 'Limit response to posts published before a given ISO8601 compliant date.' ),
+			'description' => __( 'Limit response to posts published before a given ISO8601 compliant date.' ,'rest-api-to-miniprogram' ),
 			'type'        => 'string',
 			'format'      => 'date-time',
 		);
-
+		// phpcs:disable WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 		$query_params['exclude'] = array(
-			'description' => __( 'Ensure result set excludes specific IDs.' ),
+			'description' => __( 'Ensure result set excludes specific IDs.', 'rest-api-to-miniprogram' ),
 			'type'        => 'array',
 			'items'       => array(
 				'type' => 'integer',
 			),
 			'default'     => array(),
 		);
+		// phpcs:enable WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 
 		$query_params['include'] = array(
-			'description' => __( 'Limit result set to specific IDs.' ),
+			'description' => __( 'Limit result set to specific IDs.'  ,'rest-api-to-miniprogram'),
 			'type'        => 'array',
 			'items'       => array(
 				'type' => 'integer',
@@ -2672,25 +2679,25 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( 'page' === $this->post_type || post_type_supports( $this->post_type, 'page-attributes' ) ) {
 			$query_params['menu_order'] = array(
-				'description' => __( 'Limit result set to posts with a specific menu_order value.' ),
+				'description' => __( 'Limit result set to posts with a specific menu_order value.', 'rest-api-to-miniprogram' ),
 				'type'        => 'integer',
 			);
 		}
 
 		$query_params['offset'] = array(
-			'description' => __( 'Offset the result set by a specific number of items.' ),
+			'description' => __( 'Offset the result set by a specific number of items.' ,'rest-api-to-miniprogram'),
 			'type'        => 'integer',
 		);
 
 		$query_params['order'] = array(
-			'description' => __( 'Order sort attribute ascending or descending.' ),
+			'description' => __( 'Order sort attribute ascending or descending.' ,'rest-api-to-miniprogram'),
 			'type'        => 'string',
 			'default'     => 'desc',
 			'enum'        => array( 'asc', 'desc' ),
 		);
 
 		$query_params['orderby'] = array(
-			'description' => __( 'Sort collection by object attribute.' ),
+			'description' => __( 'Sort collection by object attribute.' ,'rest-api-to-miniprogram'),
 			'type'        => 'string',
 			'default'     => 'date',
 			'enum'        => array(
@@ -2715,7 +2722,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( $post_type->hierarchical || 'attachment' === $this->post_type ) {
 			$query_params['parent']         = array(
-				'description' => __( 'Limit result set to items with particular parent IDs.' ),
+				'description' => __( 'Limit result set to items with particular parent IDs.' ,'rest-api-to-miniprogram'),
 				'type'        => 'array',
 				'items'       => array(
 					'type' => 'integer',
@@ -2723,7 +2730,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 				'default'     => array(),
 			);
 			$query_params['parent_exclude'] = array(
-				'description' => __( 'Limit result set to all items except those of a particular parent ID.' ),
+				'description' => __( 'Limit result set to all items except those of a particular parent ID.', 'rest-api-to-miniprogram' ),
 				'type'        => 'array',
 				'items'       => array(
 					'type' => 'integer',
@@ -2733,7 +2740,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		$query_params['slug'] = array(
-			'description'       => __( 'Limit result set to posts with one or more specific slugs.' ),
+			'description'       => __( 'Limit result set to posts with one or more specific slugs.' ,'rest-api-to-miniprogram'),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'string',
@@ -2743,7 +2750,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		$query_params['status'] = array(
 			'default'           => 'publish',
-			'description'       => __( 'Limit result set to posts assigned one or more statuses.' ),
+			'description'       => __( 'Limit result set to posts assigned one or more statuses.', 'rest-api-to-miniprogram' ),
 			'type'              => 'array',
 			'items'             => array(
 				'enum' => array_merge( array_keys( get_post_stati() ), array( 'any' ) ),
@@ -2756,7 +2763,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( ! empty( $taxonomies ) ) {
 			$query_params['tax_relation'] = array(
-				'description' => __( 'Limit result set based on relationship between multiple taxonomies.' ),
+				'description' => __( 'Limit result set based on relationship between multiple taxonomies.' ,'rest-api-to-miniprogram'),
 				'type'        => 'string',
 				'enum'        => array( 'AND', 'OR' ),
 			);
@@ -2767,7 +2774,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 			$query_params[ $base ] = array(
 				/* translators: %s: Taxonomy name. */
-				'description' => sprintf( __( 'Limit result set to all items that have the specified term assigned in the %s taxonomy.' ), $base ),
+				'description' => sprintf( __( 'Limit result set to all items that have the specified term assigned in the %s taxonomy.', 'rest-api-to-miniprogram' ), $base ),
 				'type'        => 'array',
 				'items'       => array(
 					'type' => 'integer',
@@ -2777,7 +2784,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 			$query_params[ $base . '_exclude' ] = array(
 				/* translators: %s: Taxonomy name. */
-				'description' => sprintf( __( 'Limit result set to all items except those that have the specified term assigned in the %s taxonomy.' ), $base ),
+				'description' => sprintf( __( 'Limit result set to all items except those that have the specified term assigned in the %s taxonomy.', 'rest-api-to-miniprogram' ), $base ),
 				'type'        => 'array',
 				'items'       => array(
 					'type' => 'integer',
@@ -2788,7 +2795,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		if ( 'post' === $this->post_type ) {
 			$query_params['sticky'] = array(
-				'description' => __( 'Limit result set to items that are sticky.' ),
+				'description' => __( 'Limit result set to items that are sticky.' ,'rest-api-to-miniprogram'),
 				'type'        => 'boolean',
 			);
 		}
@@ -2844,7 +2851,7 @@ class RAM_WP_REST_Posts_Controller extends WP_REST_Controller {
 			} else {
 				return new WP_Error(
 					'rest_forbidden_status',
-					__( 'Status is forbidden.' ),
+					__( 'Status is forbidden.' ,'rest-api-to-miniprogram'),
 					array( 'status' => rest_authorization_required_code() )
 				);
 			}

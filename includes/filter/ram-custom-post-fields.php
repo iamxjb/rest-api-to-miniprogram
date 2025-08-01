@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 function custom_post_fields( $data, $post, $request) { 
 
-  
-  if(strpos( $_SERVER['REQUEST_URI'], 'watch-life-net/v1/posts') !== false)
+  $uri=isset( $_SERVER['REQUEST_URI'])?sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])):'';
+  if($uri !='' && strpos($uri, 'watch-life-net/v1/posts') !== false)
   {
       
         return $data;
@@ -65,9 +65,12 @@ function custom_post_fields( $data, $post, $request) {
     
     $post_date =$post->post_date;
     //$_data['date'] =time_tran($post_date);
-    $_data['post_date'] =time_tran($post_date);
-    $sql =$wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
-    $like_count = $wpdb->get_var($sql);
+    $_data['post_date'] =time_tran($post_date);   
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+    $like_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id));
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
     $_data['like_count']= $like_count; 
     $post_views = (int)get_post_meta($post_id, 'wl_pageviews', true);     
     $params = $request->get_params();
@@ -106,11 +109,13 @@ function custom_post_fields( $data, $post, $request) {
         }
 
         //解析音频
-      $audios=  get_post_content_audio($post->post_content);
-      $_data['audios']=$audios;
-
-        $sql="select post_content from ".$wpdb->posts." where id=".$post_id;
-        $postContent = $wpdb->get_var($sql);
+        $audios=  get_post_content_audio($post->post_content);
+        $_data['audios']=$audios;  
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $postContent = $wpdb->get_var($wpdb->prepare("select post_content from ".$wpdb->posts." where id=%d",$post_id));
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
         if(has_shortcode($postContent, 'gallery' ))//处理内容里的相册显示
         {
           $content= get_content_gallery($postContent,true);
@@ -126,9 +131,11 @@ function custom_post_fields( $data, $post, $request) {
 
 
 
-        $sql=$wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
-        $likes = $wpdb->get_results($sql);
-        //$_data['sql']=$sql;
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $likes = $wpdb->get_results($wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id));
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
         $avatarurls =array();
         foreach ($likes as $like) {
             $userId = $like->id;
@@ -164,9 +171,11 @@ function custom_post_fields( $data, $post, $request) {
         add_post_meta($post_id, 'wl_pageviews', 1, true);  
       } 
       $_data['avatarurls']= $avatarurls;
+      //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
       date_default_timezone_set('Asia/Shanghai');
-      $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));
-      $today = date("Y-m-d H:i:s"); //获取今天日期时间
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      $fristday= gmdate("Y-m-d H:i:s", strtotime("-1 year"));
+      $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间
         if(!empty($_data["tags"]))
         {
           $tags= $_data["tags"];
@@ -175,7 +184,22 @@ function custom_post_fields( $data, $post, $request) {
         if(!empty($tags))
         {
           $tags=implode(",",$tags);
-          $sql="
+          // $sql="
+          // SELECT distinct ID, post_title
+          // FROM ".$wpdb->posts." , ".$wpdb->term_relationships.", ".$wpdb->term_taxonomy."
+          // WHERE ".$wpdb->term_taxonomy.".term_taxonomy_id =  ".$wpdb->term_relationships.".term_taxonomy_id
+          // AND ID = object_id
+          // AND taxonomy = 'post_tag'
+          // AND post_status = 'publish'
+          // AND post_type = 'post'
+          // AND term_id IN (" . $tags . ")
+          // AND ID != '" . $post_id . "'
+          // AND post_date BETWEEN '".$fristday."' AND '".$today."' 
+          // ORDER BY  RAND()
+          // LIMIT 5";
+          // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+          // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+          $related_posts = $wpdb->get_results($wpdb->prepare("
           SELECT distinct ID, post_title
           FROM ".$wpdb->posts." , ".$wpdb->term_relationships.", ".$wpdb->term_taxonomy."
           WHERE ".$wpdb->term_taxonomy.".term_taxonomy_id =  ".$wpdb->term_relationships.".term_taxonomy_id
@@ -183,12 +207,13 @@ function custom_post_fields( $data, $post, $request) {
           AND taxonomy = 'post_tag'
           AND post_status = 'publish'
           AND post_type = 'post'
-          AND term_id IN (" . $tags . ")
-          AND ID != '" . $post_id . "'
-          AND post_date BETWEEN '".$fristday."' AND '".$today."' 
+          AND term_id IN (%s)
+          AND ID != %s
+          AND post_date BETWEEN %s AND %s
           ORDER BY  RAND()
-          LIMIT 5";
-          $related_posts = $wpdb->get_results($sql);
+          LIMIT 5",$tags,$post_id,$fristday,$today));
+          // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+          // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
 
           $_data['related_posts'] = $related_posts;
 
@@ -229,7 +254,8 @@ function custom_post_fields( $data, $post, $request) {
     global $post;  
     $post_id = $post->ID;  
     $views = (int)get_post_meta($post_id, 'wl_pageviews', true);  
-    if ($echo) echo $before, number_format($views), $after;  
+    if ($echo) echo esc_html($before), number_format($views), esc_html($after);  
+
     else return $views;  
   } 
 

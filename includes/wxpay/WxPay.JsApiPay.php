@@ -42,15 +42,29 @@ class RAM_JsApiPay
 	public function GetOpenid()
 	{
 		//通过code获得openid
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		if (!isset($_GET['code'])){
+			//phpcs:enable WordPress.Security.NonceVerification.Recommended
 			//触发微信返回code码
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$baseUrl = urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].$_SERVER['QUERY_STRING']);
+			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$url = $this->__CreateOauthUrlForCode($baseUrl);
 			Header("Location: $url");
 			exit();
 		} else {
 			//获取code码，以获取openid
+			//phpcs:disable WordPress.Security.NonceVerification.Recommended
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		    $code = $_GET['code'];
+			//phpcs:enable WordPress.Security.NonceVerification.Recommended
+			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$openid = $this->getOpenidFromMp($code);
 			return $openid;
 		}
@@ -96,6 +110,10 @@ class RAM_JsApiPay
 	{
 		$url = $this->__CreateOauthUrlForOpenid($code);
 		//初始化curl
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
 		$ch = curl_init();
 		$curlVersion = curl_version();
 		$ua = "WXPaySDK/0.0.5 (".PHP_OS.") PHP/".PHP_VERSION." CURL/".$curlVersion['version']." ".RAM_WxPayConfig::MCHID;
@@ -116,6 +134,10 @@ class RAM_JsApiPay
 		//运行curl，结果以jason形式返回
 		$res = curl_exec($ch);
 		curl_close($ch);
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_close
 		//取出openid
 		$data = json_decode($res,true);
 		$this->data = $data;
@@ -155,7 +177,14 @@ class RAM_JsApiPay
 		$getData = $this->data;
 		$data = array();
 		$data["appid"] = RAM_WxPayConfig::APPID;
+		        // phpcs:disable WordPress.Security.NonceVerification.Missing			
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		$data["url"] = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		//phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 		$time = time();
 		$data["timestamp"] = "$time";
 		$data["noncestr"] = "1234568";

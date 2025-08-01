@@ -33,6 +33,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_image' ) ) {
 			if ( false !== strpos( $url, $dir['baseurl'] . '/' ) ) { // Is URL in uploads directory?
 
 				$file       = basename( $url );
+				//phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				$query_args = array(
 					'post_type'   => 'attachment',
 					'post_status' => 'inherit',
@@ -46,6 +47,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_image' ) ) {
 					)
 				);
 				$query      = new WP_Query( $query_args );
+				//phpcs:enable
 				if ( $query->have_posts() ) {
 					foreach ( $query->posts as $post_id ) {
 						$meta                = wp_get_attachment_metadata( $post_id );
@@ -70,11 +72,11 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_image' ) ) {
 			 * @link https://rudrastyh.com/wordpress/customizable-media-uploader.html
 			 */
 
-			echo $this->element_before();
+			echo esc_html( $this->element_before() );
 
 			$preview = '';
 			$value   = $this->element_value();
-			$add     = ( ! empty( $this->field['add_title'] ) ) ? $this->field['add_title'] : esc_attr__( '选择图片', 'exopite-sof' );
+			$add     = ( ! empty( $this->field['add_title'] ) ) ? $this->field['add_title'] : esc_attr__( '选择图片', 'rest-api-to-miniprogram' );
 			$hidden  = ( empty( $value ) ) ? ' hidden' : '';
 			$classes = ( isset( $this->field['class'] ) ) ? implode( ' ', explode( ' ', $this->field['class'] ) ) : '';
 
@@ -83,15 +85,15 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_image' ) ) {
 				$preview    = $attachment[0];
 			}
 
-			echo '<div class="exopite-sof-media exopite-sof-image ' . $classes . '" ' . $this->element_attributes() . '>';
-			echo '<div class="exopite-sof-image-preview' . $hidden . '">';
-			echo '<div class="exopite-sof-image-inner"><i class="fa fa-times exopite-sof-image-remove"></i><img src="' . $preview . '" alt="preview" /></div>';
+			echo '<div class="exopite-sof-media exopite-sof-image ' . esc_html( $classes ) . '" ' . esc_html ($this->element_attributes()) . '>';
+			echo '<div class="exopite-sof-image-preview' . esc_html( $hidden ) . '">';
+			echo '<div class="exopite-sof-image-inner"><i class="fa fa-times exopite-sof-image-remove"></i><img src="' . esc_html( $preview ) . '" alt="preview" /></div>';
 			echo '</div>';
 
-			echo '<input type="text" name="' . $this->element_name() . '" value="' . $this->element_value() . '">';
-			echo '<a href="#" class="button button-primary exopite-sof-button">' . $add . '</a>';
+			echo '<input type="text" name="' . esc_html( $this->element_name() ) . '" value="' . esc_html( $this->element_value() ) . '">';
+			echo '<a href="#" class="button button-primary exopite-sof-button">' . esc_html( $add ) . '</a>';
 			echo '</div>';
-			echo $this->element_after();
+			echo esc_html( $this->element_after() );
 
 		}
 

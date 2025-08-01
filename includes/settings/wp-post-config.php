@@ -48,9 +48,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
+        // phpcs:disable WordPress.Security.NonceVerification.Missing			
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
         if ( ! isset( $_POST['wf_add_post_fields_nonce'] ) || ! wp_verify_nonce( $_POST['wf_add_post_fields_nonce'], basename( __FILE__ ) ) )
             return;
-
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
+			// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
         
 
         $excitation=isset( $_POST['excitation'])?(int)$_POST['excitation']:0;

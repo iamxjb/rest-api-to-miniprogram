@@ -273,7 +273,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Sanitize' ) ) {
 
 			$hash        = '';
 			$fn          = plugin_dir_path( __FILE__ ) . '/' . $type . $hash . '.log';
-			$log_in_file = file_put_contents( $fn, date( 'Y-m-d H:i:s' ) . ' - ' . $log_line . PHP_EOL, FILE_APPEND );
+			$log_in_file = file_put_contents( $fn, gmdate( 'Y-m-d H:i:s' ) . ' - ' . $log_line . PHP_EOL, FILE_APPEND );
 
 		}
 

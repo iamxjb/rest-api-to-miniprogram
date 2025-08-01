@@ -31,9 +31,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_notice' ) ) {
 				}
 			}
 
-			echo $this->element_before();
-			echo '<div class="exopite-sof-notice ' . $classes . '">' . $content . '</div>';
-			echo $this->element_after();
+			echo esc_attr($this->element_before());
+			echo '<div class="exopite-sof-notice ' . esc_attr($classes) . '">' . esc_attr($content) . '</div>';
+			echo esc_attr($this->element_after());
 
 		}
 

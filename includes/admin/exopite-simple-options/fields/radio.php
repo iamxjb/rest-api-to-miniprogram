@@ -18,7 +18,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_radio' ) ) {
 
 			$classes = ( isset( $this->field['class'] ) ) ? implode( ' ', explode( ' ', $this->field['class'] ) ) : '';
 
-			echo $this->element_before();
+			echo esc_attr($this->element_before());
 
 			if ( isset( $this->field['options'] ) ) {
 
@@ -28,22 +28,22 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_radio' ) ) {
 
 				if ( ! empty( $options ) ) {
 
-					echo '<ul' . $this->element_class() . '>';
+					echo '<ul' . esc_attr($this->element_class()) . '>';
 					foreach ( $options as $key => $value ) {
 
 						switch ( $style ) {
 							case 'fancy':
 								echo '<li>';
-								echo '<label class="radio-button ' . $classes . '">';
-								echo '<input type="radio" class="radio-button__input" name="' . $this->element_name() . '" value="' . $key . '"' . $this->element_attributes( $key ) . $this->checked( $this->element_value(), $key ) . '>';
+								echo '<label class="radio-button ' . esc_attr($classes) . '">';
+								echo '<input type="radio" class="radio-button__input" name="' . esc_attr($this->element_name()) . '" value="' . esc_attr($key) . '"' . esc_attr($this->element_attributes( $key )) . esc_attr($this->checked( $this->element_value()), esc_attr($key )) . '>';
 								echo '<div class="radio-button__checkmark"></div>';
-								echo $value;
+								echo esc_attr($value);
 								echo '</label>';
 								echo '</li>';
 								break;
 
 							default:
-								echo '<li><label><input type="radio" name="' . $this->element_name() . '" value="' . $key . '"' . $this->element_attributes( $key ) . $this->checked( $this->element_value(), $key ) . '/> ' . $value . '</label></li>';
+								echo '<li><label><input type="radio" name="' .esc_attr($this->element_name()) . '" value="' . esc_attr($key) . '"' . esc_attr($this->element_attributes( $key )) . esc_attr($this->checked( $this->element_value()), esc_attr($key )) . '/> ' . esc_attr($value) . '</label></li>';
 								break;
 						}
 
@@ -56,21 +56,21 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_radio' ) ) {
 
 				switch ( $this->field['style'] ) {
 					case 'fancy':
-						echo '<label class="radio-button ' . $classes . '">';
-						echo '<input type="radio" class="radio-button__input" name="' . $this->element_name() . '"' . $this->element_attributes() . checked( $this->element_value(), 1, false ) . '>';
+						echo '<label class="radio-button ' . esc_attr($classes) . '">';
+						echo '<input type="radio" class="radio-button__input" name="' . esc_attr($this->element_name()) . '"' . esc_attr($this->element_attributes()) . checked( esc_attr($this->element_value()), 1, false ) . '>';
 						echo '<div class="radio-button__checkmark"></div>';
-						echo $label;
+						echo esc_attr($label);
 						echo '</label>';
 						break;
 
 					default:
-						echo '<label><input type="radio" name="' . $this->element_name() . '" value="1"' . $this->element_class() . $this->element_attributes() . checked( $this->element_value(), 1, false ) . '/> ' . $label . '</label>';
+						echo '<label><input type="radio" name="' . esc_attr($this->element_name()) . '" value="1"' . esc_attr($this->element_class()) . esc_attr($this->element_attributes()) . checked( $this->element_value(), 1, false ) . '/> ' . esc_attr($label) . '</label>';
 						break;
 				}
 
 			}
 
-			echo $this->element_after();
+			echo esc_attr($this->element_after());
 
 		}
 

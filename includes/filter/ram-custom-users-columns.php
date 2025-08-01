@@ -2,8 +2,8 @@
 //禁止直接访问
 if ( ! defined( 'ABSPATH' ) ) exit;
 function ram_users_columns( $columns ){
-    $columns[ 'avatar' ] = __( '头像' ); 
-	$columns[ 'registered' ] = '注册时间'; 
+    $columns[ 'avatar' ] = __( '头像','rest-api-to-miniprogram' ); 
+	$columns[ 'registered' ] = __( '注册时间','rest-api-to-miniprogram' ); 
     return $columns;
 }
 function  output_ram_users_columns( $var, $columnName, $userId ){
@@ -24,11 +24,14 @@ function ram_users_sortable_columns($sortable_columns){
 }
 //最后根据浏览器的 url，重新设置 wordpress 的查询函数
 function ram_users_search_order($obj){
-    if(isset($_REQUEST['orderby']) && $_REQUEST['orderby']=='registered' ){
-        if(!in_array($_REQUEST['order'],array('asc','desc')) ){
-            $_REQUEST['order'] = 'desc';
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	$order=isset($_REQUEST['orderby']) ? sanitize_text_field(wp_unslash($_REQUEST['orderby'])) : '';
+    // // phpcs:enable WordPress.Security.NonceVerification.Recommended
+	if($order=='registered' ){
+        if(!in_array($order,array('asc','desc')) ){
+            $order = 'desc';
         }
-        $obj->query_orderby = "ORDER BY user_registered ".$_REQUEST['order']."";
+        $obj->query_orderby = "ORDER BY user_registered ".$order."";
     }
 }
 function getRegisteredDate($userId)

@@ -249,7 +249,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Fields' ) ) {
 			}
 
 			if ( $echo ) {
-				echo $result;
+				echo esc_attr( $result );
 			}
 
 			return $result;

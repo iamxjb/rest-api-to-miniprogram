@@ -25,13 +25,13 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_color_wp' ) ) {
 			 * @link https://paulund.co.uk/adding-a-new-color-picker-with-wordpress-3-5
 			 */
 
-			echo $this->element_before();
-			echo '<input type="text" class="colorpicker ' . $classes . '" ';
+			echo esc_attr($this->element_before());
+			echo '<input type="text" class="colorpicker ' . esc_attr($classes) . '" ';
 			if ( isset( $this->field['rgba'] ) && $this->field['rgba'] ) {
 				echo 'data-alpha="true" ';
 			}
-			echo 'name="' . $this->element_name() . '" value="' . $this->element_value() . '"';
-			echo $this->element_attributes() . '/>';
+			echo 'name="' . esc_attr($this->element_name()) . '" value="' . esc_attr($this->element_value()) . '"';
+			echo esc_attr($this->element_attributes()) . '/>';
 
 		}
 

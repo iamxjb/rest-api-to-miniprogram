@@ -16,9 +16,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_textarea' ) ) {
 
 		public function output() {
 
-			echo $this->element_before();
-			echo '<textarea name="' . $this->element_name() . '"' . $this->element_class() . $this->element_attributes() . '>' . $this->element_value() . '</textarea>';
-			echo $this->element_after();
+			echo esc_attr($this->element_before());
+			echo '<textarea name="' . esc_attr($this->element_name()) . '"' . esc_attr($this->element_class()) . esc_attr($this->element_attributes()) . '>' . esc_attr($this->element_value()) . '</textarea>';
+			echo esc_attr($this->element_after());
 
 		}
 

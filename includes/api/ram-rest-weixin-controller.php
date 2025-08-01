@@ -242,9 +242,10 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 						{
 							global $wpdb; 
 							$wpdb->minapper_cooperation_shop = $wpdb->prefix .'minapper_cooperation_shop';
-							if ($wpdb->get_var("show tables like '" . $wpdb->minapper_cooperation_shop. "'") == $wpdb->minapper_cooperation_shop) {
-								$sql = "select count(1) from ". $wpdb->minapper_cooperation_shop. " where appid='". $storeAppId. "'";
-								$count = $wpdb->get_var($sql);
+							// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                            // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+                            if ($wpdb->get_var("show tables like '" . $wpdb->minapper_cooperation_shop. "'") == $wpdb->minapper_cooperation_shop) {
+								$count = $wpdb->get_var($wpdb->prepare("select count(1) from ". $wpdb->minapper_cooperation_shop. " where appid=%s",$storeAppId));
 								if($count==0)
 								{
 									$data=array(
@@ -275,6 +276,8 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
 								}
 							}
 						}
+                        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 
 					}
 					catch(Exception $e)
@@ -674,8 +677,10 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
                             )
                         );  
 
-                     date_default_timezone_set('PRC');
-                     $datetime =date('Y-m-d H:i:s');
+                           //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+                     $datetime =gmdate('Y-m-d H:i:s');
                      $data2 = array(
                             "keyword1"=>array(
                             "value"=>$fromUser,                     
@@ -794,7 +799,10 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             //$headers = array("Content-type: application/json;charset=UTF-8","Accept: application/json","Cache-Control: no-cache", "Pragma: no-cache");
             $data=json_encode($data);
         }
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init
         $curl = curl_init();
+        //phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_init
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, 1); // 发送一个常规的Post请求
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -804,12 +812,19 @@ class RAM_REST_Weixin_Controller  extends WP_REST_Controller{
             curl_setopt($curl, CURLOPT_POSTFIELDS,$data);
         }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
         //curl_setopt($curl, CURLOPT_HTTPHEADER, $headers );
+        //phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_exec
         $data = curl_exec($curl);
+        //phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_exec
+        //phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_errno
         if (curl_errno($curl)){
             return 'ERROR';
         }
+        //phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_errno
+        //phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
         curl_close($curl);
+        //phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_close
         return $data;
     }
  

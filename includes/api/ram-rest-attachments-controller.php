@@ -143,7 +143,7 @@ class RAM_REST_Attachments_Controller  extends WP_REST_Controller{
      */
     protected function upload_from_file( $files, $headers ) {
         if ( empty( $files ) ) {
-            return new WP_Error( 'rest_upload_no_data', __( 'No data supplied.' ), array( 'status' => 400 ) );
+            return new WP_Error( 'rest_upload_no_data', __( 'No data supplied.' ,'rest-api-to-miniprogram'), array( 'status' => 400 ) );
         }
 
         // Verify hash, if given.
@@ -153,7 +153,8 @@ class RAM_REST_Attachments_Controller  extends WP_REST_Controller{
             $actual      = md5_file( $files['file']['tmp_name'] );
 
             if ( $expected !== $actual ) {
-                return new WP_Error( 'rest_upload_hash_mismatch', __( 'Content hash did not match expected.' ), array( 'status' => 412 ) );
+                return new WP_Error( 'rest_upload_hash_mismatch', __( 'Content hash did not match expected.','rest-api-to-miniprogram' ), array( 'status' => 412 ) );
+
             }
         }
 

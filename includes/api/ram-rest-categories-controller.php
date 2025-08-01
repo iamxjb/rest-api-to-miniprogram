@@ -79,8 +79,11 @@ class RAM_REST_Categories_Controller  extends WP_REST_Controller{
             $user_id = $user->ID;
             if(!empty($user_id))
             {
-                $sql =$wpdb->prepare("SELECT *  FROM ".$wpdb->usermeta ." WHERE user_id=%d and meta_key='wl_sub' and meta_value=%s",$user_id,$categoryid);
-                $usermetas = $wpdb->get_results($sql);
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+                $usermetas = $wpdb->get_results($wpdb->prepare("SELECT *  FROM ".$wpdb->usermeta ." WHERE user_id=%d and meta_key='wl_sub' and meta_value=%s",$user_id,$categoryid));
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
                 $count =count($usermetas);
                 if ($count==0)
                 {
@@ -168,8 +171,12 @@ class RAM_REST_Categories_Controller  extends WP_REST_Controller{
                         $result["subscription"]=$usermeta['wl_sub'];
                         $substr=implode(",",$usermeta['wl_sub']);
                         $result["substr"]=$substr; 
-                        $sql="SELECT SQL_CALC_FOUND_ROWS  ".$wpdb->posts.".ID ,".$wpdb->posts.".post_title  FROM ".$wpdb->posts."  LEFT JOIN ".$wpdb->term_relationships." ON (".$wpdb->posts.".ID = ".$wpdb->term_relationships.".object_id) WHERE 1=1  AND ( ".$wpdb->term_relationships.".term_taxonomy_id IN (".$substr.")) AND ".$wpdb->posts.".post_type = 'post' AND (".$wpdb->posts.".post_status = 'publish') GROUP BY ".$wpdb->posts.".ID ORDER BY ".$wpdb->posts.".post_date DESC LIMIT 0, 20";
-                        $usermetaList =$wpdb->get_results($sql); 
+                        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching                   
+                        $usermetaList =$wpdb->get_results($wpdb->prepare("SELECT SQL_CALC_FOUND_ROWS  ".$wpdb->posts.".ID ,".$wpdb->posts.".post_title  FROM ".$wpdb->posts."  LEFT JOIN ".$wpdb->term_relationships." ON (".$wpdb->posts.".ID = ".$wpdb->term_relationships.".object_id) WHERE 1=1  AND ( ".$wpdb->term_relationships.".term_taxonomy_id IN (%d)) AND ".$wpdb->posts.".post_type = 'post' AND (".$wpdb->posts.".post_status = 'publish') GROUP BY ".$wpdb->posts.".ID ORDER BY ".$wpdb->posts.".post_date DESC LIMIT 0, 20",$substr)); 
+                       // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching                   
+
                         $result["usermetaList"]=$usermetaList;
 
                     } 

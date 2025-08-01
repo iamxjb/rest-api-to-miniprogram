@@ -257,8 +257,11 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
             
             $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
             $_data['pageviews'] = $pageviews;
-
-            $like_count = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=".$post_id);
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+            $like_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id= %d",$post_id));
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
             $_data['like_count']= $like_count;
 
             $images =getPostImages($post->post_content,$post_id);         
@@ -315,10 +318,14 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 
     function getallpraise ($request)
     {
-        global $wpdb;
-        $sql="SELECT ".$wpdb->users.".display_name as avatarurl ,".$wpdb->users.".id as id from (SELECT substring(substring_index(".$wpdb->postmeta.".meta_key,'@',1),2) as openid,".$wpdb->postmeta.".meta_id from ".$wpdb->postmeta." where ".$wpdb->postmeta.".meta_value like '%praise' )t1  LEFT JOIN ".$wpdb->users." ON ".$wpdb->users.".user_login = t1.openid  ORDER by t1.meta_id desc";
-              
-            $_vatarurls = $wpdb->get_results($sql);
+        global $wpdb; 
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching  
+    // phpcs:disable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery         
+            $_vatarurls = $wpdb->get_results($wpdb->prepare("SELECT ".$wpdb->users.".display_name as avatarurl ,".$wpdb->users.".id as id from (SELECT substring(substring_index(".$wpdb->postmeta.".meta_key,'@',1),2) as openid,".$wpdb->postmeta.".meta_id from ".$wpdb->postmeta." where ".$wpdb->postmeta.".meta_value like '%praise' )t1  LEFT JOIN ".$wpdb->users." ON ".$wpdb->users.".user_login = t1.openid  ORDER by t1.meta_id desc"));
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:enable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery
             $avatarurls =array();
             foreach ($_vatarurls as $_avatarurl) {
                 $avatarurl=$_avatarurl->avatarurl;
@@ -348,10 +355,15 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         global $wpdb;
         $openid= $request['openid'];
-        $sql =$wpdb->prepare("SELECT * from ".$wpdb->posts."  where  post_type='post' and ID in  
-    (SELECT post_id from ".$wpdb->postmeta." where meta_value like '%praise' and meta_key like %s') ORDER BY post_date desc LIMIT 20",'%'.$openid.'%');        
-            $_posts = $wpdb->get_results($sql);
-            $posts =array();
+         // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching  
+    // phpcs:disable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery 
+            $_posts = $wpdb->get_results($wpdb->prepare("SELECT * from ".$wpdb->posts."  where  post_type='post' and ID in  
+    (SELECT post_id from ".$wpdb->postmeta." where meta_value like '%praise' and meta_key like %s') ORDER BY post_date desc LIMIT 20",'%'.$openid.'%'));
+     // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+    // phpcs:enable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery
+    $posts =array();
             foreach ($_posts as $post) {
                 
                 $_data["post_id"]  =$post->ID;
@@ -401,12 +413,19 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         $limit=10;
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
-        date_default_timezone_set('Asia/Shanghai');
-        $today = date("Y-m-d H:i:s"); //获取今天日期时间   
+        //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+        $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间   
        // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
-        $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
-        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, count(".$wpdb->postmeta.".post_id) AS 'praise_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_value like '%praise' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' and  post_type='post' AND post_password = '' GROUP BY ".$wpdb->postmeta.".post_id ORDER  BY praise_total DESC LIMIT ". $limit;
-        $mostlikes = $wpdb->get_results($sql);
+        $fristday= gmdate("Y-m-d H:i:s", strtotime("-1 year")); 
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:disable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery        
+        $mostlikes = $wpdb->get_results($wpdb->prepare("SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, count(".$wpdb->postmeta.".post_id) AS 'praise_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_value like '%praise' AND post_date BETWEEN %s AND %s AND post_status = 'publish' and  post_type='post' AND post_password = '' GROUP BY ".$wpdb->postmeta.".post_id ORDER  BY praise_total DESC LIMIT 10",$fristday,$today ));
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:enable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery
         $posts =array();
         foreach ($mostlikes as $post) {
         
@@ -429,13 +448,15 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 
                 $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
                 $_data['pageviews'] = $pageviews;
-                
-                $like_count = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=".$post_id);
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+                $like_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id= %d",$post_id));
                 $_data['like_count'] = $like_count;
 
-                $comment_total = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID=".$post_id);
+                $comment_total = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID= %d",$post_id));
                 $_data['comment_total']= $comment_total;
-
+                //phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                //phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
                 $images =getPostImages($post->post_content,$post_id);         
                 
                 $_data['post_thumbnail_image']=$images['post_thumbnail_image'];
@@ -472,14 +493,21 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 		}
         $limit=20;
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
-            date_default_timezone_set('Asia/Shanghai');
-            $today = date("Y-m-d H:i:s"); //获取今天日期时间
+                 //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+            $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间
             $hot_posts_years= empty(get_option('wf_hot_posts_years'))?'1':get_option('wf_hot_posts_years');
             $hot_posts_years ='-'.$hot_posts_years.' year';
-            $fristday= date("Y-m-d H:i:s", strtotime($hot_posts_years));
+            $fristday= gmdate("Y-m-d H:i:s", strtotime($hot_posts_years));
             //$fristday= date("Y-m-d H:i:s", strtotime("-1 year")); 
-            $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, CONVERT(".$wpdb->postmeta.".meta_value,SIGNED) AS 'pageviews_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_key ='wl_pageviews' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' ORDER  BY pageviews_total DESC LIMIT ". $limit;
-            $mostlikes = $wpdb->get_results($sql);
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching 
+             $mostlikes = $wpdb->get_results($wpdb->prepare("SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, CONVERT(".$wpdb->postmeta.".meta_value,SIGNED) AS 'pageviews_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_key ='wl_pageviews' AND post_date BETWEEN %s AND %s AND post_status = 'publish' and  post_type='post' AND post_password = '' ORDER  BY pageviews_total DESC LIMIT %d",$fristday,$today,$limit));
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+           
             $posts =array();
             foreach ($mostlikes as $post) {
             
@@ -494,11 +522,14 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                     $_data["pageviews"] =$pageviews;  
                     $_data["post_date"] =$post_date; 
                     $_data["post_permalink"] =$post_permalink;                    
-                    
-                    $like_count = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=".$post_id);
+                    // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+                    $like_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id= %d",$post_id));
                     $_data['like_count'] = $like_count;
 
-                    $comment_total = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID=".$post_id);
+                    $comment_total = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID= %d",$post_id));
+                    // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching  
                     $_data['comment_total']= $comment_total;
 
                     $images =getPostImages($post->post_content,$post_id);         
@@ -540,14 +571,20 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 		}
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
         $limit=20;
-        date_default_timezone_set('Asia/Shanghai');
-        $today = date("Y-m-d H:i:s"); //获取今天日期时间
+              //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+        $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间
         $hot_posts_years= empty(get_option('wf_hot_posts_years'))?'1':get_option('wf_hot_posts_years');
         $hot_posts_years ='-'.$hot_posts_years.' year';
-        $fristday= date("Y-m-d H:i:s", strtotime($hot_posts_years));
+        $fristday= gmdate("Y-m-d H:i:s", strtotime($hot_posts_years));
        //$fristday= date("Y-m-d H:i:s", strtotime("-1 year")); 
-        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->postmeta.".post_id) AS 'like_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_value ='like' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' GROUP BY ".$wpdb->postmeta.".post_id ORDER  BY like_total DESC LIMIT ". $limit;
-        $mostlikes = $wpdb->get_results($sql);
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $mostlikes = $wpdb->get_results($wpdb->prepare("SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->postmeta.".post_id) AS 'like_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->postmeta." ON ".$wpdb->posts.".ID = ".$wpdb->postmeta.".post_id WHERE ".$wpdb->postmeta.".meta_value ='like' AND post_date BETWEEN %s AND %s AND post_status = 'publish' AND post_type='post'  AND post_password = '' GROUP BY ".$wpdb->postmeta.".post_id ORDER  BY like_total DESC LIMIT 20",$fristday,$today));
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
         $posts =array();
         foreach ($mostlikes as $post) {
         
@@ -565,8 +602,11 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 
                 $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
                 $_data['pageviews'] = $pageviews;
-
-                $comment_total = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID=".$post_id);
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+                $comment_total = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID= %d",$post_id));
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
                 $_data['comment_total']= $comment_total;
 
                 $images =getPostImages($post->post_content,$post_id);         
@@ -598,9 +638,13 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         $limit=10;
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
-        date_default_timezone_set('Asia/Shanghai');
-        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name, post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date < '".date("Y-m-d H:i:s", (time() + ($time_difference * 3600)))."' AND post_status = 'publish' AND post_type='post'  AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT ". $limit;
-        $mostcommenteds = $wpdb->get_results($sql);
+              //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $date=gmdate("Y-m-d H:i:s", (time() + ($time_difference * 3600)));
+        $mostcommenteds = $wpdb->get_results($wpdb->prepare("SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name, post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date < %s AND post_status = 'publish' AND post_type='post'  AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT %d",$date, $limit));
         $posts =array();  
         foreach ($mostcommenteds as $post) {
                 $post_id = (int) $post->ID;
@@ -617,7 +661,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
                 $_data['pageviews'] = $pageviews;
                 
-                $like_count = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=".$post_id);
+                $like_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id));
                 $_data['like_count']= $like_count;
 
 
@@ -636,6 +680,8 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $posts[] = $_data;    
                 
         }
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
         $response = rest_ensure_response($posts);
         return $response;
      
@@ -658,15 +704,18 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
 		}
 
         global $wpdb, $post, $tableposts, $tablecomments, $time_difference, $post;
-        date_default_timezone_set('Asia/Shanghai');
+              //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
         $limit = 20;
-        $today = date("Y-m-d H:i:s"); //获取今天日期时间          
+        $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间          
         $hot_posts_years= empty(get_option('wf_hot_posts_years'))?'1':get_option('wf_hot_posts_years');
         $hot_posts_years ='-'.$hot_posts_years.' year';
-        $fristday= date("Y-m-d H:i:s", strtotime($hot_posts_years));
+        $fristday= gmdate("Y-m-d H:i:s", strtotime($hot_posts_years));
        //$fristday= date("Y-m-d H:i:s", strtotime("-1 year"));  
-        $sql="SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date BETWEEN '".$fristday."' AND '".$today."' AND post_status = 'publish' AND post_type='post' AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT ". $limit;
-        $mostcommenteds = $wpdb->get_results($sql);
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $mostcommenteds = $wpdb->get_results($wpdb->prepare("SELECT  ".$wpdb->posts.".ID as ID, post_title, post_name,post_content,post_date, COUNT(".$wpdb->comments.".comment_post_ID) AS 'comment_total' FROM ".$wpdb->posts." LEFT JOIN ".$wpdb->comments." ON ".$wpdb->posts.".ID = ".$wpdb->comments.".comment_post_ID WHERE comment_approved = '1' AND post_date BETWEEN %s AND %s AND post_status = 'publish' AND post_type='post' AND post_password = '' GROUP BY ".$wpdb->comments.".comment_post_ID ORDER  BY comment_total DESC LIMIT 20",$fristday,$today));
         $posts =array();
         foreach ($mostcommenteds as $post) {
         
@@ -685,7 +734,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                 $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
                 $_data['pageviews'] = $pageviews;
 
-                $like_count = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=".$post_id);
+                $like_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id));
                 $_data['like_count']= $like_count;
 
                 $images =getPostImages($post->post_content,$post_id);         
@@ -702,6 +751,9 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
                   $_data['post_all_images']=$images['post_all_images'];
                 $posts[] = $_data;
         }
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
         if($cachedata =='' && function_exists('MRAC'))
 		{
 			$cachedata= MRAC()->cacheManager->set_cache($posts,'hotpostthisyear',0);
@@ -743,11 +795,14 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
     {
         global $wpdb;
         $openid= $request['openid'];
-        $openid='_'.$openid;
-        $sql =$wpdb->prepare("SELECT * from ".$wpdb->posts."  where ID in  
-(SELECT post_id from ".$wpdb->postmeta." where meta_value='like' and meta_key=%s) ORDER BY post_date desc LIMIT 20",$openid);        
-        $_posts = $wpdb->get_results($sql);
-        $posts =array();
+        $openid='_'.$openid;  
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $_posts = $wpdb->get_results($wpdb->prepare("SELECT * from ".$wpdb->posts."  where ID in  
+(SELECT post_id from ".$wpdb->postmeta." where meta_value='like' and meta_key=%s) ORDER BY post_date desc LIMIT 20",$openid));
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+$posts =array();
         foreach ($_posts as $post) {
             
             $_data["post_id"]  =$post->ID;

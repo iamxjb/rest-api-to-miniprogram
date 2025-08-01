@@ -3,11 +3,11 @@
 Plugin Name: REST API TO MiniProgram 微慕小程序
 Plugin URI: https://www.minapper.com
 Description: 为微慕小程序提供定制化WordPress REST API json 输出
-Version: 5.0.5
+Version: 5.1
 Author: jianbo
 Author URI: https://www.minapper.com
 License: GPL v3
-WordPress requires at least: 4.7.1
+WordPress requires at least: 5.0.5
 */
 
 
@@ -128,20 +128,20 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             return $links;
         }
 
-        $settings_link = '<a href="https://www.minapper.com/" target="_blank"> <span style="color:#d54e21; font-weight:bold;">' . esc_html__( '升级增强版', 'REST API TO MiniProgram' ) . '</span></a>';
+        $settings_link = '<a href="https://www.minapper.com/" target="_blank"> <span style="color:#d54e21; font-weight:bold;">' . esc_html__( '升级增强版', 'rest-api-to-miniprogram' ) . '</span></a>';
 
         array_unshift( $links, $settings_link );
 
-        $settings_link = '<a href="https://www.minapper.com/" target="_blank"> <span style="color:#d54e21; font-weight:bold;">' . esc_html__( '升级专业版', 'REST API TO MiniProgram' ) . '</span></a>';
+        $settings_link = '<a href="https://www.minapper.com/" target="_blank"> <span style="color:#d54e21; font-weight:bold;">' . esc_html__( '升级专业版', 'rest-api-to-miniprogram' ) . '</span></a>';
 
         array_unshift( $links, $settings_link );
 
 
-        $settings_link = '<a href="https://www.minapper.com/" target="_blank"> <span style="color:green; font-weight:bold;">' . esc_html__( '技术支持', 'REST API TO MiniProgram' ) . '</span></a>';
+        $settings_link = '<a href="https://www.minapper.com/" target="_blank"> <span style="color:green; font-weight:bold;">' . esc_html__( '技术支持', 'rest-api-to-miniprogram' ) . '</span></a>';
 
         array_unshift( $links, $settings_link );
 
-        $settings_link = '<a href="admin.php?page=weixinapp_slug">' . esc_html__( '设置', 'REST API TO MiniProgram' ) . '</a>';        
+        $settings_link = '<a href="admin.php?page=weixinapp_slug">' . esc_html__( '设置', 'rest-api-to-miniprogram' ) . '</a>';        
 
         array_unshift( $links, $settings_link );
 
@@ -187,8 +187,10 @@ if ( ! class_exists( 'RestAPIMiniProgram' ) ) {
             }
             elseif($web_gallery_style=='swiper')
             {
+                // phpcs:disable WordPress.WP.EnqueuedResourceParameters.NotInFooter
                 wp_enqueue_style('minappergallerycss', plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/includes/css/gallery.css', false, '1.0', 'all');
-                wp_enqueue_script('minappergalleryjs',  plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/includes/js/gallery.js', false, '1.0');
+                wp_enqueue_script('minappergalleryjs',  plugins_url() . '/' . REST_API_TO_MINIPROGRAM_PLUGIN_NAME . '/includes/js/gallery.js', true, '1.0');
+                // phpcs:enable WordPress.WP.EnqueuedResourceParameters.NotInFooter
                 $minappergallery .='<div class="gallery-container">
             <div class="gallery-viewport">
                 <div class="slides-container">';

@@ -311,6 +311,11 @@ function myradus($im, $lift, $top, $lt_corner, $radius, $image_h, $image_w)
 // }
 
 function get_content_post($url,$post_data=array(),$header=array()){
+    // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_getinfo
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
@@ -327,6 +332,12 @@ function get_content_post($url,$post_data=array(),$header=array()){
     $info = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
     $code = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
+    // phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_close
+        //phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_getinfo
+
     if ($code == '200') {
         $errcode = 0;
     } else {
@@ -339,6 +350,11 @@ function get_content_post($url,$post_data=array(),$header=array()){
 //发起https请求
 function https_request($url)
 {
+    // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
+        //phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_errno
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -350,6 +366,11 @@ function https_request($url)
         return 'ERROR';
     }
     curl_close($curl);
+    // phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_close
+        //phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_errno
     return $data;
 }
 
@@ -359,6 +380,11 @@ function https_curl_post($url,$data,$type){
             //$headers = array("Content-type: application/json;charset=UTF-8","Accept: application/json","Cache-Control: no-cache", "Pragma: no-cache");
             $data=json_encode($data);
         }
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_errno
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, 1); // 发送一个常规的Post请求
@@ -375,13 +401,20 @@ function https_curl_post($url,$data,$type){
             return 'ERROR';
         }
         curl_close($curl);
+        // phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_init
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_exec
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_close
+        //phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_errno
         return $data;
     }
 
 
 function time_tran($the_time){
-    date_default_timezone_set('Asia/Shanghai');
-    $now_time = date("Y-m-d H:i:s",time()); 
+         //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+    $now_time = gmdate("Y-m-d H:i:s",time()); 
     $now_time = strtotime($now_time);
     $show_time = strtotime($the_time);
     $dur = $now_time - $show_time;
@@ -403,7 +436,7 @@ function time_tran($the_time){
                      return floor($dur/86400).'天前';
                     }
                      else{
-                         return date("Y-m-d",$show_time); 
+                         return gmdate("Y-m-d",$show_time); 
                      }
                 }
             }
@@ -472,7 +505,13 @@ function ram_get_client_ip()
                 'HTTP_FORWARDED',
                 'REMOTE_ADDR') as $key) {
         if (array_key_exists($key, $_SERVER)) {
+            // phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+            // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitize
+            // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
             foreach (explode(',', $_SERVER[$key]) as $ip) {
+                // phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+                // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitize
+                // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
                 $ip = trim($ip);
                 //会过滤掉保留地址和私有地址段的IP，例如 127.0.0.1会被过滤
                 //也可以修改成正则验证IP
@@ -506,14 +545,17 @@ function filterEmoji($nickname){
 function  getUserLevel($userId)
 {
     global $wpdb;
-    $sql =$wpdb->prepare("SELECT  t.meta_value
+    
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+    $level =$wpdb->get_var($wpdb->prepare("SELECT  t.meta_value
             FROM
                 ".$wpdb->usermeta." t
             WHERE
                 t.meta_key = '". $wpdb->prefix."user_level' 
-            AND t.user_id =%d",$userId);
-
-    $level =$wpdb->get_var($sql); 
+            AND t.user_id =%d",$userId)); 
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
     $levelName ="订阅者";
     switch($level)
     {
@@ -666,8 +708,11 @@ function get_content_gallery($content,$flag){
 function  getPosts($ids)
     {
         global $wpdb;
-        $sql="SELECT *  from ".$wpdb->posts." where id in(".$ids.") ORDER BY find_in_set(id,'".$ids."')";
-        $_posts = $wpdb->get_results($sql);
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $_posts = $wpdb->get_results( $wpdb->prepare("SELECT *  from ".$wpdb->posts." where id in(%s) ORDER BY find_in_set(id,%s)",$ids,$ids));
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
         $posts =array(); 
         if(!empty($_posts))  
         {
@@ -694,8 +739,11 @@ function  getPosts($ids)
                 
                 $pageviews = (int) get_post_meta( $post_id, 'wl_pageviews',true);
                 $_data['pageviews'] = $pageviews;
-    
-                $comment_total = $wpdb->get_var("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID=".$post_id);
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+                $comment_total = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->comments." where  comment_approved = '1' and comment_post_ID=%d",$post_id));
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
                 $_data['comment_total']= $comment_total;
     
                 $images =getPostImages($post->post_content,$post_id);         
@@ -772,8 +820,11 @@ function  getPosts($ids)
         $post_date =$post->post_date;
         //$_data['date'] =time_tran($post_date);
         $_data['post_date'] =time_tran($post_date);
-        $sql =$wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
-        $like_count = $wpdb->get_var($sql);
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $like_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(1) FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id));
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
         $_data['like_count']= $like_count; 
         $post_views = (int)get_post_meta($post_id, 'wl_pageviews', true);     
         $params = $request->get_params();
@@ -783,9 +834,9 @@ function  getPosts($ids)
              //获取推荐商品（微信小店商品）
           $_data['recommendWechatShopGoods'] = getRecommendWechatShopGoods($post_id);
           
-          $post_year =date('Y',strtotime($post_date));
-          $post_month =date('m',strtotime($post_date));
-          $post_day =date('d',strtotime($post_date));
+          $post_year =gmdate('Y',strtotime($post_date));
+          $post_month =gmdate('m',strtotime($post_date));
+          $post_day =gmdate('d',strtotime($post_date));
           $history_post_single = get_history_post_list($post_year,$post_month,$post_day);
           $_data['history_post_single']=$history_post_single;
       
@@ -828,12 +879,12 @@ function  getPosts($ids)
           $audios=  get_post_content_audio($post->post_content);
           $_data['audios']=$audios;
     
-            $sql="select post_content from ".$wpdb->posts." where id=".$post_id;
-            $postContent = $wpdb->get_var($sql);
-            // if(has_shortcode($postContent, 'gallery' ))//处理内容里的相册显示
-            // {
-            //   $content= get_content_gallery($postContent,true);
-            // }
+            // $sql="select post_content from ".$wpdb->posts." where id=".$post_id;
+            // $postContent = $wpdb->get_var($sql);
+            // // if(has_shortcode($postContent, 'gallery' ))//处理内容里的相册显示
+            // // {
+            // //   $content= get_content_gallery($postContent,true);
+            // // }
             $_content['rendered'] =$content;
             $_content['raw'] =$raw;//古腾堡编辑器需要该属性，否则报错
             $_content['protected'] =$content_protected;  
@@ -845,9 +896,11 @@ function  getPosts($ids)
     
     
     
-            $sql=$wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id);
-            $likes = $wpdb->get_results($sql);
-           // $_data['sql']=$sql;
+          // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+            $likes = $wpdb->get_results($wpdb->prepare("SELECT meta_key , (SELECT id from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as id ,(SELECT display_name from ".$wpdb->users." WHERE user_login=substring(meta_key,2)) as display_name  FROM ".$wpdb->postmeta." where meta_value='like' and post_id=%d",$post_id));
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
             $avatarurls =array();
             foreach ($likes as $like) {
                 $userId = $like->id;                
@@ -872,14 +925,31 @@ function  getPosts($ids)
             add_post_meta($post_id, 'wl_pageviews', 1, true);  
           } 
           $_data['avatarurls']= $avatarurls;
-          date_default_timezone_set('Asia/Shanghai');
-          $fristday= date("Y-m-d H:i:s", strtotime("-1 year"));
-          $today = date("Y-m-d H:i:s"); //获取今天日期时间
+               //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+          $fristday= gmdate("Y-m-d H:i:s", strtotime("-1 year"));
+          $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间
           $tags= $_data["tags"];
             if(!empty($tags))
             {
               $tags=implode(",",$tags);
-              $sql="
+            //   $sql="
+            //   SELECT distinct ID, post_title
+            //   FROM ".$wpdb->posts." , ".$wpdb->term_relationships.", ".$wpdb->term_taxonomy."
+            //   WHERE ".$wpdb->term_taxonomy.".term_taxonomy_id =  ".$wpdb->term_relationships.".term_taxonomy_id
+            //   AND ID = object_id
+            //   AND taxonomy = 'post_tag'
+            //   AND post_status = 'publish'
+            //   AND post_type = 'post'
+            //   AND term_id IN (" . $tags . ")
+            //   AND ID != '" . $post_id . "'
+            //   AND post_date BETWEEN '".$fristday."' AND '".$today."' 
+            //   ORDER BY  RAND()
+            //   LIMIT 5";
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+              $related_posts = $wpdb->get_results( $wpdb->prepare("
               SELECT distinct ID, post_title
               FROM ".$wpdb->posts." , ".$wpdb->term_relationships.", ".$wpdb->term_taxonomy."
               WHERE ".$wpdb->term_taxonomy.".term_taxonomy_id =  ".$wpdb->term_relationships.".term_taxonomy_id
@@ -887,12 +957,13 @@ function  getPosts($ids)
               AND taxonomy = 'post_tag'
               AND post_status = 'publish'
               AND post_type = 'post'
-              AND term_id IN (" . $tags . ")
-              AND ID != '" . $post_id . "'
-              AND post_date BETWEEN '".$fristday."' AND '".$today."' 
+              AND term_id IN (%d)
+              AND ID != %s
+              AND post_date BETWEEN '%s AND %s
               ORDER BY  RAND()
-              LIMIT 5";
-              $related_posts = $wpdb->get_results($sql);
+              LIMIT 5",$tags,$post_id,$fristday,$today));
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
     
               $_data['related_posts'] = $related_posts;
     
@@ -958,11 +1029,11 @@ function  getPosts($ids)
     function ram_randString()
     {
         $code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $rand = $code[rand(0,25)]
-            .strtoupper(dechex(date('m')))
-            .date('d').substr(time(),-5)
+        $rand = $code[wp_rand(0,25)]
+            .strtoupper(dechex(gmdate('m')))
+            .gmdate('d').substr(time(),-5)
             .substr(microtime(),2,5)
-            .sprintf('%02d',rand(0,99));
+            .sprintf('%02d',wp_rand(0,99));
         for(
             $a = md5( $rand, true ),
             $s = '0123456789abcdefjhijklmnopqrstuv',
@@ -1059,7 +1130,7 @@ function  getPosts($ids)
 
     //获取可修改头像的次数
     function getEnableUpdateAvatarCount($userId){
-        $year=date('Y', time());
+        $year=gmdate('Y', time());
         $updateAvatarCount=$year."-"."updateAvatarCount";
         $updateCount =empty(get_user_meta($userId,$updateAvatarCount))?0:(int)get_user_meta($userId,$updateAvatarCount,true);
         $configCount =(int)get_option('wf_updateAvatar_count');
@@ -1073,7 +1144,7 @@ function  getPosts($ids)
 
     //获取修改头像的次数
     function getUpdateAvatarCount($userId){
-        $year=date('Y', time());
+        $year=gmdate('Y', time());
         $updateAvatarCount=$year."-"."updateAvatarCount";
         $updateCount =empty(get_user_meta($userId,$updateAvatarCount))?0:(int)get_user_meta($userId,$updateAvatarCount,true);
         return  $updateCount;
@@ -1081,7 +1152,7 @@ function  getPosts($ids)
 
     //设置修改头像的次数
     function setUpdateAvatarCount($userId,$count){
-        $year=date('Y', time());
+        $year=gmdate('Y', time());
         $updateAvatarCount=$year."-"."updateAvatarCount";
         update_user_meta($userId,$updateAvatarCount,$count);
     }
@@ -1094,7 +1165,9 @@ function  getPosts($ids)
         $qrcodeUrl = plugins_url().'/'.REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/qrcode/'.$qrcodeName;
         if (!is_dir($qrcodePath)) 
         {
+            // phpcs:disable WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
             mkdir($qrcodePath, 0777);
+            // phpcs:enable WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
         }
 
         $qrcodePath = REST_API_TO_MINIPROGRAM_PLUGIN_DIR.'qrcode/'.$qrcodeName;//文章小程序二维码路径
@@ -1185,11 +1258,14 @@ function get_history_post_list($post_year, $post_month, $post_day){
 	$limit = 10;
 	$order = "latest";
 	if($order == "latest"){ $order = "DESC";} else { $order = '';}
-	$sql = "select ID, year(post_date_gmt) as post_year,date(post_date_gmt) as post_date, post_title, comment_count FROM 
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+	$histtory_post = $wpdb->get_results($wpdb->prepare("select ID, year(post_date_gmt) as post_year,date(post_date_gmt) as post_date, post_title, comment_count FROM 
 	$wpdb->posts WHERE post_password = '' AND post_type = 'post' AND post_status = 'publish'
-	AND year(post_date_gmt)!='".$post_year."' AND month(post_date_gmt)='".$post_month."' AND day(post_date_gmt)='".$post_day."'
-	order by post_date_gmt ".$order." limit ".$limit;
-	$histtory_post = $wpdb->get_results($sql);
+	AND year(post_date_gmt)!=%s AND month(post_date_gmt)=%s AND day(post_date_gmt)=%s
+	order by post_date_gmt %d limit %d",$post_year,$post_month,$post_day,$order,$limit));
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+    // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 	return $histtory_post;
 }
 

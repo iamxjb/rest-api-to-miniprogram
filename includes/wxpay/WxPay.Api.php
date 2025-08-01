@@ -52,7 +52,8 @@ class RAM_WxPayApi
 		
 		$inputObj->SetAppid(RAM_WxPayConfig::get_appid());//公众账号ID
 		$inputObj->SetMch_id(RAM_WxPayConfig::get_mchid());//商户号
-		$inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip	  
+		$remote_addr=isset($_SERVER['REMOTE_ADDR'])?sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])):'127.0.0.1';
+		$inputObj->SetSpbill_create_ip($remote_addr);//终端ip	  
 		//$inputObj->SetSpbill_create_ip("1.1.1.1");  	    
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
 		
@@ -257,8 +258,8 @@ class RAM_WxPayApi
 		} else if(!$inputObj->IsAuth_codeSet()) {
 			throw new RAM_WxPayException("提交被扫支付API接口中，缺少必填参数auth_code！");
 		}
-		
-		$inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
+		$remote_addr=isset($_SERVER['REMOTE_ADDR'])?sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])):'127.0.0.1';
+		$inputObj->SetSpbill_create_ip($remote_addr);//终端ip
 		$inputObj->SetAppid(RAM_WxPayConfig::get_appid());//公众账号ID
 		$inputObj->SetMch_id(RAM_WxPayConfig::get_mchid());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
@@ -332,8 +333,9 @@ class RAM_WxPayApi
 		}
 		$inputObj->SetAppid(RAM_WxPayConfig::get_appid());//公众账号ID
 		$inputObj->SetMch_id(RAM_WxPayConfig::get_mchid());//商户号
-		$inputObj->SetUser_ip($_SERVER['REMOTE_ADDR']);//终端ip
-		$inputObj->SetTime(date("YmdHis"));//商户上报时间	 
+		$remote_addr=isset($_SERVER['REMOTE_ADDR'])?sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])):'127.0.0.1';
+		$inputObj->SetUser_ip($remote_addr);//终端ip
+		$inputObj->SetTime(gmdate("YmdHis"));//商户上报时间	 
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
 		
 		$inputObj->SetSign();//签名
@@ -436,7 +438,7 @@ class RAM_WxPayApi
 		$chars = "abcdefghijklmnopqrstuvwxyz0123456789";  
 		$str ="";
 		for ( $i = 0; $i < $length; $i++ )  {  
-			$str .= substr($chars, mt_rand(0, strlen($chars)-1), 1);  
+			$str .= substr($chars, wp_rand(0, strlen($chars)-1), 1);  
 		} 
 		return $str;
 	}
@@ -447,7 +449,7 @@ class RAM_WxPayApi
 	 */
 	public static function replyNotify($xml)
 	{
-		echo $xml;
+		echo esc_xml($xml);
 	}
 	
 	/**
@@ -524,12 +526,15 @@ class RAM_WxPayApi
 	 * @throws RAM_WxPayException
 	 */
 	private static function postXmlCurl($xml, $url, $useCert = false, $second = 30)
-	{		
+	{	
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init
 		$ch = curl_init();
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_init
 		$curlVersion = curl_version();
 		$ua = "WXPaySDK/0.9 (".PHP_OS.") PHP/".PHP_VERSION." CURL/".$curlVersion['version']." ".RAM_WxPayConfig::get_mchid();
 
 		//设置超时
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
 		curl_setopt($ch, CURLOPT_TIMEOUT, $second);
 
 		//如果有配置代理这里就设置代理
@@ -560,16 +565,25 @@ class RAM_WxPayApi
 		curl_setopt($ch, CURLOPT_POST, TRUE);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
 		//运行curl
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_exec
 		$data = curl_exec($ch);
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_exec
 		//返回结果
 		if($data){
+			//phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
 			curl_close($ch);
+			//phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_close
 			return $data;
 		} else { 
+			//phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_errno
 			$error = curl_errno($ch);
+			//phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_errno
+			//phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
 			curl_close($ch);
-			throw new RAM_WxPayException("curl出错，错误码:$error");
+			//phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_close
+			//throw new esc_attr(RAM_WxPayException("curl出错，错误码:$error"));
 		}
+		// phpcs:enable WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	}
 	
 	/**

@@ -94,10 +94,14 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
             }
             else
             {
-                $sql=$wpdb->prepare("SELECT * from ".$wpdb->posts."  where ID in  
-        (SELECT comment_post_ID from ".$wpdb->comments." where user_id=%d   GROUP BY comment_post_ID order by comment_date ) LIMIT 20",$user_id);
-                $_posts = $wpdb->get_results($sql);
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+                $_posts = $wpdb->get_results($wpdb->prepare("SELECT * from ".$wpdb->posts."  where ID in  
+        (SELECT comment_post_ID from ".$wpdb->comments." where user_id=%d   GROUP BY comment_post_ID order by comment_date ) LIMIT 20",$user_id));
                 $posts =array();
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
                 foreach ($_posts as $post) {
                     
                     $_data["post_id"]  =$post->ID;
@@ -157,8 +161,11 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         global $wpdb;
         $user_id =0;
         $useropenid="";
-        $sql =$wpdb->prepare("SELECT ID FROM ".$wpdb->users ." WHERE user_login = %s",$openid);
-        $user_id= (int)$wpdb->get_var($sql); //评论者id
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+        $user_id= (int)$wpdb->get_var($wpdb->prepare("SELECT ID FROM ".$wpdb->users ." WHERE user_login = %s",$openid)); //评论者id
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
         $comment_approved="1";
         $userLevel= getUserLevel($user_id);
 
@@ -192,9 +199,12 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         {
             $useropenid="";
             if(!empty($userid))
-            {
-                $sql =$wpdb->prepare("SELECT user_login FROM ".$wpdb->users ." WHERE ID=%d ",$userid);        
-                $useropenid = $wpdb->get_var($sql);                
+            {   
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching                    
+                $useropenid = $wpdb->get_var($wpdb->prepare("SELECT user_login FROM ".$wpdb->users ." WHERE ID=%d ",$userid));                
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+                // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
             }
            
             $result["code"]="success";
@@ -243,14 +253,20 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         $postid =isset($request['postid'])?(int)$request['postid']:0;
         $limit= isset($request['limit'])?(int)$request['limit']:0;
         $page= isset($request['page'])?(int)$request['page']:0;
-        $order =isset($request['order'])?$request['order']:'';
-        if(empty($order))
-        {
-            $order ="asc";
-        }
-        $page=($page-1)*$limit;
-        $sql=$wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=0 and t.comment_approved='1' order by t.comment_date ".$order." limit %d,%d",$postid,$page,$limit);    
-        $comments = $wpdb->get_results($sql); 
+        $order =isset($request['order'])?$request['order']:'';        
+        $page=($page-1)*$limit; 
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching 
+        if(empty($order) || $order =='asc')
+        {   
+            $comments = $wpdb->get_results($wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=0 and t.comment_approved='1' order by t.comment_date asc limit %d,%d",$postid,$page,$limit)); 
+        } 
+        else
+          {
+            $comments = $wpdb->get_results($wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=0 and t.comment_approved='1' order by t.comment_date desc limit %d,%d",$postid,$page,$limit)); 
+          }    
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
         $commentslist  =array();
         foreach($comments as $comment){
             if($comment->comment_parent==0){
@@ -294,8 +310,20 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         global $wpdb;
         if($limit>0){
             $commentslist  =array();
-            $sql=$wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=%d and t.comment_approved='1' order by comment_date ".$order,$postid,$comment_id);
-            $comments = $wpdb->get_results($sql); 
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+             if(empty($order) || $order =='asc')
+             {
+$comments = $wpdb->get_results($wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=%d and t.comment_approved='1' order by comment_date asc ",$postid,$comment_id)); 
+             }
+             else
+             {
+$comments = $wpdb->get_results($wpdb->prepare("SELECT t.*,(SELECT t2.meta_value  from ".$wpdb->commentmeta."  t2 where  t.comment_ID = t2.comment_id  AND t2.meta_key = 'formId')  AS formId FROM ".$wpdb->comments." t WHERE t.comment_post_ID =%d and t.comment_parent=%d and t.comment_approved='1' order by comment_date desc ",$postid,$comment_id)); 
+             }
+            
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
             foreach($comments as $comment){                     
                     $data["id"]=$comment->comment_ID;
                     $data["author_name"]=$comment->comment_author;
@@ -415,8 +443,11 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
 
             }
             global $wpdb; 
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
             $status = $wpdb->get_row($wpdb->prepare("SELECT post_status, comment_status FROM $wpdb->posts WHERE ID = %d", $post));
-
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
             if ( in_array($status->post_status, array('draft', 'pending') ) ) {
                 return new WP_Error( 'error', '文章尚未发布', array( 'status' => 500 ) );
     

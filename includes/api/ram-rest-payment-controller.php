@@ -53,7 +53,9 @@ class RAW_REST_Payment_Controller  extends WP_REST_Controller{
 
     public function  post_payment($request){
         
-        date_default_timezone_set('Asia/Shanghai');
+              //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+      date_default_timezone_set('Asia/Shanghai');
+      //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
         $openId=isset($request['openid'])?$request['openid']:'';        
         $totalFee=isset($request['totalfee'])? $request['totalfee']:1;
 
@@ -79,12 +81,12 @@ class RAW_REST_Payment_Controller  extends WP_REST_Controller{
         //②、统一下单
         $input = new RAM_WxPayUnifiedOrder();
         $input->SetBody($body);
-        $orderId =RAM_WxPayConfig::get_mchid().date("YmdHis");
+        $orderId =RAM_WxPayConfig::get_mchid().gmdate("YmdHis");
         $input->SetOut_trade_no($orderId);
         $input->SetTotal_fee(strval($totalFee*100));
         //$input->SetTotal_fee(strval($totalFee));
-        $input->SetTime_start(date("YmdHis"));
-        $input->SetTime_expire(date("YmdHis", time() + 6000));
+        $input->SetTime_start(gmdate("YmdHis"));
+        $input->SetTime_expire(gmdate("YmdHis", time() + 6000));
         $input->SetNotify_url(get_rest_url( null, $this->namespace . '/' . $this->resource_name . '/notify' ) );
         $input->SetTrade_type( 'JSAPI' );
         $input->SetOpenid($openId);

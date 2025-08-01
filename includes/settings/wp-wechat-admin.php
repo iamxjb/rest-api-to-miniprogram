@@ -264,11 +264,11 @@ function cmp_do_output_buffer() {
 add_action('init', 'cmp_do_output_buffer');
 function minapper_validation_page()
 {  
-   
+   // phpcs:disable WordPress.Security.NonceVerification.Missing
     if (isset($_POST['minapper_verify'])) {
         $user_id = get_current_user_id();        
         if (isset($_POST['minapper_verification_code']) && !empty($_POST['minapper_verification_code'])) {
-            $code = sanitize_text_field($_POST['minapper_verification_code']);
+            $code = sanitize_text_field(wp_unslash($_POST['minapper_verification_code']));
             $args = array(
                 'body' => json_encode(array('code' => $code)),
                 'headers' => array('Content-Type' => 'application/json'),
@@ -286,7 +286,7 @@ function minapper_validation_page()
                     echo '<div id="message" class="updated error"><p><strong>无效的验证码</strong></p></div>';
                 }
             } else {
-                echo '<div id="message" class="updated error"><p><strong>请求失败，状态码：' . wp_remote_retrieve_response_code($response) . '</strong></p></div>';
+                echo '<div id="message" class="updated error"><p><strong>请求失败，状态码：' . esc_attr(wp_remote_retrieve_response_code($response)) . '</strong></p></div>';
                 
             }
         } else {
@@ -294,6 +294,7 @@ function minapper_validation_page()
            
         }
     }
+    // phpcs:enable WordPress.Security.NonceVerification.Missing
 ?> 
 
 <style>

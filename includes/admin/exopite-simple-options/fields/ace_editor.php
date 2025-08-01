@@ -32,16 +32,16 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_ace_editor' ) ) {
 			$options = ( ! empty( $this->field['options'] ) ) ? $this->field['options'] : array();
 			$options = json_encode( wp_parse_args( $options, $defaults ) );
 
-			echo $this->element_before();
+			echo esc_attr($this->element_before());
 
 			echo '<div class="exopite-sof-ace-editor-wrapper">';
-			echo '<div id="exopite-sof-ace-' . $editor_id . '" class="exopite-sof-ace-editor"' . $this->element_attributes() . '></div>';
+			echo '<div id="exopite-sof-ace-' . esc_attr($editor_id) . '" class="exopite-sof-ace-editor"' . esc_attr($this->element_attributes()) . '></div>';
 			echo '</div>';
 
-			echo '<textarea class="exopite-sof-ace-editor-textarea hidden" name="' . $this->element_name() . '">' . $this->element_value() . '</textarea>';
-			echo '<textarea class="exopite-sof-ace-editor-options hidden">' . $options . '</textarea>';
+			echo '<textarea class="exopite-sof-ace-editor-textarea hidden" name="' . esc_attr($this->element_name()) . '">' . esc_attr($this->element_value()) . '</textarea>';
+			echo '<textarea class="exopite-sof-ace-editor-options hidden">' . esc_attr($options) . '</textarea>';
 
-			echo $this->element_after();
+			echo esc_attr($this->element_after());
 
 		}
 

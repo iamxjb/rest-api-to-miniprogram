@@ -29,9 +29,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_content' ) ) {
 				}
 			}
 
-			echo $this->element_before();
-			echo '<div' . $this->element_class() . $this->element_attributes() . '>' . $content . '</div>';
-			echo $this->element_after();
+			echo esc_attr($this->element_before());
+			echo '<div' . esc_attr($this->element_class()) . esc_attr($this->element_attributes()) . '>' . esc_attr($content) . '</div>';
+			echo esc_attr($this->element_after());
 
 		}
 

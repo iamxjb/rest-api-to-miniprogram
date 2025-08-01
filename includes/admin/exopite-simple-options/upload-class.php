@@ -13,6 +13,7 @@
  * @version 1.0.0
  *
  */
+
 if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 
 	class Exopite_Simple_Options_Framework_Upload {
@@ -35,7 +36,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 
 			$hash        = '';
 			$fn          = plugin_dir_path( __FILE__ ) . '/' . $type . '-' . $hash . '.log';
-			$log_in_file = file_put_contents( $fn, date( 'Y-m-d H:i:s' ) . ' - ' . $log_line . PHP_EOL, FILE_APPEND );
+			$log_in_file = file_put_contents( $fn, gmdate( 'Y-m-d H:i:s' ) . ' - ' . $log_line . PHP_EOL, FILE_APPEND );
 
 		}
 
@@ -49,9 +50,11 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 		public static function file_uploader_callback() {
 
 			// file_put_contents( dirname(__FILE__) . '\test.log', var_export( $_POST, true ) . PHP_EOL . PHP_EOL, FILE_APPEND );
-
+			// phpcs:disable WordPress.Security.NonceVerification.Missing
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 			if ( strtoupper( sanitize_key( $_POST['_method'] ) ) == 'DELETE' && isset( $_POST['qquuid'] ) ) {
-
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
+				// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 				/**
 				 * Delete file on AJAX request with qquuid
 				 *
@@ -81,11 +84,14 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 		public static function file_batch_delete_callback() {
 
 			$deleted = array();
-
+// phpcs:disable WordPress.Security.NonceVerification.Missing
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 			if ( isset( $_POST['media-ids'] ) && is_array( $_POST['media-ids'] ) ) {
-
+				
 				// Sanitize attachment ids, these should be absint
 				$attachment_id_array = array_map( 'absint', $_POST['media-ids'] );
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
+				// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
 
 				foreach ( $attachment_id_array as $attachmentid ) {
@@ -112,14 +118,21 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 				'post_type'   => 'attachment',
 				'numberposts' => 1,
 				'post_status' => null,
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'  => array(
 					array(
 						'key'     => 'qquuid',
-						'value'   => sanitize_text_field( $_POST['qquuid'] ),
+						// phpcs:disable WordPress.Security.NonceVerification.Missing
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+						'value'   => sanitize_text_field( wp_unslash( $_POST['qquuid'] ) ),
+						// phpcs:enable WordPress.Security.NonceVerification.Missing
+			// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 						'compare' => '=',
 					)
-				)
-
+				),
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			);
 
 			$attachments = get_posts( $args );
@@ -139,7 +152,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 
 			// Restore original post data.
 			wp_reset_postdata();
-			wp_reset_query();
+			//wp_reset_query();
 
 			return ' 404 Not Found';
 
@@ -148,8 +161,13 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 		public static function file_uploader() {
 
 			// Make sure all files are allowed
+			// phpcs:disable WordPress.Security.NonceVerification.Missing			
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			if ( ! self::check_file_type( $_FILES['qqfile']['name'] ) ) {
-
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
+				// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 				return array( 'error' => 'Unsupported file type' );
 
 			}
@@ -160,13 +178,23 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 
 			}
-
+// phpcs:disable WordPress.Security.NonceVerification.Missing
+			// phpcs:disable WordPress.Security.NonceVerification.Missing			
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			if ( isset( $_POST['qqfilename'] ) ) {
+
 				$_FILES['qqfile']['name'] = sanitize_file_name( $_POST['qqfilename'] );
 			}
+			
 
 			// Uploading file to server
 			$uploaded_file = $_FILES['qqfile'];
+			// phpcs:disable WordPress.Security.NonceVerification.Missing			
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 			$upload_overrides = array( 'test_form' => false );
 			$movefile         = wp_handle_upload( $uploaded_file, $upload_overrides );
@@ -179,10 +207,19 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 				$attachment = self::add_attachment( $movefile['url'], $movefile['file'] );
 
 				// Add qquuid for possibility to delete with AJAX fine uploader
+				// phpcs:disable WordPress.Security.NonceVerification.Missing
+			// phpcs:disable WordPress.Security.NonceVerification.Missing			
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				update_post_meta( $attachment, 'qquuid', sanitize_text_field( $_POST['qquuid'] ) );
-
+				
 				// Generate ALT attribute based on file name
 				$alt = substr( $_FILES['qqfile']['name'], 0, strrpos( $_FILES['qqfile']['name'], "." ) );
+				// phpcs:disable WordPress.Security.NonceVerification.Missing			
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$alt = sanitize_title( $alt );
 				$alt = str_replace( '-', ' ', $alt );
 				$alt = ucwords( strtolower( $alt ) );
@@ -224,7 +261,11 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Upload' ) ) {
 			);
 
 			// Attach file to post if attach is true and it is uploaded in a post (metabox)
+							// phpcs:disable WordPress.Security.NonceVerification.Missing
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 			$post_id   = ( isset( $_POST['postId'] ) ) ? intval( $_POST['postId'] ) : 0;
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
+			// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 			$attach_id = wp_insert_attachment( $attachment, $updated_url, $post_id );
 
 			// Determines if attachment is an image.

@@ -17,7 +17,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_typography' ) ) {
 
 		public function output() {
 
-			echo $this->element_before();
+			echo esc_html( $this->element_before() );
 
 			$defaults_value = array(
 				'family'       => 'Arial',
@@ -61,7 +61,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_typography' ) ) {
 			$chosen_rtl    = ( is_rtl() && ! empty( $is_chosen ) ) ? 'chosen-rtl ' : '';
 
 			//Container
-			echo '<div class="exopite-sof-font-field exopite-sof-font-field-js" data-id="'.$this->field['id'].'">';
+			echo '<div class="exopite-sof-font-field exopite-sof-font-field-js" data-id="'. esc_html($this->field['id']) .'">';
 
 			if( is_object( $google_json ) ) {
 
@@ -74,19 +74,19 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_typography' ) ) {
 				$is_google = ( array_key_exists( $family_value, $googlefonts ) ) ? true : false;
 
 				echo '<label class="exopite-sof-typography-family">';
-				echo '<select name="'. $this->element_name( '[family]' ) .'" class="'. $is_chosen . $chosen_rtl .'exopite-sof-typo-family" data-atts="family"'. $this->element_attributes() .'>';
+				echo '<select name="'. esc_html($this->element_name( '[family]' )) .'" class="'. esc_html($is_chosen) . esc_html($chosen_rtl) .'exopite-sof-typo-family" data-atts="family"'. esc_html($this->element_attributes()) .'>';
 
 				do_action( 'exopite_sof_typography_family', $family_value, $this );
 
-				echo '<optgroup label="'. esc_attr__( 'Web Safe Fonts', 'exopite-sof' ) .'">';
+				echo '<optgroup label="'. esc_attr__( 'Web Safe Fonts', 'rest-api-to-miniprogram' ) .'">';
 				foreach ( $websafe_fonts as $websafe_value ) {
-					echo '<option value="'. $websafe_value .'" data-variants="'. implode( '|', $default_variants ) .'" data-type="websafe"'. selected( $websafe_value, $family_value, true ) .'>'. $websafe_value .'</option>';
+					echo '<option value="'. esc_html($websafe_value) .'" data-variants="'. implode( '|', esc_html($default_variants) ) .'" data-type="websafe"'. selected( esc_html($websafe_value), esc_html($family_value), true ) .'>'. esc_html($websafe_value) .'</option>';
 				}
 				echo '</optgroup>';
 
-				echo '<optgroup label="'. esc_attr__( 'Google Fonts', 'exopite-sof' ) .'">';
+				echo '<optgroup label="'. esc_attr__( 'Google Fonts', 'rest-api-to-miniprogram' ) .'">';
 				foreach ( $googlefonts as $google_key => $google_value ) {
-					echo '<option value="'. $google_key .'" data-variants="'. implode( '|', $google_value ) .'" data-type="google"'. selected( $google_key, $family_value, true ) .'>'. $google_key .'</option>';
+					echo '<option value="'. esc_html($google_key) .'" data-variants="'. implode( '|', esc_html ($google_value) ) .'" data-type="google"'. selected( esc_html($google_key), esc_html($family_value), true ) .'>'. esc_html($google_key) .'</option>';
 				}
 				echo '</optgroup>';
 
@@ -99,9 +99,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_typography' ) ) {
 					$variants = ( $value['font'] === 'google' || $value['font'] === 'websafe' ) ? $variants : array( 'regular' );
 
 					echo '<label class="exopite-sof-typography-variant">';
-					echo '<select name="'. $this->element_name( '[variant]' ) .'" class="'. $is_chosen . $chosen_rtl .'exopite-sof-typo-variant" data-atts="variant">';
+					echo '<select name="'. esc_html($this->element_name( '[variant]' )) .'" class="'. esc_html($is_chosen) . esc_html($chosen_rtl) .'exopite-sof-typo-variant" data-atts="variant">';
 					foreach ( $variants as $variant ) {
-						echo '<option value="'. $variant .'"'. $this->checked( $variant_value, $variant, 'selected' ) .'>'. $variant .'</option>';
+						echo '<option value="'. esc_html($variant) .'"'. esc_html($this->checked( esc_html($variant_value), esc_html($variant), 'selected' )) .'>'. esc_html($variant) .'</option>';
 					}
 					echo '</select>';
 					echo '</label>';
@@ -151,11 +151,11 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_typography' ) ) {
                 );
 
 				echo '<div class="exopite-sof-typography-size-height">';
-				echo $self->add_field( $field_size, $value['size'] );
-				echo $self->add_field( $field_height, $value['height'] );
+				echo esc_html($self->add_field( $field_size, $value['size'] ));
+				echo esc_html($self->add_field( $field_height, $value['height'] ));
 				echo '</div>';
 				echo '<div class="exopite-sof-typography-color">';
-				echo $self->add_field( $field_color, $value['color'] );
+				echo esc_html($self->add_field( $field_color, $value['color'] ));
 				echo '</div>';
 
 				/**
@@ -167,21 +167,21 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_typography' ) ) {
 					}else {
 						$preview_text = 'Lorem ipsum dolor sit amet, pro ad sanctus admodum, vim at insolens appellantur. Eum veri adipiscing an, probo nonumy an vis.';
 					}
-					echo '<div class="exopite-sof-font-preview">'. $preview_text .'</div>';
+					echo esc_html('<div class="exopite-sof-font-preview">'. $preview_text .'</div>');
 				}
 
-				echo '<input type="text" name="'. $this->element_name( '[font]' ) .'" class="exopite-sof-typo-font hidden" data-atts="font" value="'. $value['font'] .'" />';
+				echo esc_html('<input type="text" name="'. esc_html($this->element_name( '[font]' )) .'" class="exopite-sof-typo-font hidden" data-atts="font" value="'. esc_html($value['font']) .'" />');
 
 			} else {
 
-				echo esc_attr__( 'Error! Can not load json file.', 'exopite-sof' );
+				echo esc_attr__( 'Error! Can not load json file.', 'rest-api-to-miniprogram' );
 
 			}
 
 			//end container
 			echo '</div>';
 
-			echo $this->element_after();
+			echo esc_html($this->element_after());
 
 		}
 
