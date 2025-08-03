@@ -264,8 +264,8 @@ function cmp_do_output_buffer() {
 add_action('init', 'cmp_do_output_buffer');
 function minapper_validation_page()
 {  
-   // phpcs:disable WordPress.Security.NonceVerification.Missing
-    if (isset($_POST['minapper_verify'])) {
+    $minapper_verify_nonce= isset($_POST['minapper_verify_nonce'])?sanitize_text_field(wp_unslash($_POST['minapper_verify_nonce'])):'';
+    if (!wp_verify_nonce($minapper_verify_nonce, 'minapper_verify')  && isset($_POST['minapper_verify'])) {
         $user_id = get_current_user_id();        
         if (isset($_POST['minapper_verification_code']) && !empty($_POST['minapper_verification_code'])) {
             $code = sanitize_text_field(wp_unslash($_POST['minapper_verification_code']));
@@ -293,8 +293,7 @@ function minapper_validation_page()
             echo '<div id="message" class="updated error"><p><strong>缺少验证码</strong></p></div>';
            
         }
-    }
-    // phpcs:enable WordPress.Security.NonceVerification.Missing
+    }    
 ?> 
 
 <style>
@@ -602,7 +601,7 @@ function minapper_validation_page()
                                                         </label>
                                                     </div>
                                                 </div>
-
+                                                <?php wp_nonce_field('minapper_verify', 'minapper_verify_nonce'); ?>
                                                 <button type="submit" name="minapper_verify" class="Button SignFlow-submitButton  Button--primary Button--blue ">
                                                     验证
                                                 </button>

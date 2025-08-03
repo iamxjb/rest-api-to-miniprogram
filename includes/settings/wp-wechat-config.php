@@ -495,6 +495,7 @@ function weixinapp_settings_page()
                         <img src="<?php echo esc_attr(REST_API_TO_MINIPROGRAM_PLUGIN_URL) . 'includes/images/minapper-pro.jpg' ?>" alt="微慕专业版" width="100%"></img>
 
 
+
                     </div>
                 </div>
             </div>

@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     {
         
         $postId = get_the_ID();        
-        wp_nonce_field( basename( __FILE__ ), 'wf_add_post_fields_nonce' );
+        wp_nonce_field("minapper_verify", 'wf_add_post_fields_nonce' );
         $excitation=empty(get_post_meta($postId,'_excitation',true))?0:get_post_meta($postId,'_excitation',true);
         ?>
         <div class="misc-pub-section misc-pub-section-last">
@@ -47,21 +47,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         //自动保存不处理
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
-        }
-        // phpcs:disable WordPress.Security.NonceVerification.Missing			
-			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			//phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-        if ( ! isset( $_POST['wf_add_post_fields_nonce'] ) || ! wp_verify_nonce( $_POST['wf_add_post_fields_nonce'], basename( __FILE__ ) ) )
+        }       
+        if ( ! isset( $_POST['wf_add_post_fields_nonce'] ) || ! wp_verify_nonce(sanitize_text_field(wp_unslash( $_POST['wf_add_post_fields_nonce'])),'minapper_verify'))
             return;
-        // phpcs:enable WordPress.Security.NonceVerification.Missing
-			// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			//phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-        
-
         $excitation=isset( $_POST['excitation'])?(int)$_POST['excitation']:0;
-
         update_post_meta($postId,'_excitation',$excitation); 
 
         
