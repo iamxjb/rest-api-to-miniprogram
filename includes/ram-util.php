@@ -959,7 +959,7 @@ function  getPosts($ids)
               AND post_type = 'post'
               AND term_id IN (%d)
               AND ID != %s
-              AND post_date BETWEEN '%s AND %s
+              AND post_date BETWEEN %s AND %s
               ORDER BY  RAND()
               LIMIT 5",$tags,$post_id,$fristday,$today));
 // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -1263,7 +1263,7 @@ function get_history_post_list($post_year, $post_month, $post_day){
 	$histtory_post = $wpdb->get_results($wpdb->prepare("select ID, year(post_date_gmt) as post_year,date(post_date_gmt) as post_date, post_title, comment_count FROM 
 	$wpdb->posts WHERE post_password = '' AND post_type = 'post' AND post_status = 'publish'
 	AND year(post_date_gmt)!=%s AND month(post_date_gmt)=%s AND day(post_date_gmt)=%s
-	order by post_date_gmt %d limit %d",$post_year,$post_month,$post_day,$order,$limit));
+	order by post_date_gmt  limit %d,%d",$post_year,$post_month,$post_day,$order,$limit));
     // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
     // phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 	return $histtory_post;

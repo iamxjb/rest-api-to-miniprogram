@@ -174,7 +174,7 @@ function custom_post_fields( $data, $post, $request) {
       //phpcs:disable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
       date_default_timezone_set('Asia/Shanghai');
       //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
-      $fristday= gmdate("Y-m-d H:i:s", strtotime("-1 year"));
+      $fristday= gmdate("Y-m-d H:i:s", strtotime("-3 year"));
       $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间
         if(!empty($_data["tags"]))
         {

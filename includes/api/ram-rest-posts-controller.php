@@ -418,7 +418,7 @@ class RAM_REST_Posts_Controller  extends WP_REST_Controller{
       //phpcs:enable WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
         $today = gmdate("Y-m-d H:i:s"); //获取今天日期时间   
        // $fristday = date( "Y-m-d H:i:s",  strtotime(date("Y",time())."-1"."-1"));  //本年第一天;
-        $fristday= gmdate("Y-m-d H:i:s", strtotime("-1 year")); 
+        $fristday= gmdate("Y-m-d H:i:s", strtotime("-3 year")); 
         // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
         // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
         // phpcs:disable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery        
