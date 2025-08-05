@@ -1175,7 +1175,8 @@ function  getPosts($ids)
         if(is_file($qrcodePath)) {
 
             $result['qrcodeUrl']=$qrcodeUrl;
-            $result['qrcodePath']=$qrcodePath;            
+            $result['qrcodePath']=$qrcodePath;  
+            $result['errcode']="0";          
             return $result;            
         }
         $color = array(

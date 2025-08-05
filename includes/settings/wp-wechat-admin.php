@@ -262,40 +262,11 @@ function cmp_do_output_buffer() {
     ob_start();
 }
 add_action('init', 'cmp_do_output_buffer');
-function minapper_validation_page()
-{  
-    $minapper_verify_nonce= isset($_POST['minapper_verify_nonce'])?sanitize_text_field(wp_unslash($_POST['minapper_verify_nonce'])):'';
-    if (!wp_verify_nonce($minapper_verify_nonce, 'minapper_verify')  && isset($_POST['minapper_verify'])) {
-        $user_id = get_current_user_id();        
-        if (isset($_POST['minapper_verification_code']) && !empty($_POST['minapper_verification_code'])) {
-            $code = sanitize_text_field(wp_unslash($_POST['minapper_verification_code']));
-            $args = array(
-                'body' => json_encode(array('code' => $code)),
-                'headers' => array('Content-Type' => 'application/json'),
-            );
-            $response = wp_remote_post('https://plus.minapper.com/wp-json/minapper/v1/wechat/verifycode', $args);
-            
-            if (is_array($response) && !is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
-                $body = wp_remote_retrieve_body($response);
-                $result = json_decode($body, true);                
-                if ($result['success']) {
-                    update_option('minapper_weixin_user', array_merge($result, ['last_update'=>time()]));
-                    wp_redirect(admin_url('admin.php?page=weixinapp_slug'));
-                    exit;
-                } else {
-                    echo '<div id="message" class="updated error"><p><strong>无效的验证码</strong></p></div>';
-                }
-            } else {
-                echo '<div id="message" class="updated error"><p><strong>请求失败，状态码：' . esc_attr(wp_remote_retrieve_response_code($response)) . '</strong></p></div>';
-                
-            }
-        } else {
-            echo '<div id="message" class="updated error"><p><strong>缺少验证码</strong></p></div>';
-           
-        }
-    }    
+function minapper_validation_page() {  
+    // 移除原有的POST处理逻辑，改为AJAX处理
 ?> 
 
+<style>
 <style>
         .Modal {
             -webkit-box-orient: vertical;
@@ -562,10 +533,15 @@ function minapper_validation_page()
             padding: 12px 24px 5px;
         }
     </style>
+
+</style>
+
 <div class="wrap">
 <h1 class="wp-heading-inline">验证</h1>
 <hr class="wp-header-end" />
-    <div class="Modal  " tabindex="0">
+<!-- 添加消息显示容器 -->
+<div id="minapper_message"></div>
+    <div class="Modal" tabindex="0">
         <div class="Modal-inner">
             <div class="Modal-content">
                 <div>
@@ -589,7 +565,8 @@ function minapper_validation_page()
                                 <div class="css-1o2gsjy">
                                     <div class="SignContainer-content">
                                         <div class="SignContainer-inner">
-                                            <form method="POST" class="SignFlow Login-content">
+                                            <!-- 修改表单：移除action，添加ID和事件处理 -->
+                                            <form method="POST" id="minapper_verify_form" class="SignFlow Login-content">
                                                 <div class="css-k49mnn">第2步：验证</div>
                                                 <div class="SignFlow-tabs">
                                                     <div class="SignFlow-tab SignFlow-tab--active" role="button" tabindex="0">验证码</div>
@@ -597,12 +574,12 @@ function minapper_validation_page()
                                                 <div class="SignFlow SignFlow-smsInputContainer">
                                                     <div class="SignFlowInput SignFlow-smsInput">
                                                         <label class="Input-wrapper ">
-                                                            |<input name="minapper_verification_code" type="number" class="Input  username-input" placeholder="输入 6 位验证码" value="">
+                                                            <input name="minapper_verification_code" type="number" class="Input username-input" placeholder="输入 6 位验证码" value="">
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <?php wp_nonce_field('minapper_verify', 'minapper_verify_nonce'); ?>
-                                                <button type="submit" name="minapper_verify" class="Button SignFlow-submitButton  Button--primary Button--blue ">
+                                                <button type="submit" name="minapper_verify" class="Button SignFlow-submitButton Button--primary Button--blue">
                                                     验证
                                                 </button>
                                             </form>
@@ -620,7 +597,86 @@ function minapper_validation_page()
     </div>
 </div>
 
-<?php   
+<script>
+jQuery(document).ready(function($) {
+    $('#minapper_verify_form').on('submit', function(e) {
+        e.preventDefault();
+        
+        // 显示加载指示器
+        $('#minapper_message').html('<div class="notice notice-info"><p>验证中...</p></div>');
+        
+        // 发送AJAX请求
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
+            data: {
+                action: 'minapper_verify_code',
+                minapper_verify_nonce: $('input[name="minapper_verify_nonce"]').val(),
+                minapper_verification_code: $('input[name="minapper_verification_code"]').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    // 验证成功，重定向页面
+                    window.location.href = response.data.redirect_url;
+                } else {
+                    // 显示错误信息
+                    $('#minapper_message').html('<div class="notice notice-error"><p><strong>' + response.data.message + '</strong></p></div>');
+                }
+            },
+            error: function() {
+                $('#minapper_message').html('<div class="notice notice-error"><p><strong>请求失败，请重试</strong></p></div>');
+            }
+        });
+    });
+});
+</script>
 
+<?php } 
+
+// 注册AJAX处理函数
+add_action('wp_ajax_minapper_verify_code', 'minapper_verify_code_ajax_handler');
+function minapper_verify_code_ajax_handler() {
+    if (!current_user_can('manage_options')) {
+        exit;
+    }
+    // 验证nonce
+    $minapper_verify_nonce= isset($_POST['minapper_verify_nonce'])?sanitize_text_field(wp_unslash($_POST['minapper_verify_nonce'])):'';
+    if (isset($_POST['minapper_verify'])  &&  wp_verify_nonce($minapper_verify_nonce, 'minapper_verify')) {
+        wp_send_json_error(array('message' => '安全验证失败'.$_POST['minapper_verify_nonce']));
+    }
+
+    // 检查验证码
+    if (empty($_POST['minapper_verification_code'])) {
+        wp_send_json_error(array('message' => '缺少验证码'));
+    }
+
+    $code = sanitize_text_field(wp_unslash($_POST['minapper_verification_code']));
+    $args = array(
+        'body' => json_encode(array('code' => $code)),
+        'headers' => array('Content-Type' => 'application/json'),
+    );
     
+    $response = wp_remote_post('https://plus.minapper.com/wp-json/minapper/v1/wechat/verifycode', $args);
+    
+    if (is_wp_error($response)) {
+        wp_send_json_error(array('message' => '请求失败：' . $response->get_error_message()));
+    }
+    
+    $status_code = wp_remote_retrieve_response_code($response);
+    if ($status_code !== 200) {
+        wp_send_json_error(array('message' => '请求失败，状态码：' . $status_code));
+    }
+    
+    $body = wp_remote_retrieve_body($response);
+    $result = json_decode($body, true);
+    
+    if (empty($result['success'])) {
+        wp_send_json_error(array('message' => '无效的验证码'));
+    }
+    
+    // 更新选项并返回重定向URL
+    update_option('minapper_weixin_user', array_merge($result, ['last_update' => time()]));
+    wp_send_json_success(array(
+        'redirect_url' => admin_url('admin.php?page=weixinapp_slug')
+    ));
 }
