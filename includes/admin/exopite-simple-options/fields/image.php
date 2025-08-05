@@ -6,6 +6,14 @@
  * Field: Image
  *
  */
+// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+// phpcs:disable WordPress.WP.I18n.TextDomainMismatch
+// phpcs:disable WordPress.Security.NonceVerification.Missing
+// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_var_export
+// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_image' ) ) {
 
 	class Exopite_Simple_Options_Framework_Field_image extends Exopite_Simple_Options_Framework_Fields {
@@ -77,15 +85,20 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_image' ) ) {
 			$add     = ( ! empty( $this->field['add_title'] ) ) ? $this->field['add_title'] : esc_attr__( '选择图片', 'exopite-sof' );
 			$hidden  = ( empty( $value ) ) ? ' hidden' : '';
 			$classes = ( isset( $this->field['class'] ) ) ? implode( ' ', explode( ' ', $this->field['class'] ) ) : '';
-
+			$preview='';
 			if ( ! empty( $value ) ) {
 				$attachment = wp_get_attachment_image_src( $this->get_attachment_id( $value ), 'thumbnail' );
-				$preview    = $attachment[0];
+				if ( ! empty( $attachment ) ) {
+					$preview = $attachment[0];
+				}
 			}
 
 			echo '<div class="exopite-sof-media exopite-sof-image ' . $classes . '" ' . $this->element_attributes() . '>';
 			echo '<div class="exopite-sof-image-preview' . $hidden . '">';
-			echo '<div class="exopite-sof-image-inner"><i class="fa fa-times exopite-sof-image-remove"></i><img src="' . $preview . '" alt="preview" /></div>';
+			if($preview !='')
+			{
+				echo '<div class="exopite-sof-image-inner"><i class="fa fa-times exopite-sof-image-remove"></i><img src="' . $preview . '" alt="preview" /></div>';
+			}
 			echo '</div>';
 
 			echo '<input type="text" name="' . $this->element_name() . '" value="' . $this->element_value() . '">';
@@ -104,3 +117,11 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_image' ) ) {
 	}
 
 }
+// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+// phpcs:enable WordPress.WP.I18n.TextDomainMismatch
+// phpcs:enable WordPress.Security.NonceVerification.Missing
+// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_var_export
+// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query

@@ -3,8 +3,8 @@ Contributors: jianbo
 Donate link: https://www.watch-life.net
 Tags: rest,api,json
 Requires at least: 5.0.5
-Tested up to: 6.8.2
-Stable tag: 5.0.2
+Tested up to: 6.8
+Stable tag: 5.1.0
 Requires PHP: 7.4
 License: Apache-2.0
 License URI:  https://www.apache.org/licenses/LICENSE-2.0

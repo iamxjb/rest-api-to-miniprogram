@@ -6,7 +6,7 @@ Description: 为微慕小程序提供定制化WordPress REST API json 输出
 Version: 5.1.0
 Author: jianbo
 Author URI: https://www.minapper.com
-License: GPL v3
+License: Apache-2.0
 WordPress requires at least: 5.0.5
 */
 

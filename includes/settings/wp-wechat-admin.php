@@ -642,7 +642,7 @@ function minapper_verify_code_ajax_handler() {
     // 验证nonce
     $minapper_verify_nonce= isset($_POST['minapper_verify_nonce'])?sanitize_text_field(wp_unslash($_POST['minapper_verify_nonce'])):'';
     if (isset($_POST['minapper_verify'])  &&  wp_verify_nonce($minapper_verify_nonce, 'minapper_verify')) {
-        wp_send_json_error(array('message' => '安全验证失败'.$_POST['minapper_verify_nonce']));
+        wp_send_json_error(array('message' => '安全验证失败'.$minapper_verify_nonce));
     }
 
     // 检查验证码
