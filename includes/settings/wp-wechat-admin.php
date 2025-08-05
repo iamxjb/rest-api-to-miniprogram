@@ -266,7 +266,7 @@ function minapper_validation_page() {
     // 移除原有的POST处理逻辑，改为AJAX处理
 ?> 
 
-<style>
+
 <style>
         .Modal {
             -webkit-box-orient: vertical;
