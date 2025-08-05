@@ -26,7 +26,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_attached' ) ) {
 
 		public function output() {
 
-			echo esc_html( $this->element_before() );
+			echo $this->element_before();
 
 			if ( $this->where != 'metabox' ) {
 
@@ -41,20 +41,20 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_attached' ) ) {
 				$post_type = get_post_type_object( get_post_type( get_the_ID() ) );
 
 				if ( count( $images ) == 0 ) {
-					//xjb-20250731
-					//printf( esc_attr__( 'There is no attachment with type %s for this %s.', 'rest-api-to-miniprogram' ), esc_html( $this->field['options']['type'] ), esc_html( $post_type->labels->singular_name ) );
-					
+
+					printf( esc_attr__( 'There is no attachment with type %s for this %s.', 'exopite-sof' ), $this->field['options']['type'], esc_html( $post_type->labels->singular_name ) );
+
 				} else {
 
-					echo '<div class="exopite-sof-attachment-container" data-ajaxurl="' . esc_html( site_url( 'wp-admin/admin-ajax.php' ) ) . '">';
+					echo '<div class="exopite-sof-attachment-container" data-ajaxurl="' . site_url( 'wp-admin/admin-ajax.php' ) . '">';
 
 					foreach ( $images as $image ) { ?>
                         <span class="exopite-sof-attachment-media exopite-sof-attachment-media-js"
-                              data-media-id="<?php echo esc_html( $image->ID ); ?>"><span
+                              data-media-id="<?php echo $image->ID; ?>"><span
                                     class="exopite-sof-attachment-media-delete-overlay"></span><span
                                     class="exopite-sof-attachment-media-delete exopite-sof-attachment-media-delete-js"><i
                                         class="fa fa-times" aria-hidden="true"></i></span><img
-                                    src="<?php echo esc_html( wp_get_attachment_image_src( $image->ID, 'thumbnail' )[0] ); ?>"/></span>
+                                    src="<?php echo wp_get_attachment_image_src( $image->ID, 'thumbnail' )[0]; ?>"/></span>
 					<?php }
 
 					echo '</div>';
@@ -63,7 +63,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_attached' ) ) {
 
 			}
 
-			echo esc_html( $this->element_after() );
+			echo $this->element_after();
 
 		}
 

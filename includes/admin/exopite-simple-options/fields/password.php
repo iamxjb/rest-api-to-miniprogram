@@ -16,15 +16,15 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_password' ) ) {
 
 		public function output() {
 
-			echo esc_attr($this->element_before());
+			echo $this->element_before();
 
-			echo esc_attr($this->element_prepend());
+			echo $this->element_prepend();
 
-			echo '<input type="' . esc_attr($this->element_type()) . '" name="' . esc_attr($this->element_name()) . '" value="' . esc_attr($this->element_value()) . '"' . esc_attr($this->element_class()) .  esc_attr($this->element_attributes()) . '/>';
+			echo '<input type="' . $this->element_type() . '" name="' . $this->element_name() . '" value="' . $this->element_value() . '"' . $this->element_class() . $this->element_attributes() . '/>';
 
-			echo esc_attr($this->element_append());
+			echo $this->element_append();
 
-			echo esc_attr($this->element_after());
+			echo $this->element_after();
 
 		}
 

@@ -63,14 +63,14 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 		public function output() {
 
-			echo esc_html( $this->element_before() );
+			echo $this->element_before();
 
 			?>
             <!-- Fine Uploader Thumbnails template w/ customization
             ====================================================================== -->
             <script type="text/template" id="qq-template-manual-trigger">
                 <div class="qq-uploader-selector qq-uploader"
-                     qq-drop-area-text="<?php esc_html_e( 'Drop files here', 'rest-api-to-miniprogram' ); ?>">
+                     qq-drop-area-text="<?php esc_html_e( 'Drop files here', 'exopite-sof' ); ?>">
                     <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
                         <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
                              class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
@@ -80,14 +80,14 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
                     </div>
                     <div class="buttons">
                         <div class="qq-upload-button-selector exopite-sof-btn">
-                            <div><?php esc_html_e( 'Select files', 'rest-api-to-miniprogram' ); ?></div>
+                            <div><?php esc_html_e( 'Select files', 'exopite-sof' ); ?></div>
                         </div>
                         <div class="exopite-sof-btn trigger-upload">
-                            <i class="icon-upload icon-white"></i> <?php esc_html_e( 'Upload', 'rest-api-to-miniprogram' ); ?>
+                            <i class="icon-upload icon-white"></i> <?php esc_html_e( 'Upload', 'exopite-sof' ); ?>
                         </div>
                     </div>
                     <span class="qq-drop-processing-selector qq-drop-processing">
-                        <span><?php esc_html_e( 'Processing dropped files...', 'rest-api-to-miniprogram' ); ?></span>
+                        <span><?php esc_html_e( 'Processing dropped files...', 'exopite-sof' ); ?></span>
                         <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
                     </span>
                     <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite"
@@ -105,11 +105,11 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
                             <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
                             <span class="qq-upload-size-selector qq-upload-size"></span>
                             <button type="button"
-                                    class="qq-btn qq-upload-cancel-selector qq-upload-cancel"><?php esc_html_e( 'Cancel', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-btn qq-upload-cancel-selector qq-upload-cancel"><?php esc_html_e( 'Cancel', 'exopite-sof' ); ?></button>
                             <button type="button"
-                                    class="qq-btn qq-upload-retry-selector qq-upload-retry"><?php esc_html_e( 'Retry', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-btn qq-upload-retry-selector qq-upload-retry"><?php esc_html_e( 'Retry', 'exopite-sof' ); ?></button>
                             <button type="button"
-                                    class="qq-btn qq-upload-delete-selector qq-upload-delete"><?php esc_html_e( 'Delete', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-btn qq-upload-delete-selector qq-upload-delete"><?php esc_html_e( 'Delete', 'exopite-sof' ); ?></button>
                             <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
                         </li>
                     </ul>
@@ -118,7 +118,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
                         <div class="qq-dialog-message-selector"></div>
                         <div class="qq-dialog-buttons">
                             <button type="button"
-                                    class="qq-cancel-button-selector"><?php esc_html_e( 'Close', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-cancel-button-selector"><?php esc_html_e( 'Close', 'exopite-sof' ); ?></button>
                         </div>
                     </dialog>
 
@@ -126,9 +126,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
                         <div class="qq-dialog-message-selector"></div>
                         <div class="qq-dialog-buttons">
                             <button type="button"
-                                    class="qq-cancel-button-selector"><?php esc_html_e( 'No', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-cancel-button-selector"><?php esc_html_e( 'No', 'exopite-sof' ); ?></button>
                             <button type="button"
-                                    class="qq-ok-button-selector"><?php esc_html_e( 'Yes', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-ok-button-selector"><?php esc_html_e( 'Yes', 'exopite-sof' ); ?></button>
                         </div>
                     </dialog>
 
@@ -137,9 +137,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
                         <input type="text">
                         <div class="qq-dialog-buttons">
                             <button type="button"
-                                    class="qq-cancel-button-selector"><?php esc_html_e( 'Cancel', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-cancel-button-selector"><?php esc_html_e( 'Cancel', 'exopite-sof' ); ?></button>
                             <button type="button"
-                                    class="qq-ok-button-selector"><?php esc_html_e( 'Ok', 'rest-api-to-miniprogram' ); ?></button>
+                                    class="qq-ok-button-selector"><?php esc_html_e( 'Ok', 'exopite-sof' ); ?></button>
                         </div>
                     </dialog>
                 </div>
@@ -162,31 +162,31 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_upload' ) ) {
 
 			?>
             <div class="qq-template" <?php
-			echo 'data-filecount="' . esc_html( $this->field['options']['filecount'] ) . '" ';
-			echo 'data-mimetypes="' . esc_html( $allowed_mime_types ) . '" ';
-			echo 'data-maxsize="' . esc_html( $maxsize ) . '" ';
-			echo ( $this->field['options']['attach'] && $this->config['type'] == 'metabox' ) ? 'data-postid="' . esc_html( get_the_ID() ) . '" ' : '';
-			echo 'data-ajaxurl="' . esc_attr(site_url( 'wp-admin/admin-ajax.php' )) . '" ';
-			echo 'data-delete-enabled="' . esc_html( $this->field['options']['delete-enabled'] ) . '" ';
-			echo 'data-delete-force-confirm="' . esc_html( $this->field['options']['delete-force-confirm'] ) . '" ';
-			echo 'data-retry-enable-auto="' . esc_html( $this->field['options']['retry-enable-auto'] ) . '" ';
-			echo 'data-retry-max-auto-attempts="' . esc_html( $this->field['options']['retry-max-auto-attempts'] ) . '" ';
-			echo 'data-retry-auto-attempt-delay="' . esc_html( $this->field['options']['retry-auto-attempt-delay'] ) . '" ';
-			echo 'data-auto-upload="' . esc_html( $this->field['options']['auto-upload'] ) . '" ';
+			echo 'data-filecount="' . $this->field['options']['filecount'] . '" ';
+			echo 'data-mimetypes="' . $allowed_mime_types . '" ';
+			echo 'data-maxsize="' . $maxsize . '" ';
+			echo ( $this->field['options']['attach'] && $this->config['type'] == 'metabox' ) ? 'data-postid="' . get_the_ID() . '" ' : '';
+			echo 'data-ajaxurl="' . site_url( 'wp-admin/admin-ajax.php' ) . '" ';
+			echo 'data-delete-enabled="' . $this->field['options']['delete-enabled'] . '" ';
+			echo 'data-delete-force-confirm="' . $this->field['options']['delete-force-confirm'] . '" ';
+			echo 'data-retry-enable-auto="' . $this->field['options']['retry-enable-auto'] . '" ';
+			echo 'data-retry-max-auto-attempts="' . $this->field['options']['retry-max-auto-attempts'] . '" ';
+			echo 'data-retry-auto-attempt-delay="' . $this->field['options']['retry-auto-attempt-delay'] . '" ';
+			echo 'data-auto-upload="' . $this->field['options']['auto-upload'] . '" ';
 			?>>
             </div>
             <div class="qq-template-info">
 				<?php
 
-				echo esc_attr__( 'Max amount of files: ', 'rest-api-to-miniprogram' ) . esc_html( $this->field['options']['filecount'] ) . '<br>';
-				echo esc_attr__( 'Max file upload size: ', 'rest-api-to-miniprogram' ) . number_format( (float) ( Exopite_Simple_Options_Framework_Upload::file_upload_max_size() / 1048576 ), 2, '.', '' ) . 'Mb<br><br>';
+				echo esc_attr__( 'Max amount of files: ', 'exopite-sof' ) . $this->field['options']['filecount'] . '<br>';
+				echo esc_attr__( 'Max file upload size: ', 'exopite-sof' ) . number_format( (float) ( Exopite_Simple_Options_Framework_Upload::file_upload_max_size() / 1048576 ), 2, '.', '' ) . 'Mb<br><br>';
 				// echo '<i style="font-size:.9em;">' . esc_attr__( 'To increase file upload limit in the standard built-in WordPress media uploader up as large as available disk space allows, you could use', 'exopite-sof' ) . ' <a target="_blank" href="' . admin_url() . 'plugin-install.php?tab=plugin-information&plugin=tuxedo-big-file-uploads">Tuxedo Big File Uploads</a> ' . esc_attr__( 'Plugin', 'exopite-sof' ) . '</i>';
 
 				?>
             </div>
 			<?php
 
-			echo esc_html( $this->element_after() );
+			echo $this->element_after();
 
 		}
 

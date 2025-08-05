@@ -26,11 +26,9 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_meta' ) ) {
 
 					$value = get_post_meta( get_the_ID(), $this->field['meta-key'], true );
 
-					echo esc_attr($this->element_before());
-						// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_var_export
-					echo '<textarea readonly' . esc_attr($this->element_class()) . esc_attr($this->element_attributes()) . '>' . esc_attr(var_export( $value, true )) . '</textarea>';
-					// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_var_export
-					echo esc_attr($this->element_after());
+					echo $this->element_before();
+					echo '<textarea readonly' . $this->element_class() . $this->element_attributes() . '>' . var_export( $value, true ) . '</textarea>';
+					echo $this->element_after();
 				}
 
 			}

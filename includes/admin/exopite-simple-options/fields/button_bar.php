@@ -16,7 +16,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_button_bar' ) ) {
 
 		public function output() {
 
-			echo esc_attr( $this->element_before() );
+			echo $this->element_before();
 
 			if ( isset( $this->field['options'] ) ) {
 
@@ -28,8 +28,8 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_button_bar' ) ) {
 					echo '<div class="button-bar">';
 					foreach ( $options as $key => $value ) {
 						echo '<div class="button-bar__item">';
-						echo '<input type="radio" name="' . esc_attr( $this->element_name() ) . '" value="' . esc_attr($key ) . '"' . esc_attr($this->element_attributes( $key )) . esc_attr($this->checked( $this->element_value(), esc_attr($key) ) ) . '>';
-						echo '<button class="button-bar__button">' . esc_attr( $value ) . '</button>';
+						echo '<input type="radio" name="' . $this->element_name() . '" value="' . $key . '"' . $this->element_attributes( $key ) . $this->checked( $this->element_value(), $key ) . '>';
+						echo '<button class="button-bar__button">' . $value . '</button>';
 						echo '</div>';
 
 					}
@@ -38,7 +38,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_button_bar' ) ) {
 
 			}
 
-			echo esc_attr( $this->element_after() );
+			echo $this->element_after();
 
 		}
 

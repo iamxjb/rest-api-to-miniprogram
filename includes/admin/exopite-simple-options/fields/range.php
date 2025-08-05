@@ -35,12 +35,12 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_range' ) ) {
 			$unit    = ( isset( $this->field['unit'] ) ) ? '<em>' . $this->field['unit'] . '</em>' : '';
 			$classes = ( isset( $this->field['class'] ) ) ? implode( ' ', explode( ' ', $this->field['class'] ) ) : '';
 
-			echo esc_attr($this->element_before());
+			echo $this->element_before();
 
-			echo '<input type="range" name="' . esc_attr($this->element_name()) . '" oninput="updateRangeInput(this)" class="range ' . esc_attr($classes) . '"' . esc_attr($attrs) . ' value="' . esc_attr($this->element_value()) . '"' . esc_attr($this->element_attributes()) . '>' . esc_attr($unit);
-			echo '<input type="number" value="' . esc_attr($this->element_value()) . '" oninput="updateInputRange(this)"' . esc_attr($attrs) . '>';
+			echo '<input type="range" name="' . $this->element_name() . '" oninput="updateRangeInput(this)" class="range ' . $classes . '"' . $attrs . ' value="' . $this->element_value() . '"' . $this->element_attributes() . '>' . $unit;
+			echo '<input type="number" value="' . $this->element_value() . '" oninput="updateInputRange(this)"' . $attrs . '>';
 
-			echo esc_attr($this->element_after());
+			echo $this->element_after();
 
 		}
 

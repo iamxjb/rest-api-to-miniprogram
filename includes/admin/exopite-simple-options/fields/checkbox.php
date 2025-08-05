@@ -18,26 +18,26 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_checkbox' ) ) {
 
 		public function output() {
 
-			echo esc_attr($this->element_before());
+			echo $this->element_before();
 			$label = ( isset( $this->field['label'] ) ) ? $this->field['label'] : '';
 			$style = ( isset( $this->field['style'] ) ) ? $this->field['style'] : '';
 
 			switch ( $style ) {
 				case 'fancy':
 					echo '<label class="checkbox">';
-					echo '<input type="checkbox" class="checkbox__input" name="' . esc_attr($this->element_name()) . '" value="yes"' . esc_attr($this->element_attributes()) . checked( esc_attr($this->element_value()), 'yes', false ) . '>';
+					echo '<input type="checkbox" class="checkbox__input" name="' . $this->element_name() . '" value="yes"' . $this->element_attributes() . checked( $this->element_value(), 'yes', false ) . '>';
 					echo '<div class="checkbox__checkmark"></div>';
-					echo esc_attr($label);
+					echo $label;
 					echo '</label>';
 					break;
 
 				default:
-					echo '<label><input type="checkbox" name="' . esc_attr($this->element_name()) . '" value="yes"' . esc_attr($this->element_class()) . esc_attr($this->element_attributes()) . checked( esc_attr($this->element_value()), 'yes', false ) . '/> ' . esc_attr($label) . '</label>';
+					echo '<label><input type="checkbox" name="' . $this->element_name() . '" value="yes"' . $this->element_class() . $this->element_attributes() . checked( $this->element_value(), 'yes', false ) . '/> ' . $label . '</label>';
 					break;
 			}
 
 
-			echo esc_attr($this->element_after());
+			echo $this->element_after();
 
 		}
 
