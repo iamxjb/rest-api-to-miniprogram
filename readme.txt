@@ -1,7 +1,7 @@
 ﻿=== REST API TO MiniProgram  ===
 Contributors: jianbo
-Donate link: https://www.watch-life.net
-Tags: rest,api,json
+Donate link: https://www.minapper.com
+Tags: rest,api,json,minapper,weixin,微信小程序,miniprogram,wechat
 Requires at least: 5.0.5
 Tested up to: 6.8
 Stable tag: 5.1.0

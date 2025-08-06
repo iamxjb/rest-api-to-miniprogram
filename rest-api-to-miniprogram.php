@@ -7,6 +7,7 @@ Version: 5.1.0
 Author: jianbo
 Author URI: https://www.minapper.com
 License: Apache-2.0
+ License URI: https://www.apache.org/licenses/LICENSE-2.0
 WordPress requires at least: 5.0.5
 */
 
