@@ -21,6 +21,10 @@
 
 -  **配套前端** ：https://gitee.com/iamxjb/winxin-app-watch-life.net
 
+-  **官方公众号** 
+
+<img src="https://www.watch-life.net/images/2025/08/minapper-gzh-1024x374.bmp" alt="" width="625" height="228" class="aligncenter size-large wp-image-3113" />
+
 
 ### 一、功能清单：
 
