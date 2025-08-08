@@ -10,8 +10,6 @@ License: Apache-2.0
  License URI: https://www.apache.org/licenses/LICENSE-2.0
 WordPress requires at least: 5.0.5
 */
-
-
 define('REST_API_TO_MINIPROGRAM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 const REST_API_TO_MINIPROGRAM_PLUGIN_NAME='rest-api-to-miniprogram';
 define('REST_API_TO_MINIPROGRAM_PLUGIN_URL',plugins_url(REST_API_TO_MINIPROGRAM_PLUGIN_NAME.'/', dirname(__FILE__)));
