@@ -333,7 +333,7 @@ $comments = $wpdb->get_results($wpdb->prepare("SELECT t.*,(SELECT t2.meta_value 
                     $data["content"]=$comment->comment_content;
                     $data["formId"]=$comment->formId;
                     $data["userid"]=$comment->user_id;
-                    $data["child"]=$this->getchildcomment($postid,$comment->comment_ID,$limit-1,$order);
+                    $data["child"]=self::getchildcomment($postid,$comment->comment_ID,$limit-1,$order);
                     $commentslist[] =$data;         
             }
         }

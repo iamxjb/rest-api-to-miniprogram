@@ -774,8 +774,8 @@ function  getPosts($ids)
         $content=html_entity_decode($_data['content']['rendered']);
         $content_protected=$_data['content']['protected'];
         $raw=empty($_data['content']['raw'])?'':$_data['content']['raw'];
-    
-       
+        $content_nohtml = wp_filter_nohtml_kses ($content);
+        $_data['content_nohtml']=$content_nohtml;
          
         $siteurl = get_option('siteurl');
         $upload_dir = wp_upload_dir();

@@ -18,6 +18,8 @@ function custom_post_fields( $data, $post, $request) {
 
     //$content =get_the_content();
     $content=$_data['content']['rendered'];
+    $content_nohtml = wp_filter_nohtml_kses ($content);
+    $_data['content_nohtml']=$content_nohtml;
     $content_protected=$_data['content']['protected'];
     $raw=empty($_data['content']['raw'])?'':$_data['content']['raw'];
 
