@@ -54,6 +54,7 @@ function minapper_admin_menu()
                             'apppage'          => '跳转到小程序内页面',
                             'miniapp'     => '跳转其他小程序',
                             'webpage'   => '跳转到网页'
+                            
                         ),                      
                         'default'     => 'apppage',                             // optional 
                         'class'       => 'chosen',                          // optional 
@@ -99,6 +100,7 @@ function minapper_admin_menu()
                             'placeholder' => '请输入小程序页面路径'
                         )
                         ),
+                                           
                    
                     array(
                         'id'      => 'url',
@@ -169,7 +171,9 @@ function minapper_admin_menu()
                     'options'        => array(
                         'apppage'          => '跳转到小程序内页面',
                         'miniapp'     => '跳转其他小程序',
-                        'webpage'   => '跳转到网页'
+                        'webpage'   => '跳转到网页',
+                        'officialprofile'   => '公众号主页'
+
                     ),                      
                     'default'     => 'apppage',                             // optional 
                     'class'       => 'chosen',                          // optional 
@@ -215,7 +219,16 @@ function minapper_admin_menu()
                         'placeholder' => '请输入小程序页面路径'
                     )
                     ),
-               
+               array(
+                            'id'      => 'username',
+                            'type'    => 'text',
+                            'title'   => '公众号原始ID',
+                            'after'       => '跳转公众号主页时需填写，在公众号后台查询',   // optional    
+                            'attributes' => array(
+                                'data-title' => 'title',
+                                'placeholder' => '请输入公众号原始ID'
+                            )
+                        ),
                 array(
                     'id'      => 'url',
                     'type'    => 'text',
