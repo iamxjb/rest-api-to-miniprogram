@@ -39,6 +39,13 @@ License URI:  https://www.apache.org/licenses/LICENSE-2.0
 
 == Changelog ==
 
+= 5.1.2=
+
+1、精选栏目支持跳转公众号主页
+2、精选栏目增加公众号会话功能
+3、完善视频号列表显示
+4、兼容php8
+
 = 5.1.0=
 
 修复Plugin Check插件检测出的问题
