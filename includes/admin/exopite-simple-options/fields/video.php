@@ -6,14 +6,6 @@
  * Field: Video
  *
  */
-// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-// phpcs:disable WordPress.WP.I18n.TextDomainMismatch
-// phpcs:disable WordPress.Security.NonceVerification.Missing
-// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_var_export
-// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_video' ) ) {
 
 	class Exopite_Simple_Options_Framework_Field_video extends Exopite_Simple_Options_Framework_Fields {
@@ -94,11 +86,3 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework_Field_video' ) ) {
 	}
 
 }
-// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
-// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-// phpcs:enable WordPress.WP.I18n.TextDomainMismatch
-// phpcs:enable WordPress.Security.NonceVerification.Missing
-// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_var_export
-// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query

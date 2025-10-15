@@ -29,25 +29,12 @@ function get_post_image_url($image_id, $size='full'){
 }
 
 function getPostImages($content,$postId){
-    $content_first_image= get_post_content_first_image($content);
-
-    
+    $content_first_image= get_post_content_first_image($content);    
     $post_frist_image=$content_first_image;
 
     if (empty($post_frist_image) && !empty(get_option('wf_default_thumbnail_image'))) {
         $post_frist_image = get_option('wf_default_thumbnail_image');
-    }
-
-    // if(empty($content_first_image))
-    // {
-    //     $content_first_image='';
-    // }
-
-    // if(empty($post_frist_image))
-    // {
-    //     $post_frist_image='';
-    // }
-
+    }    
     $post_thumbnail_image_150='';
     $post_medium_image_300='';
     $post_thumbnail_image_624=''; 
@@ -658,52 +645,54 @@ function get_post_content_audio($post_content){
         
 }
 
-function get_content_gallery($content,$flag){    
-    $list = array();
-    //$content=self::nl2p($content,true,false);//把换行转换成p标签
-    if($flag)
+     function get_content_gallery($content, $flag, $style)
     {
-        $content=nl2br($content);
-    }    
-    $vcontent=$content;
-
-    $c1 = preg_match_all('|\[gallery.*?ids=[\'"](.*?)[\'"].*?\]|i',$content, $m1);  //先取出所有gallery短代码
-    for($i=0; $i<$c1; $i++) {    //对所有的img标签进行取属性  
-        $c2 = preg_match_all('/(\w+)\s*=\s*(?:(?:(["\'])(.*?)(?=\2))|([^\/\s]*))/', $m1[0][$i], $m2);   //匹配出所有的属性  
-        for($j=0; $j<$c2; $j++) {    //将匹配完的结果进行结构重组  
-            $list[$i][$m2[1][$j]] = !empty($m2[4][$j]) ? $m2[4][$j] : $m2[3][$j];  
-        }  
-    } 
-    
-    $ids =$list[0]['ids'];
-    if(!empty($ids))
-    {
-        $ids =explode(',',$ids);
-        $img = '';
-        $realwidth = '';
-        $real_height = '';
-        $i = 0;
-        foreach($ids as $id)
-        {
-            $image=wp_get_attachment_image_src((int)$id,'full');
-            $img = $i == 0 ? $img . $image[0] : $img . ',' . $image[0];
-            $realwidth = $i == 0 ? $realwidth . $image[1] : $realwidth . ',' . $image[1];
-            $real_height = $i == 0 ? $real_height . $image[2] : $real_height . ',' . $image[2];
-            $i++;
-            //$img .='<img width="'.$image[1].'" height="'.$image[2].'" src="'.$image[0].'" />';
-           
-
+        $list = array();
+        //$content=self::nl2p($content,true,false);//把换行转换成p标签
+        if ($flag) {
+            $content = nl2br($content);
         }
-        $minappergallery = '<minappergallery images="' . $img . '"  real-width="' . $realwidth . '"  real_height="' . $real_height . '">';
-        $vcontent = preg_replace('~\[gallery (.*?)\]~s', $minappergallery, $content);
-        //$vcontent = preg_replace('~\[gallery (.*?)\]~s',$img,$content);
-        
+        //$vcontent=$content;
 
+        $c1 = preg_match_all('|\[gallery.*?ids=[\'"](.*?)[\'"].*?\]|i', $content, $m1);  //先取出所有gallery短代码
+        for ($i = 0; $i < $c1; $i++) {    //对所有的img标签进行取属性  
+            $c2 = preg_match_all('/(\w+)\s*=\s*(?:(?:(["\'])(.*?)(?=\2))|([^\/\s]*))/', $m1[0][$i], $m2);   //匹配出所有的属性  
+            for ($j = 0; $j < $c2; $j++) {    //将匹配完的结果进行结构重组  
+                $list[$i][$m2[1][$j]] = !empty($m2[4][$j]) ? $m2[4][$j] : $m2[3][$j];
+            }
+        }
+
+        $ids = $list[0]['ids'];        
+        if (!empty($ids)) {
+
+            $ids = explode(',', $ids);
+            $img = '';
+            $realwidth = '';
+            $real_height = '';
+            $i = 0;
+            foreach ($ids as $id) {
+                $image = wp_get_attachment_image_src((int)$id, 'full');
+                if ($style) {
+                    $img = $i == 0 ? $img . $image[0] : $img . ',' . $image[0];
+                    $realwidth = $i == 0 ? $realwidth . $image[1] : $realwidth . ',' . $image[1];
+                    $real_height = $i == 0 ? $real_height . $image[2] : $real_height . ',' . $image[2];
+                    $i++;
+                } else {
+                    $img .= '<img width="' . $image[1] . '" height="' . $image[2] . '" src="' . $image[0] . '" /><br/>';
+                }
+            }
+
+            if ($style) {
+                $minappergallery = '<minappergallery images="' . $img . '"  real-width="' . $realwidth . '"  real_height="' . $real_height . '">';
+                $vcontent = preg_replace('~\[gallery (.*?)\]~s', $minappergallery, $content);
+            } else {
+                $vcontent = preg_replace('~\[gallery (.*?)\]~s', $img, $content);
+            }
+        }
+        //$vcontent =preg_replace('/\[([^]]+)\]/i', '<$1>', $vcontent);
+        //$vcontent =self::get_content_minappershortcode($vcontent);
+        return $vcontent;
     }
-
-    return $vcontent;
-        
-}
 
 function  getPosts($ids)
     {
@@ -782,7 +771,20 @@ function  getPosts($ids)
         $content = str_replace( 'http:'.strstr($siteurl, '//'), 'https:'.strstr($siteurl, '//'), $content);
         $content = str_replace( 'http:'.strstr($upload_dir['baseurl'], '//'), 'https:'.strstr($upload_dir['baseurl'], '//'), $content);
         
-        $images =getPostImages($content, $post_id); 
+         $sql = "select post_content,post_excerpt from " . $wpdb->posts . " where id=" . $post_id;
+        $_postContent = $wpdb->get_row($sql);
+        $postContent = $_postContent->post_content;
+
+        $_data['tag_name'] = wp_get_post_tags($post->ID);
+        
+        //$images =getPostImages($content, $post_id); 
+        if (has_shortcode($postContent, 'gallery')) //处理内容里的相册显示
+        {
+            $postContent = get_content_gallery($postContent, true, false);
+            $images = getPostImages($postContent, $post_id);
+        } else {
+            $images = getPostImages($content, $post_id);
+        }
         $_data['post_thumbnail_image']=$images['post_thumbnail_image'];
         $_data['content_first_image']=$images['content_first_image'];
         $_data['post_medium_image_300']=$images['post_medium_image_300'];

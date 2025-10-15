@@ -2,20 +2,16 @@
 //禁止直接访问
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function custom_post_fields( $data, $post, $request) { 
+function custom_post_fields($_data, $post, $request) { 
 
   $uri=isset( $_SERVER['REQUEST_URI'])?sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])):'';
   if($uri !='' && strpos($uri, 'watch-life-net/v1/posts') !== false)
   {
       
-        return $data;
+        return $_data;
   }
-    global $wpdb;
-    $_data = $data->data; 
+    global $wpdb;  
     $post_id =$post->ID;
-
- 
-
     //$content =get_the_content();
     $content=$_data['content']['rendered'];
     $content_nohtml = wp_filter_nohtml_kses ($content);

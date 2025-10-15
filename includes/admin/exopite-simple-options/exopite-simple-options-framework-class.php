@@ -59,17 +59,10 @@
  * - before
  * - after
  */
-// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-// phpcs:disable WordPress.WP.I18n.TextDomainMismatch
-// phpcs:disable WordPress.Security.NonceVerification.Missing
-// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_var_export
-// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 
-	class Exopite_Simple_Options_Framework {		
+	class Exopite_Simple_Options_Framework {
+
 		/**
 		 *
 		 * dirname
@@ -755,7 +748,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 
 								$options_base_file_name = sanitize_file_name( $this->config['parent'] );
 
-								$options_base_file_name_extension = pathinfo( wp_parse_url( $options_base_file_name )['path'], PATHINFO_EXTENSION );
+								$options_base_file_name_extension = pathinfo( parse_url( $options_base_file_name )['path'], PATHINFO_EXTENSION );
 
 								if ( $options_base_file_name_extension === 'php' ) {
 									$options_base = $options_base_file_name;
@@ -900,6 +893,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 				);
 
 			}
+
 		}
 
 		/**
@@ -1116,22 +1110,22 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 						// required for qTranslate-X and WP Multilang
 						$post_meta = get_post_meta( $post_id );
 
-						if ( ! empty( $post_meta ) ) {
+						if ( ! empty( $post_meta ) && isset( $post_meta[ $this->unique ][0] ) ) {
 							$options_array_from_post_meta = maybe_unserialize( $post_meta[ $this->unique ][0] );
-							if ( is_array( $options_array_from_post_meta ) ) {
+							if ( is_array( $options_array_from_post_meta ) && isset( $options_array_from_post_meta[ $language ] ) ) {
 								$section_fields_with_values[ $language ] = $options_array_from_post_meta[ $language ];
 							}
 						}
 					}
 
-					if ( $this->is_menu() ) {
+					if ( $this->is_menu() && isset( $this->db_options[ $language ] ) ) {
 						$section_fields_with_values[ $language ] = $this->db_options[ $language ];
 					}
 				}
 			}
 
 			$sanitizer = new Exopite_Simple_Options_Framework_Sanitize( $this->is_multilang(), $this->lang_current, $this->config, $this->fields );
-			if ( $this->is_multilang() ) {
+			if ( $this->is_multilang() && isset( $posted_data[$this->lang_current] ) ) {
 				$section_fields_with_values[ $this->lang_current ] = $sanitizer->get_sanitized_values( $this->fields, $posted_data[$this->lang_current] );
 			} else {
 				$section_fields_with_values = $sanitizer->get_sanitized_values( $this->fields, $posted_data );
@@ -1197,7 +1191,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 
 			$hash        = '';
 			$fn          = plugin_dir_path( __FILE__ ) . '/' . $type . $hash . '.log';
-			$log_in_file = file_put_contents( $fn, gmdate( 'Y-m-d H:i:s' ) . ' - ' . $log_line . PHP_EOL, FILE_APPEND );
+			$log_in_file = file_put_contents( $fn, date( 'Y-m-d H:i:s' ) . ' - ' . $log_line . PHP_EOL, FILE_APPEND );
 
 		}
 
@@ -1692,7 +1686,7 @@ if ( ! class_exists( 'Exopite_Simple_Options_Framework' ) ) :
 
 		}
 
-		public function get_menu_item( $section, $active = '', $force_hidden ) {
+		public function get_menu_item( $section, $active,$force_hidden ) {
 
 			// $active = '';
 			// if ( $section === reset( $this->fields ) ) {
@@ -2001,11 +1995,3 @@ if ( ! function_exists( 'get_exopite_sof_option' ) ) {
 
 	}
 }
-// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
-// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-// phpcs:enable WordPress.WP.I18n.TextDomainMismatch
-// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-// phpcs:enable WordPress.Security.NonceVerification.Missing
-// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_var_export
-// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query

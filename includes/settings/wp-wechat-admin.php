@@ -172,7 +172,8 @@ function minapper_admin_menu()
                         'apppage'          => '跳转到小程序内页面',
                         'miniapp'     => '跳转其他小程序',
                         'webpage'   => '跳转到网页',
-                        'officialprofile'   => '公众号主页'
+                        'officialprofile'   => '公众号主页',
+                        'officialaccountchat'   => '公众号会话'
 
                     ),                      
                     'default'     => 'apppage',                             // optional 

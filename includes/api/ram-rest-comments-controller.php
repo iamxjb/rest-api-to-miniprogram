@@ -145,7 +145,7 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
         
         $data = array(
             'content' =>$content,
-            'openid'   =>$openId,            
+            'openid'   =>$openid,            
             'scene'   =>2,
             'version'=>2            
         );
@@ -308,8 +308,8 @@ class RAM_REST_Comments_Controller  extends WP_REST_Controller{
 
     function getchildcomment($postid,$comment_id,$limit,$order){
         global $wpdb;
-        if($limit>0){
-            $commentslist  =array();
+        $commentslist  =array();
+        if($limit>0){            
             // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
             // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
              if(empty($order) || $order =='asc')
