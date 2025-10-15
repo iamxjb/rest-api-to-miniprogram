@@ -4,7 +4,7 @@ Donate link: https://www.minapper.com
 Tags: rest,api,json,wechat,微信小程序
 Requires at least: 5.0.5
 Tested up to: 6.8
-Stable tag: 5.1.0
+Stable tag: 5.1.2
 Requires PHP: 7.4
 License: Apache-2.0
 License URI:  https://www.apache.org/licenses/LICENSE-2.0
