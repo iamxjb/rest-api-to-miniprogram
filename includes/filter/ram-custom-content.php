@@ -34,22 +34,13 @@ function custocm_content_filter($content)
         {  
             
             $qrcode=creat_minapper_qrcode($postId);
-            $qrcode=$qrcode['qrcodeUrl'];
-            $qrcode = "<p><img  width='150' src='" .$qrcode. "' ></p>";
-            // $path = "pages/detail/detail?id=" . $postId;
-            // $url = get_option('siteurl') . '/wp-json/watch-life-net/v1/weixin/qrcodeimg?postid=' . $postId . '&path=' . $path;
-            // $qrcode = "";
-            // $response = wp_remote_get($url);
-            // if (is_array($response) && !is_wp_error($response) && $response['response']['code'] == '200') {
-                
-            //     $body = json_decode($response['body'], true);
-            //     $qrcode = "<p><img  width='150' src='" . $body['qrcodeimgUrl'] . "' ></p>";
-                
-            // }
-            // else{
-            //     $qrcode = "<p><img  width='150' src='" . $minapper_qrcode_url . "' ></p>";
-            // } 
+            if($qrcode['errcode'] == '0' && !empty($qrcode['qrcodeUrl']))
+            {
+                 $qrcode=$qrcode['qrcodeUrl'];
+            $qrcode = "<p><img  width='150' src='" .$qrcode. "' ></p>";             
             $_content .= "<div style='width:100%,margin-top:20px;text-align:center;'><br/><br/>" . $message . $qrcode . "</div>";
+            }
+           
         }
         else
         {
